@@ -1,0 +1,296 @@
+:root {  
+  --bg: #111;
+  --text: #ffffff;
+  --sidebar-bg: #0a0a0a;
+  --menu-bg: #1a1a1a;
+  --card: #1e1e1e;
+  --header-bg: #000000;
+}
+
+/* MODO ESCURO */
+body.dark {
+  --bg: #111;
+  --text: #ffffff;
+  --sidebar-bg: #0a0a0a;
+  --menu-bg: #1a1a1a;
+  --card: #1e1e1e;
+  --header-bg: #000000;
+}
+
+/* MODO CLARO */
+body.light {
+  --bg: #f4f4f4;
+  --text: #111111;
+  --sidebar-bg: #ffffff;
+  --menu-bg: #f0f0f0;
+  --card: #ffffff;
+  --header-bg: #eaeaea;
+}
+
+body {
+  margin: 0;
+  font-family: Arial;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: 0.3s ease;
+}
+
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background: var(--header-bg);
+  padding: 0px;
+  transition: 0.3s ease;
+}
+
+.theme-toggle {
+  position: absolute;
+  right: 20px;
+  top: 100%;
+  transform: translateY(-50%);
+}
+
+header h1 {
+  color: #b300ff;
+  letter-spacing: 2px;
+  font-size: 40px;
+}
+
+.layout {
+  display: flex;
+}
+
+.sidebar {
+  width: 190px; 
+  background-color: var(--sidebar-bg);
+  padding-right: 10px;
+  padding-left: 40px;
+  border-right: 3px solid #b300ff;   
+  min-height: 100vh;
+  transition: 0.3s ease;
+}
+
+.sidebar h2 {
+  color: #b300ff;
+  margin-bottom: 20px;
+}
+
+.sidebar li {
+  margin: 15px 0;
+  cursor: pointer;
+  transition: 0.3s;
+  background-color: var(--menu-bg);
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.sidebar li:hover {
+  color: #b300ff;
+}
+
+.content {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cards {
+  display: flex;
+  gap: 90px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-top: 30px;
+}
+
+.card {
+  position: relative;
+  background: var(--card);
+  padding: 40px;
+  border-radius: 10px;
+  width: 250px;
+  transition: 0.3s;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 2px 2px #b300ff;
+;
+}
+
+.card img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.card h3 {
+  position: absolute;
+  top: 0px;
+  right: 10px;
+  color: #00ff00;
+  font-size: 30px;
+  text-shadow: 3px 3px 1px #b300ff;
+;
+}
+
+.titulo {
+  font-style: italic;
+  font-size: 50px;
+}
+
+.menu-link {
+    color: var(--text);            /* cor padrão */
+    text-decoration: none;   /* remove sublinhado */
+    font-size: 20px;
+}
+
+/* Mantém branco mesmo após clique */
+.menu-link:visited {
+    color: var(--text);
+}
+
+/* Mantém branco quando clicado */
+.menu-link:active {
+    color: white;
+}
+
+/* Se quiser mudar no hover */ 
+.menu-link:hover { 
+    color: #b300ff; /* opcional */ 
+    transform: scale(1.10);
+
+}
+
+.old {
+    color: red;   /* preço original em vermelho */
+    text-decoration: line-through; /* opcional: riscar o preço antigo */
+    margin-right: 18px;
+    margin-left: 0px;
+    font-size: 15px;
+}
+
+.por {
+  color: #b300ff;
+  margin-right: 10px;
+}
+
+.new {
+    color: green; /* preço novo em verde */
+    font-weight: bold; /* opcional: destacar */
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.game-title {
+    color: var(--text);        /* deixa o texto branco */
+    font-size: 16px;     /* tamanho da fonte */
+    margin-top: 10px;    /* espaço acima do título */
+    text-align: center;  /* centraliza o nome */
+    font-weight: bold;   /* deixa em negrito */
+    text-decoration: none;
+}
+
+.game-title:hover{
+    color: #b300ff; /* opcional */ 
+    text-decoration: none; /* garante que não apareça sublinhado no hover */
+}
+
+.card-link img {
+    width: 250px;
+    height: 120px;
+    object-fit: cover; /* corta e ajusta a imagem para caber sem distorcer */
+}
+
+.card-link {
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+}
+
+.rodape {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background: var(--bg);
+  padding: 0px;
+  transition: 0.3s ease;
+  font-size: 10px;
+  justify-content: center;
+}
+
+.btn-instagram {
+    display: inline-block;
+    background-color: var(--bg); /* cor oficial do Instagram */
+    color: var(--text);
+    font-size: 15px;
+    font-weight: bold;
+    text-decoration: none; /* remove sublinhado */
+    border-radius: 8px;    /* bordas arredondadas */
+    transition: background-color 0.3s ease;
+    padding-left: 100px;
+}
+
+.btn-instagram:hover {
+    color: #b300ff;
+    transition: 0.3s ease;
+}
+
+.sobre-nos {
+  font-size: 15px;
+  align-items: center;
+}
+
+.sobre-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.sobre-container h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--text);
+}
+
+.sobre-texto p{
+  line-height: 1.6;
+  margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.missao-visao-valores h2 {
+  margin-top: 20px;
+  color: #E1306C;
+  padding-left: 10px;
+}
+
+.missao-visao-valores ul {
+  margin-top: 10px;
+  padding-left: 20px;
+}
+
+.equipe h2 {
+  margin-top: 30px;
+  color: #E1306C;
+}
+
+.btn-minycreeper {
+  display: inline-block;
+  background-color: var(--bg); /* cor oficial do Instagram */
+  color: var(--text);
+  font-size: 15px;
+  font-weight: bold;
+  text-decoration: none; /* remove sublinhado */
+  border-radius: 8px;    /* bordas arredondadas */
+  transition: background-color 0.3s ease;
+  padding-left: 20px;
+}
+
+.btn-minycreeper:hover {
+  color: #b300ff;
+  transition: 0.3s ease;
+}
