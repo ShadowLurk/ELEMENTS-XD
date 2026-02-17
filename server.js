@@ -7,8 +7,6 @@ const app = express();
 app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 
-const PORT = 3000;
-
 // 🔥 CACHE EM MEMÓRIA
 let cachedDeals = [];
 let lastUpdate = null;
@@ -147,6 +145,8 @@ updateDeals();
 
 // 🔥 Atualiza a cada 5 minutos (300000 ms)
 setInterval(updateDeals, 300000);
+
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT} 🚀`);
