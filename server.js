@@ -125,10 +125,16 @@ epicGames.forEach((game) => {
     app.get("/api/gog", async (req, res) => {
   try {
     const response = await axios.get(
-      "https://catalog.gog.com/v1/catalog?limit=20&order=desc:discount"
+      "https://www.gog.com/games/ajax/filtered?mediaType=game&sort=popularity&page=1",
+      {
+        headers: {
+          "User-Agent": "Mozilla/5.0",
+          "Accept": "application/json"
+        }
+      }
     );
 
-    res.json(response.data);
+    res.json(response.data.products);
   } catch (error) {
     console.error("Erro ao buscar GOG:", error.message);
     res.status(500).json({ error: "Erro ao buscar promoções da GOG" });
