@@ -98,43 +98,53 @@ header h1 {
   align-items: center;
 }
 
-.cards {
-  display: flex;
-  gap: 90px;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding-top: 30px;
+/* 🔥 GRID DE CARDS: responsivo */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 colunas */
+  gap: 90px; /* 🔥 aumenta o espaço entre os cards */
+  margin-top: 20px;
 }
 
 .card {
   position: relative;
   background: var(--card);
-  padding: 40px;
+  padding: 20px;
   border-radius: 10px;
+  width: 100%; /* ocupa toda a coluna */
+  height: 280px; /* 🔥 altura fixa para deixar quase quadrado */
   width: 250px;
+  left: 50px;
+  right: 50px;
   transition: 0.3s;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* distribui conteúdo dentro */
+  align-items: center;
 }
 
 .card:hover {
   transform: scale(1.05);
   box-shadow: 2px 2px #b300ff;
-;
 }
 
 .card img {
   width: 100%;
+  height: 120px; /* 🔥 altura fixa da imagem */
+  object-fit: cover;
   border-radius: 8px;
 }
 
 .card h3 {
   position: absolute;
   top: 0px;
-  right: 10px;
+  right: 0px;
   color: #00ff00;
   font-size: 30px;
-  text-shadow: 3px 3px 1px #b300ff;
-;
+  text-shadow: 2px 2px 1px #b300ff;
+  margin-top: 8px;
+  padding-left: 1opx;
 }
 
 .titulo {
@@ -143,154 +153,202 @@ header h1 {
 }
 
 .menu-link {
-    color: var(--text);            /* cor padrão */
-    text-decoration: none;   /* remove sublinhado */
-    font-size: 20px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 20px;
 }
 
-/* Mantém branco mesmo após clique */
 .menu-link:visited {
-    color: var(--text);
+  color: var(--text);
 }
 
-/* Mantém branco quando clicado */
 .menu-link:active {
-    color: white;
+  color: white;
 }
 
-/* Se quiser mudar no hover */ 
 .menu-link:hover { 
-    color: #b300ff; /* opcional */ 
-    transform: scale(1.10);
-
+  color: #b300ff;
+  transform: scale(1.10);
 }
 
 .old {
-    color: red;   /* preço original em vermelho */
-    text-decoration: line-through; /* opcional: riscar o preço antigo */
-    margin-right: 18px;
-    margin-left: 0px;
-    font-size: 15px;
+  color: red;
+  text-decoration: line-through;
+  margin-right: 18px;
+  font-size: 15px;
+  margin-left: 26px;
 }
 
 .por {
   color: #b300ff;
-  margin-right: 10px;
+  margin-right: 18px;
 }
 
 .new {
-    color: green; /* preço novo em verde */
-    font-weight: bold; /* opcional: destacar */
-    font-size: 18px;
-    text-decoration: none;
+  color: rgb(0, 224, 0);
+  font-weight: bold;
+  font-size: 18px;
 }
 
 .game-title {
-    color: var(--text);        /* deixa o texto branco */
-    font-size: 16px;     /* tamanho da fonte */
-    margin-top: 10px;    /* espaço acima do título */
-    text-align: center;  /* centraliza o nome */
-    font-weight: bold;   /* deixa em negrito */
-    text-decoration: none;
+  color: var(--text);
+  font-size: 16px;
+  margin-top: 10px;
+  text-align: center;
+  font-weight: bold;
 }
 
-.game-title:hover{
-    color: #b300ff; /* opcional */ 
-    text-decoration: none; /* garante que não apareça sublinhado no hover */
-}
-
-.card-link img {
-    width: 250px;
-    height: 120px;
-    object-fit: cover; /* corta e ajusta a imagem para caber sem distorcer */
+.game-title:hover {
+  color: #b300ff;
 }
 
 .card-link {
-    text-decoration: none;
-    color: rgb(255, 255, 255);
+  text-decoration: none;
+  color: var(--text);
+}
+
+/* 🔥 PAGINAÇÃO EM CIMA */
+.pagination {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.pagination button {
+  margin: 0 5px;
+  padding: 8px 12px;
+  border: none;
+  background: #eee;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.pagination button.active {
+  background: #b300ff;
+  color: #fff;
+  font-weight: bold;
+}
+
+.pagination button:hover {
+  background: #ccc;
+}
+
+.filtros {
+  text-align: center;
+  margin-bottom: 20px;
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+
+.filtro {
+  margin: 0 15px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text);
+  transition: 0.3s;
+}
+
+.filtro:hover {
+  color: #b300ff; /* muda cor no hover */
+  transform: scale(1.1);
+}
+
+.filtro.ativo {
+  color: #b300ff; /* cor diferente quando ativo */
+  text-decoration: none;
+}
+
+.plataforma {
+  position: absolute;   /* 🔥 posiciona dentro do card */
+  bottom: 10px;         /* fica no final do card */
+  left: 10px;           /* canto esquerdo */
+  font-size: 16px;      /* aumenta tamanho */
+  font-weight: bold;    /* deixa em negrito */
+  color: var(--text);       /* cor roxa para destacar */
+  padding: 10px;
+}
+
+.plataforma:hover {
+color: #b300ff;
+}
+
+.rodape-link {
+  color: var(--text);          /* 🔥 branco */
+  text-decoration: none; /* sem sublinhado */
+  font-weight: bold;     /* opcional: destaque */
+  margin-left: 60px;
+}
+
+.rodape-link:hover {
+  color: #b300ff;        /* muda pra roxo no hover */
 }
 
 .rodape {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
+  justify-content: center;  /* 🔥 centraliza horizontalmente */
+  align-items: center;      /* centraliza verticalmente dentro da altura */
   background: var(--bg);
-  padding: 0px;
-  transition: 0.3s ease;
-  font-size: 10px;
-  justify-content: center;
+  font-size: 13px;
+  color: var(--text);
+  padding: 5px;
+  width: 100%;              /* ocupa toda a largura */
+  position: fixed;          /* 🔥 fixa na tela */
+  bottom: 0;                /* cola no final da página */
+  left: 0;
 }
 
-.btn-instagram {
-    display: inline-block;
-    background-color: var(--bg); /* cor oficial do Instagram */
-    color: var(--text);
-    font-size: 15px;
-    font-weight: bold;
-    text-decoration: none; /* remove sublinhado */
-    border-radius: 8px;    /* bordas arredondadas */
-    transition: background-color 0.3s ease;
-    padding-left: 100px;
+.btn-minycreeper {
+  color: var(--text); 
+  text-decoration: none;
+  padding-left: 10px;
 }
 
-.btn-instagram:hover {
-    color: #b300ff;
-    transition: 0.3s ease;
+.btn-minycreeper:hover{
+  color: #b300ff; 
 }
 
 .sobre-nos {
-  font-size: 15px;
-  align-items: center;
-}
-
-.sobre-container {
+  padding: 40px;
   max-width: 900px;
-  margin: 40px auto;
-  padding: 20px;
-}
-
-.sobre-container h1 {
-  text-align: center;
-  margin-bottom: 30px;
+  margin: 0 auto; /* centraliza na página */
   color: var(--text);
 }
 
-.sobre-texto p{
+.titulo-sobre {
+  font-size: 40px;
+  text-align: center;
+  color: #b300ff;
+  margin-bottom: 30px;
+}
+
+.sobre-texto p {
+  font-size: 18px;
   line-height: 1.6;
   margin-bottom: 20px;
+  text-align: justify;
+  margin-left: 20px;
   padding-left: 20px;
 }
 
 .missao-visao-valores h2 {
-  margin-top: 20px;
-  color: #E1306C;
+  color: #b300ff;
+  margin-top: 25px;
+  margin-bottom: 10px;
   padding-left: 10px;
 }
 
+.missao-visao-valores p {
+  font-size: 16px;
+  margin-left: 20px;
+}
+
 .missao-visao-valores ul {
-  margin-top: 10px;
-  padding-left: 20px;
+  margin: 20px;
+  padding-left: 40px;
+  list-style-type: disc;
 }
 
-.equipe h2 {
-  margin-top: 30px;
-  color: #E1306C;
-}
-
-.btn-minycreeper {
-  display: inline-block;
-  background-color: var(--bg); /* cor oficial do Instagram */
-  color: var(--text);
-  font-size: 15px;
-  font-weight: bold;
-  text-decoration: none; /* remove sublinhado */
-  border-radius: 8px;    /* bordas arredondadas */
-  transition: background-color 0.3s ease;
-  padding-left: 20px;
-}
-
-.btn-minycreeper:hover {
+.equipe {
   color: #b300ff;
-  transition: 0.3s ease;
+  margin-bottom: 10px;
 }

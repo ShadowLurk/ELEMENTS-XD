@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 
-// 🔥 CACHE EM MEMÓRIA SEPARADO POR LOJA
+// 🔥 CACHE EM MEMÓRIA
 let cachedDeals = {
   steam: [],
   epic: [],
@@ -33,7 +33,12 @@ async function getSteamBRPrice(appID) {
 
     const data = response.data[appID];
 
-    if (data?.success && data?.data?.price_overview) {
+    if (
+      data &&
+      data.success &&
+      data.data &&
+      data.data.price_overview
+    ) {
       return data.data.price_overview;
     }
 
@@ -74,6 +79,7 @@ async function updateDeals() {
         normalPriceBRL: steamPrice.initial_formatted,
         salePriceBRL: steamPrice.final_formatted,
         discount: steamPrice.discount_percent,
+        store: "Steam",
         link: `https://store.steampowered.com/app/${game.steamAppID}`,
       });
     }
@@ -91,14 +97,14 @@ async function updateDeals() {
 
     epicGames.forEach((game) => {
       if (
-        game.promotions?.promotionalOffers?.length > 0
+        game.promotions &&
+        game.promotions.promotionalOffers.length > 0
       ) {
         const offer =
           game.promotions.promotionalOffers[0]
             .promotionalOffers[0];
 
         if (offer.discountSetting.discountPercentage === 0) {
-
           const pageSlug =
             game.catalogNs?.mappings?.[0]?.pageSlug;
 
@@ -110,6 +116,7 @@ async function updateDeals() {
             normalPriceBRL: "R$ --",
             salePriceBRL: "GRÁTIS",
             discount: 100,
+            store: "Epic",
             link: `https://store.epicgames.com/pt-BR/p/${pageSlug}`,
           });
         }
@@ -117,43 +124,56 @@ async function updateDeals() {
     });
 
     // =====================
-    // 🟢 GOG
-    // =====================
+// 🟢 GOG
+// =====================
 
-    const gogResponse = await axios.get(
-      "https://www.gog.com/games/ajax/filtered?mediaType=game&sort=popularity&page=1",
-      {
-        headers: {
-          "User-Agent": "Mozilla/5.0",
-          "Accept": "application/json"
-        }
-      }
-    );
+const gogResponse = await axios.get(
+  "https://www.gog.com/games/ajax/filtered?mediaType=game&sort=popularity&page=1",
+  {
+    headers: {
+      "User-Agent": "Mozilla/5.0",
+      Accept: "application/json",
+    },
+  }
+);
 
-    const gogGames = gogResponse.data.products.slice(0, 15);
+const gogGames = gogResponse.data.products.slice(0, 15);
 
-    gogGames.forEach((game) => {
-      if (!game.price) return;
+gogGames.forEach((game) => {
+  if (!game.price) return;
 
-      gogResults.push({
-        title: game.title,
-        thumb: "https:" + game.image,
-        normalPriceBRL: game.price.base,
-        salePriceBRL: game.price.final,
-        discount: game.price.discountPercentage,
-        link: `https://www.gog.com${game.url}`,
-      });
-    });
+  // 🔥 Converte valores para número (se possível)
+  const base = parseFloat(game.price.baseAmount);
+  const final = parseFloat(game.price.finalAmount);
 
-    // 🔥 Ordena cada loja separadamente
-    steamResults.sort((a, b) => b.discount - a.discount);
-    gogResults.sort((a, b) => b.discount - a.discount);
+  gogResults.push({
+    title: game.title,
+    // Corrige URL da imagem (usa sufixo oficial da GOG)
+    thumb: `https:${game.image}_product_tile_256.jpg`,
+    // Corrige preços (se não for número, mostra string original)
+    normalPriceBRL: !isNaN(base)
+      ? `R$ ${base.toFixed(2).replace(".", ",")}`
+      : game.price.base || "Indisponível",
+    salePriceBRL: !isNaN(final)
+      ? `R$ ${final.toFixed(2).replace(".", ",")}`
+      : game.price.final || "Indisponível",
+    discount: game.price.discountPercentage || 0,
+    store: "GOG",
+    link: `https://www.gog.com${game.url}`,
+  });
+});
+
+
+    // 🔥 DEBUG AQUI 👇
+    console.log("Steam encontrados:", steamResults.length);
+    console.log("Epic encontrados:", epicResults.length);
+    console.log("GOG encontrados:", gogResults.length);
 
     // 🔥 Atualiza cache
     cachedDeals = {
-      steam: steamResults,
+      steam: steamResults.sort((a, b) => b.discount - a.discount),
       epic: epicResults,
-      gog: gogResults
+      gog: gogResults.sort((a, b) => b.discount - a.discount),
     };
 
     lastUpdate = new Date();
@@ -170,12 +190,14 @@ app.get("/api/deals", (req, res) => {
     lastUpdate,
     steam: cachedDeals.steam,
     epic: cachedDeals.epic,
-    gog: cachedDeals.gog
+    gog: cachedDeals.gog,
   });
 });
 
-// 🔥 Inicializa
+// 🔥 Atualiza ao iniciar o servidor
 updateDeals();
+
+// 🔥 Atualiza a cada 5 minutos
 setInterval(updateDeals, 300000);
 
 const PORT = process.env.PORT || 3000;
@@ -183,4 +205,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT} 🚀`);
 });
-

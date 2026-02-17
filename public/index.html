@@ -32,6 +32,21 @@
     <main class="content" style="padding-top: 0px;">
       <h2 style="font-size: 40px;">🔥 OFERTAS DO DIA 🔥</h2>
 
+      <!-- 🔥 Botões de filtro -->
+      <div class="filtros">
+        <span onclick="filtrar('Todos')" class="filtro ativo">Todos</span>
+        <span onclick="filtrar('Steam')" class="filtro">Steam</span>
+        <span onclick="filtrar('Epic')" class="filtro">Epic</span>
+        <span onclick="filtrar('GOG')" class="filtro">GOG</span>
+      </div>
+
+
+      <!-- 🔥 Botões de paginação em cima -->
+      <div id="pagination" class="pagination"></div>
+
+      <!-- 🔥 Container dos cards -->
+      <div id="cards-container" class="cards-grid"></div>
+
       <div class="cards">
 
         <div class="cards" id="cards-container">
@@ -48,10 +63,11 @@
   </div>
 
   <footer>
-    <h1 class="rodape" style="height: 10px;font-size: 15px;">© 2026 ELEMENTS XD - Todos os direitos reservados.
-    <a href="https://www.instagram.com/elements.xd/" target="_blank" class="btn-instagram">
-    @elements.xd
-    </a>
+    <div class="rodape">
+     © 2026 ELEMENTS XD - Todos os direitos reservados. 
+     <a href="https://instagram.com/elements.xd" target="_blank" class="rodape-link">@elements.xd</a>
+    </div>
+
 
     </h1>
   </footer>
