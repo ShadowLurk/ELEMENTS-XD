@@ -127,15 +127,15 @@ async function updateDeals() {
     // 🟢 GOG
     // =====================
 
-const gogResponse = await axios.get(
-  "https://www.gog.com/games/ajax/filtered?mediaType=game&sort=popularity&page=1",
-  {
-    headers: {
-      "User-Agent": "Mozilla/5.0",
-      Accept: "application/json",
-    },
-  }
-);
+    const gogResponse = await axios.get(
+     "https://www.gog.com/games/ajax/filtered?mediaType=game&sort=popularity&page=1",
+     {
+       headers: {
+        "User-Agent": "Mozilla/5.0",
+        Accept: "application/json",
+       },
+     }
+    );
 
 const gogGames = gogResponse.data.products.slice(0, 15);
 
