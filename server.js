@@ -18,7 +18,10 @@ async function getSteamBRPrice(appID) {
   try {
     const response = await axios.get(
       "https://store.steampowered.com/api/appdetails",
-      { params: { appids: appID, cc: "br", l: "portuguese" }, timeout: 5000 }
+      {
+        params: { appids: appID, cc: "br", l: "portuguese" },
+        timeout: 5000,
+      }
     );
 
     const data = response.data[appID];
@@ -34,7 +37,7 @@ async function getSteamBRPrice(appID) {
 }
 
 // =============================
-// 🟣 Epic Brasil (SOMENTE grátis ATIVOS)
+// 🟣 Epic Brasil (somente grátis ativos)
 // =============================
 async function getEpicFreeGames() {
   try {
@@ -51,7 +54,6 @@ async function getEpicFreeGames() {
     elements.forEach((game) => {
       const priceInfo = game.price?.totalPrice;
 
-      // 🔥 VERIFICA SE O PREÇO FINAL É ZERO
       if (
         priceInfo &&
         priceInfo.discountPrice === 0 &&
@@ -86,21 +88,30 @@ async function getEpicFreeGames() {
   }
 }
 
-
-
 // =============================
-// 🟢 GOG Brasil
+// 🟢 GOG Brasil (forçando cookie BRL)
 // =============================
 async function getGOGBrazilPrice(fullUrl) {
   try {
     const response = await axios.get(`https://www.gog.com${fullUrl}`, {
-      headers: { "User-Agent": "Mozilla/5.0", "Accept-Language": "pt-BR" },
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        "Accept-Language": "pt-BR,pt;q=0.9",
+        "Cookie": "gog_lc=BR_BRL; currency=BRL;",
+        "Referer": "https://www.gog.com/",
+        "Accept": "text/html,application/xhtml+xml"
+      },
+      timeout: 8000
     });
 
     const $ = cheerio.load(response.data);
 
-    let base = $(".product-actions-price__base-amount").text().trim();
-    let final = $(".product-actions-price__final-amount").text().trim();
+    let base = $(".product-actions-price__base-amount").first().text().trim();
+    let final = $(".product-actions-price__final-amount").first().text().trim();
+
+    if (!final) {
+      final = $(".product-actions-price__amount").first().text().trim();
+    }
 
     if (base) base = `R$ ${base}`;
     if (final) final = `R$ ${final}`;
@@ -109,7 +120,8 @@ async function getGOGBrazilPrice(fullUrl) {
       base: base || "Indisponível",
       final: final || "Indisponível",
     };
-  } catch {
+  } catch (err) {
+    console.error("Erro ao raspar preço GOG Brasil:", err.message);
     return { base: "Indisponível", final: "Indisponível" };
   }
 }
@@ -146,13 +158,20 @@ async function updateDeals() {
       });
     }
 
-    // 🟣 Epic (somente grátis ativos)
+    // 🟣 Epic
     const epicResults = await getEpicFreeGames();
 
-    // 🟢 GOG
+    // 🟢 GOG lista
     const gogResponse = await axios.get(
       "https://www.gog.com/games/ajax/filtered?mediaType=game&sort=popularity&page=1",
-      { headers: { "User-Agent": "Mozilla/5.0" } }
+      {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+          "Accept-Language": "pt-BR,pt;q=0.9",
+          "Cookie": "gog_lc=BR_BRL; currency=BRL;",
+          "Referer": "https://www.gog.com/"
+        }
+      }
     );
 
     for (const game of gogResponse.data.products.slice(0, 10)) {
@@ -178,14 +197,13 @@ async function updateDeals() {
     lastUpdate = new Date();
 
     console.log("Promoções atualizadas com sucesso.");
-    console.log("Epic grátis ativos:", epicResults.length);
   } catch (error) {
     console.error("Erro ao atualizar promoções:", error.message);
   }
 }
 
 // =============================
-// 🌐 Rota principal
+// 🌐 API
 // =============================
 app.get("/api/deals", (req, res) => {
   res.json({
@@ -201,6 +219,7 @@ updateDeals();
 setInterval(updateDeals, 300000);
 
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () =>
   console.log(`Servidor rodando na porta ${PORT} 🚀`)
 );
