@@ -37,7 +37,7 @@ async function getGOGBrazilPrice(fullUrl) {
     const response = await axios.get(`https://www.gog.com${fullUrl}`, {
       headers: {
         "User-Agent": "Mozilla/5.0",
-        "Accept-Language": "pt-BR",
+        "Accept-Language": "pt-BR", // força versão brasileira
       },
     });
 
@@ -90,10 +90,16 @@ async function updateDeals() {
     }
 
     // =====================
-    // 🟣 EPIC (Jogos em promoção, incluindo grátis)
+    // 🟣 EPIC (Jogos em promoção, incluindo grátis, preços Brasil)
     // =====================
     const epicResponse = await axios.get(
-      "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions"
+      "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions",
+      {
+        headers: {
+          "Accept-Language": "pt-BR", // força idioma
+          "X-Epic-Region": "BR",      // força região Brasil
+        },
+      }
     );
     const epicGames = epicResponse.data.data.Catalog.searchStore.elements;
 
@@ -110,11 +116,11 @@ async function updateDeals() {
           title: game.title,
           thumb: game.keyImages?.[0]?.url || "",
           normalPriceBRL:
-            game.price?.totalPrice?.fmtPrice?.originalPrice || "R$ --",
+            game.price?.totalPrice?.fmtPrice?.originalPrice || "Indisponível",
           salePriceBRL:
             discount === 0
               ? "GRÁTIS"
-              : game.price?.totalPrice?.fmtPrice?.discountPrice || "R$ --",
+              : game.price?.totalPrice?.fmtPrice?.discountPrice || "Indisponível",
           discount: discount,
           store: "Epic",
           link: `https://store.epicgames.com/pt-BR/p/${pageSlug}`,
