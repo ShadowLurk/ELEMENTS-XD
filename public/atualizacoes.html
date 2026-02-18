@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+ <head>
+   <meta charset="UTF-8">
+   <title>Elements DX</title>
+   <link rel="stylesheet" href="style.css">
+ </head>
+ <body class="dark">
+
+   <header>
+     <h1 class="titulo" style="margin-right: 500px;margin-left: 500px;">ELEMENTS XD
+     </h1>
+     <button id="theme-Toggle">☀️</button>
+   </header>
+
+   <div class="layout">
+
+     <aside class="sidebar">
+      <h2 style="padding-left: 15px;font-size: 30px;">MENU</h2>
+       <ul>
+         <li style="width: 100px;"><a href="/" class="menu-link">INÍCIO</a></li>
+         <li style="width: 100px;"><a href="/" class="menu-link">JOGOS</a></li>
+         <li style="width: 100px;"><a href="#" class="menu-link" onclick="alert('Esta opção se encontra em desenvolvimento!                                         Nos siga no Instagram para não perder futuras atualizações!            Instagram: @elements.xd ')">PC</a></li>
+       </ul>
+      <h2 style="padding-top: 45px;padding-left: 15px;font-size: 30px;">INFO</h2>
+       <ul>
+         <li style="width: 100px;"><a href="sobre.html" class="menu-link">SOBRE</li>
+         <li style="width: 100px;"><a href="#" class="menu-link" onclick="alert('Teve uma ideia que podemos acrescentar no site?                                Entre em contato pelo e-mail: elements13dk@gmail.com')">CONTATO</a></li>
+       </ul>
+     </aside>
+
+ <main style="padding-top: 0px;">
+       <h1 style="font-size: 40px;padding-left: 465px;">- - - - -  ATUALIZAÇÕES  - - - - -</h1>
+       <section class="sobre-texto" style="width: 1400px;">
+
+     <div class="botoes-sobre">
+       <a href="sobre.html" class="btn-sobre">Sobre o Projeto</a>
+       <a href="atualizacoes.html" class="btn-sobre">Atualizações do Site</a>
+     </div>
+
+
+     <div class="conteudo">
+       <h3 style="font-size: 35px;padding-left: 10px;padding-top: 40px;margin-bottom: 10px;">V-1.0</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Desenvolvimento da estrutura base de site</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Titulo ELEMENTS XD adicionado a estrutura do site</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Campos MENU e INFO adicionados</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Troca de tema adicionado</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Campo OFERTAS DA SEMANA adicionado</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Integração Steam Brasil</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Integração Epic Games Brasil "Grátis"</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Integração GOG Brasil</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Filtros: Steam, Epic e GOG adicionados</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Cards de jogos adicionados</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Sistema de "quebra de pagina integrado"</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Criação da área "SOBRE NÓS"</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Criação da área "ATUALIZAÇÕES</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Rodapé com verificação de direitos reservados e Instagram oficial da Elements XD</h3>
+       <h3 style="font-size: 20px;padding-left: 10px;padding-top: 0px;margin-bottom: 10px;margin-top: 5px;">Resumo:</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Configuração padrão de lançamento do site na web, cards com jogos de lojas oficiais famosas em rede global adicionadas, animações de atualização na tela incrementada.</h3>
+
+
+     </div>
+
+         </p></section>
+     </main>
+
+   </div>
+
+   <footer>
+     <div class="rodape">
+      © 2026 ELEMENTS XD - Todos os direitos reservados. 
+      <a href="https://instagram.com/elements.xd" target="_blank" class="rodape-link">@elements.xd</a>
+     </div>
+
+
+     </h1>
+   </footer>
+
+   <script src="script.js"></script>
+
+    <script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+     const botoes = document.querySelectorAll(".btn-sobre");
+
+      // pega o nome da página atual
+      let paginaAtual = window.location.pathname.split("/").pop();
+
+      // se estiver vazio (ex: domínio.com/)
+      if (paginaAtual === "" || paginaAtual === "index.html") {
+        paginaAtual = "sobre.html";
+      }
+
+       botoes.forEach(botao => {
+       const link = botao.getAttribute("href");
+
+       if (link === paginaAtual) {
+         botao.classList.add("ativo");
+       }
+     });
+
+  });
+</script>
+
+ </body>
+</html>

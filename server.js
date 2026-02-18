@@ -11,6 +11,41 @@ app.use(express.static(path.join(__dirname, "public")));
 let cachedDeals = { steam: [], epic: [], gog: [] };
 let lastUpdate = null;
 
+const EXPIRE_REMOVE_DAYS = 2;
+
+// =============================
+// 🧠 Funções auxiliares
+// =============================
+function normalizePrice(price) {
+  if (!price) return 0;
+
+  return Number(
+    price
+      .replace("R$", "")
+      .replace(/\./g, "")
+      .replace(",", ".")
+      .trim()
+  );
+}
+
+function checkExpired(base, final) {
+  const baseValue = normalizePrice(base);
+  const finalValue = normalizePrice(final);
+  return baseValue === finalValue;
+}
+
+function shouldRemoveDeal(deal) {
+  if (!deal.expired || !deal.expiredAt) return false;
+
+  const now = new Date();
+  const expiredDate = new Date(deal.expiredAt);
+
+  const diffTime = now - expiredDate;
+  const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+  return diffDays >= EXPIRE_REMOVE_DAYS;
+}
+
 // =============================
 // 🔵 Steam Brasil
 // =============================
@@ -37,13 +72,12 @@ async function getSteamBRPrice(appID) {
 }
 
 // =============================
-// 🟣 Epic Brasil (somente grátis ativos)
+// 🟣 Epic
 // =============================
 async function getEpicFreeGames() {
   try {
     const response = await axios.get(
-      "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions",
-      { headers: { "Accept-Language": "pt-BR" } }
+      "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions"
     );
 
     const elements =
@@ -75,42 +109,48 @@ async function getEpicFreeGames() {
           discount: 100,
           store: "Epic",
           link: epicUrl,
+          expired: false,
+          expiredAt: null,
         });
       }
     });
 
-    console.log("Epic grátis encontrados:", freeGames.length);
-
     return freeGames;
-  } catch (err) {
-    console.error("Erro ao buscar jogos grátis da Epic:", err.message);
+  } catch {
     return [];
   }
 }
 
 // =============================
-// 🟢 GOG Brasil (forçando cookie BRL)
+// 🟢 GOG Brasil
 // =============================
 async function getGOGBrazilPrice(fullUrl) {
   try {
     const response = await axios.get(`https://www.gog.com${fullUrl}`, {
       headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-        "Accept-Language": "pt-BR,pt;q=0.9",
+        "User-Agent": "Mozilla/5.0",
         "Cookie": "gog_lc=BR_BRL; currency=BRL;",
-        "Referer": "https://www.gog.com/",
-        "Accept": "text/html,application/xhtml+xml"
       },
-      timeout: 8000
+      timeout: 8000,
     });
 
     const $ = cheerio.load(response.data);
 
-    let base = $(".product-actions-price__base-amount").first().text().trim();
-    let final = $(".product-actions-price__final-amount").first().text().trim();
+    let base = $(".product-actions-price__base-amount")
+      .first()
+      .text()
+      .trim();
+
+    let final = $(".product-actions-price__final-amount")
+      .first()
+      .text()
+      .trim();
 
     if (!final) {
-      final = $(".product-actions-price__amount").first().text().trim();
+      final = $(".product-actions-price__amount")
+        .first()
+        .text()
+        .trim();
     }
 
     if (base) base = `R$ ${base}`;
@@ -120,8 +160,7 @@ async function getGOGBrazilPrice(fullUrl) {
       base: base || "Indisponível",
       final: final || "Indisponível",
     };
-  } catch (err) {
-    console.error("Erro ao raspar preço GOG Brasil:", err.message);
+  } catch {
     return { base: "Indisponível", final: "Indisponível" };
   }
 }
@@ -147,56 +186,59 @@ async function updateDeals() {
       const steamPrice = await getSteamBRPrice(game.steamAppID);
       if (!steamPrice) continue;
 
+      const expired = checkExpired(
+        steamPrice.initial_formatted,
+        steamPrice.final_formatted
+      );
+
       steamResults.push({
         title: game.title,
         thumb: game.thumb,
         normalPriceBRL: steamPrice.initial_formatted,
         salePriceBRL: steamPrice.final_formatted,
-        discount: steamPrice.discount_percent,
+        discount: expired ? 0 : steamPrice.discount_percent,
         store: "Steam",
         link: `https://store.steampowered.com/app/${game.steamAppID}`,
+        expired,
+        expiredAt: expired ? new Date() : null,
       });
     }
 
     // 🟣 Epic
     const epicResults = await getEpicFreeGames();
 
-    // 🟢 GOG lista
+    // 🟢 GOG
     const gogResponse = await axios.get(
-      "https://www.gog.com/games/ajax/filtered?mediaType=game&sort=popularity&page=1",
-      {
-        headers: {
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-          "Accept-Language": "pt-BR,pt;q=0.9",
-          "Cookie": "gog_lc=BR_BRL; currency=BRL;",
-          "Referer": "https://www.gog.com/"
-        }
-      }
+      "https://www.gog.com/games/ajax/filtered?mediaType=game&sort=popularity&page=1"
     );
 
     for (const game of gogResponse.data.products.slice(0, 10)) {
       const gogPrice = await getGOGBrazilPrice(game.url);
+
+      const expired = checkExpired(gogPrice.base, gogPrice.final);
 
       gogResults.push({
         title: game.title,
         thumb: `https:${game.image}_product_tile_256.jpg`,
         normalPriceBRL: gogPrice.base,
         salePriceBRL: gogPrice.final,
-        discount: game.price.discountPercentage || 0,
+        discount: expired ? 0 : game.price.discountPercentage || 0,
         store: "GOG",
         link: `https://www.gog.com${game.url}`,
+        expired,
+        expiredAt: expired ? new Date() : null,
       });
     }
 
     cachedDeals = {
-      steam: steamResults.sort((a, b) => b.discount - a.discount),
+      steam: steamResults.filter((deal) => !shouldRemoveDeal(deal)),
       epic: epicResults,
-      gog: gogResults.sort((a, b) => b.discount - a.discount),
+      gog: gogResults.filter((deal) => !shouldRemoveDeal(deal)),
     };
 
     lastUpdate = new Date();
 
-    console.log("Promoções atualizadas com sucesso.");
+    console.log("Promoções atualizadas.");
   } catch (error) {
     console.error("Erro ao atualizar promoções:", error.message);
   }
@@ -214,7 +256,6 @@ app.get("/api/deals", (req, res) => {
   });
 });
 
-// Inicializa
 updateDeals();
 setInterval(updateDeals, 300000);
 

@@ -32,6 +32,12 @@
 <main style="padding-top: 0px;">
       <h1 style="font-size: 40px;padding-left: 500px;">- - - - -  SOBRE NÓS  - - - - -</h1>
       <section class="sobre-texto" style="width: 1400px;">
+
+    <div class="botoes-sobre">
+       <a href="sobre.html" class="btn-sobre">Sobre o Projeto</a>
+       <a href="atualizacoes.html" class="btn-sobre">Atualizações do Site</a>
+     </div>
+
         <p>
           A <strong>Elements DX</strong> nasceu com o objetivo de transformar a experiência dos gamers, reunindo em um só espaço as melhores promoções de jogos e peças de computador.
         </p>
@@ -79,5 +85,31 @@
   </footer>
 
   <script src="script.js"></script>
+
+ <script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+     const botoes = document.querySelectorAll(".btn-sobre");
+
+      // pega o nome da página atual
+      let paginaAtual = window.location.pathname.split("/").pop();
+
+      // se estiver vazio (ex: domínio.com/)
+      if (paginaAtual === "" || paginaAtual === "index.html") {
+        paginaAtual = "sobre.html";
+      }
+
+       botoes.forEach(botao => {
+       const link = botao.getAttribute("href");
+
+       if (link === paginaAtual) {
+         botao.classList.add("ativo");
+       }
+     });
+
+  });
+</script>
+
+
 </body>
 </html>

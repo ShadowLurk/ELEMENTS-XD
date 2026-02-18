@@ -180,8 +180,8 @@ header h1 {
   width: 100%;
   text-align: center;
   font-weight: bold;
-  color: #888;
-  font-size: 14px;
+  color: var(--text);
+  font-size: 18px;
   padding-bottom: 20px;
 }
 
@@ -350,6 +350,7 @@ header h1 {
   text-align: justify;
   margin-left: 20px;
   padding-left: 20px;
+  text-align: center;
 }
 
 .missao-visao-valores h2 {
@@ -373,4 +374,36 @@ header h1 {
 .equipe {
   color: #b300ff;
   margin-bottom: 10px;
+}
+
+.botoes-sobre {
+  margin-top: 20px;
+  display: flex;
+  gap: 20px;
+  margin-left: 552px;
+}
+
+.btn-sobre {
+  padding: 10px 20px;
+  border: 2px solid #a100ff;
+  color: #a100ff;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: 0.3s ease;
+}
+
+.btn-sobre:hover {
+  background-color: #a100ff;
+  color: #fff;
+  box-shadow: 0 0 10px #a100ff;
+}
+
+.btn-sobre.ativo {
+  background-color: #a100ff;
+  color: #fff;
+}
+
+.versão {
+  color: var(--text);
 }
