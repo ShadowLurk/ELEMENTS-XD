@@ -124,8 +124,8 @@ async function updateDeals() {
     });
 
     // =====================
-// 🟢 GOG
-// =====================
+    // 🟢 GOG
+    // =====================
 
 const gogResponse = await axios.get(
   "https://www.gog.com/games/ajax/filtered?mediaType=game&sort=popularity&page=1",
