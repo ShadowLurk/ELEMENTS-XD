@@ -31,26 +31,42 @@ function renderizar(lista) {
     console.log("Plataforma recebida:", jogo.store);
 
     const imagem = jogo.thumb || "fallback.png";
-    const precoNormal = jogo.normalPriceBRL || "Indisponível";
-    const precoPromo = jogo.salePriceBRL || "Indisponível";
 
     const card = document.createElement("div");
     card.className = "card";
 
-    card.innerHTML = `
-      <a href="${jogo.link || "#"}" target="_blank" class="card-link">
-        <img src="${imagem}" alt="${jogo.title}" 
-             onerror="this.onerror=null;this.src='fallback.png'">
-        <h3>-${jogo.discount || 0}%</h3>
-        <p class="game-title">${jogo.title}</p>
-        <p>
-          <span class="old">${precoNormal}</span>
-          <span class="por">por</span>
-          <span class="new">${precoPromo}</span>
-        </p>
-        <small class="plataforma">${jogo.store}</small>
-      </a>
-    `;
+    if (jogo.expired) {
+      // 🔥 Caso promoção expirada
+      card.innerHTML = `
+        <a href="${jogo.link || "#"}" target="_blank" class="card-link">
+          <img src="${imagem}" alt="${jogo.title}" 
+               onerror="this.onerror=null;this.src='fallback.png'">
+          <h3>-${jogo.discount || 0}%</h3>
+          <p class="game-title">${jogo.title}</p>
+          <div class="expired-msg">Promoção expirada</div>
+          <small class="plataforma">${jogo.store}</small>
+        </a>
+      `;
+    } else {
+      // 🔥 Caso promoção válida
+      const precoNormal = jogo.normalPriceBRL || "Indisponível";
+      const precoPromo = jogo.salePriceBRL || "Indisponível";
+
+      card.innerHTML = `
+        <a href="${jogo.link || "#"}" target="_blank" class="card-link">
+          <img src="${imagem}" alt="${jogo.title}" 
+               onerror="this.onerror=null;this.src='fallback.png'">
+          <h3>-${jogo.discount || 0}%</h3>
+          <p class="game-title">${jogo.title}</p>
+          <div class="price-box">
+            <span class="old">${precoNormal}</span>
+            <span class="por">por</span>
+            <span class="new">${precoPromo}</span>
+          </div>
+          <small class="plataforma">${jogo.store}</small>
+        </a>
+      `;
+    }
 
     container.appendChild(card);
   });

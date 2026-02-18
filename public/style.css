@@ -102,7 +102,7 @@ header h1 {
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* 3 colunas */
-  gap: 90px; /* 🔥 aumenta o espaço entre os cards */
+  gap: 90px;
   margin-top: 20px;
 }
 
@@ -111,16 +111,13 @@ header h1 {
   background: var(--card);
   padding: 20px;
   border-radius: 10px;
-  width: 100%; /* ocupa toda a coluna */
-  height: 280px; /* 🔥 altura fixa para deixar quase quadrado */
   width: 250px;
-  left: 50px;
-  right: 50px;
+  height: 280px;
   transition: 0.3s;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* distribui conteúdo dentro */
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -131,7 +128,7 @@ header h1 {
 
 .card img {
   width: 100%;
-  height: 120px; /* 🔥 altura fixa da imagem */
+  height: 120px;
   object-fit: cover;
   border-radius: 8px;
 }
@@ -144,7 +141,52 @@ header h1 {
   font-size: 30px;
   text-shadow: 2px 2px 1px #b300ff;
   margin-top: 8px;
-  padding-left: 1opx;
+}
+
+/* 🔥 Caixa de preços fixa no rodapé do card */
+.price-box {
+  position: absolute;
+  bottom: 35px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  padding-bottom: 20px;
+}
+
+.price-box .old {
+  text-decoration: line-through;
+  color: red;
+  margin-right: 10px;
+  font-size: 15px;
+}
+
+.price-box .por {
+  color: #b300ff;
+  margin-right: 10px;
+}
+
+.price-box .new {
+  font-weight: bold;
+  color: rgb(0, 224, 0);
+  font-size: 18px;
+}
+
+/* 🔥 Mensagem de promoção expirada */
+.expired-msg {
+  position: absolute;
+  bottom: 35px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  color: #888;
+  font-size: 14px;
+  padding-bottom: 20px;
+}
+
+.expired-msg:hover {
+  color: red;
 }
 
 .titulo {
@@ -169,25 +211,6 @@ header h1 {
 .menu-link:hover { 
   color: #b300ff;
   transform: scale(1.10);
-}
-
-.old {
-  color: red;
-  text-decoration: line-through;
-  margin-right: 18px;
-  font-size: 15px;
-  margin-left: 26px;
-}
-
-.por {
-  color: #b300ff;
-  margin-right: 18px;
-}
-
-.new {
-  color: rgb(0, 224, 0);
-  font-weight: bold;
-  font-size: 18px;
 }
 
 .game-title {
@@ -249,51 +272,50 @@ header h1 {
 }
 
 .filtro:hover {
-  color: #b300ff; /* muda cor no hover */
+  color: #b300ff;
   transform: scale(1.1);
 }
 
 .filtro.ativo {
-  color: #b300ff; /* cor diferente quando ativo */
+  color: #b300ff;
   text-decoration: none;
 }
 
 .plataforma {
-  position: absolute;   /* 🔥 posiciona dentro do card */
-  bottom: 10px;         /* fica no final do card */
-  left: 10px;           /* canto esquerdo */
-  font-size: 16px;      /* aumenta tamanho */
-  font-weight: bold;    /* deixa em negrito */
-  color: var(--text);       /* cor roxa para destacar */
-  padding: 10px;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--text);
 }
 
 .plataforma:hover {
-color: #b300ff;
+  color: #b300ff;
 }
 
 .rodape-link {
-  color: var(--text);          /* 🔥 branco */
-  text-decoration: none; /* sem sublinhado */
-  font-weight: bold;     /* opcional: destaque */
+  color: var(--text);
+  text-decoration: none;
+  font-weight: bold;
   margin-left: 60px;
 }
 
 .rodape-link:hover {
-  color: #b300ff;        /* muda pra roxo no hover */
+  color: #b300ff;
 }
 
 .rodape {
   display: flex;
-  justify-content: center;  /* 🔥 centraliza horizontalmente */
-  align-items: center;      /* centraliza verticalmente dentro da altura */
+  justify-content: center;
+  align-items: center;
   background: var(--bg);
   font-size: 13px;
   color: var(--text);
   padding: 5px;
-  width: 100%;              /* ocupa toda a largura */
-  position: fixed;          /* 🔥 fixa na tela */
-  bottom: 0;                /* cola no final da página */
+  width: 100%;
+  position: fixed;
+  bottom: 0;
   left: 0;
 }
 
@@ -310,7 +332,7 @@ color: #b300ff;
 .sobre-nos {
   padding: 40px;
   max-width: 900px;
-  margin: 0 auto; /* centraliza na página */
+  margin: 0 auto;
   color: var(--text);
 }
 
