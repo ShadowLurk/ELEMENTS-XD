@@ -142,6 +142,9 @@ const gogGames = gogResponse.data.products.slice(0, 15);
 gogGames.forEach((game) => {
   if (!game.price) return;
 
+  // 🔥 Loga o objeto de preço completo
+  console.log("Preço bruto da GOG:", game.price);
+
   // 🔥 Converte valores para número (se possível)
   const base = parseFloat(game.price.baseAmount);
   const final = parseFloat(game.price.finalAmount);
