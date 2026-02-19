@@ -7,7 +7,10 @@
   --header-bg: #000000;
 }
 
+/* ========================= */
 /* MODO ESCURO */
+/* ========================= */
+
 body.dark {
   --bg: #111;
   --text: #ffffff;
@@ -17,7 +20,10 @@ body.dark {
   --header-bg: #000000;
 }
 
+/* ========================= */
 /* MODO CLARO */
+/* ========================= */
+
 body.light {
   --bg: #f4f4f4;
   --text: #111111;
@@ -27,6 +33,10 @@ body.light {
   --header-bg: #eaeaea;
 }
 
+/* ========================= */
+/* BODY */
+/* ========================= */
+
 body {
   margin: 0;
   font-family: Arial;
@@ -35,21 +45,33 @@ body {
   transition: 0.3s ease;
 }
 
+/* ========================= */
+/* HEADER */
+/* ========================= */
+
 header {
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
   background: var(--header-bg);
-  padding: 0px;
-  transition: 0.3s ease;
+  transition: 0.3s;
 }
 
-.theme-toggle {
+#theme-Toggle {
   position: absolute;
   right: 20px;
-  top: 100%;
+  top: 50%;
   transform: translateY(-50%);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.titulo {
+  font-style: italic;
+  font-size: 50px;
+  color: #b300ff;
+  transition: 0.3s;
 }
 
 header h1 {
@@ -58,6 +80,10 @@ header h1 {
   font-size: 40px;
 }
 
+/* ========================= */
+/* LAYOUT */
+/* ========================= */
+
 .layout {
   display: flex;
 }
@@ -65,8 +91,7 @@ header h1 {
 .sidebar {
   width: 190px; 
   background-color: var(--sidebar-bg);
-  padding-right: 10px;
-  padding-left: 40px;
+  padding: 0 10px 0 40px;
   border-right: 3px solid #b300ff;   
   min-height: 100vh;
   transition: 0.3s ease;
@@ -79,16 +104,39 @@ header h1 {
 
 .sidebar li {
   margin: 15px 0;
-  cursor: pointer;
-  transition: 0.3s;
   background-color: var(--menu-bg);
   padding: 10px;
   border-radius: 6px;
+  transition: 0.3s;
 }
 
 .sidebar li:hover {
   color: #b300ff;
 }
+
+.menu-link {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 20px;
+  transition: 0.3s;
+}
+
+.menu-link:visited {
+  color: var(--text);
+}
+
+.menu-link:active {
+  color: white;
+}
+
+.menu-link:hover { 
+  color: #b300ff;
+  transform: scale(1.10);
+}
+
+/* ========================= */
+/* CONTENT */
+/* ========================= */
 
 .content {
   flex: 1;
@@ -98,52 +146,69 @@ header h1 {
   align-items: center;
 }
 
-/* 🔥 GRID DE CARDS: responsivo */
+main {
+  flex: 1;
+  padding: 20px;
+}
+
+main h1 {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+/* ========================= */
+/* TÍTULOS */
+/* ========================= */
+
+.titulo-ofertas {
+  font-size: 50px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.titulo-sobre {
+  font-size: 40px;
+  text-align: center;
+  color: #b300ff;
+  margin-bottom: 30px;
+}
+
+/* ========================= */
+/* GRID DE CARDS */
+/* ========================= */
+
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 colunas */
-  gap: 90px;
+  grid-template-columns: repeat(3, 1fr); /* 3 colunas no desktop */
+  gap: 60px;
   margin-top: 20px;
+  opacity: 1;
+  transition: 0.5s ease;
 }
 
-.card {
-  position: relative;
-  background: var(--card);
-  padding: 20px;
-  border-radius: 10px;
-  width: 250px;
-  height: 280px;
+.cards-grid.fade-out {
+   opacity: 0; 
+}
+
+.card-link {
+  text-decoration: none;
+  color: var(--text);
+}
+
+.game-title {
+  color: var(--text);
+  font-size: 16px;
+  margin-top: 10px;
+  text-align: center;
+  font-weight: bold;
   transition: 0.3s;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
 }
 
-.card:hover {
-  transform: scale(1.05);
-  box-shadow: 2px 2px #b300ff;
+.game-title:hover {
+  color: #b300ff;
 }
 
-.card img {
-  width: 100%;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.card h3 {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  color: #00ff00;
-  font-size: 30px;
-  text-shadow: 2px 2px 1px #b300ff;
-  margin-top: 8px;
-}
-
-/* 🔥 Caixa de preços fixa no rodapé do card */
 .price-box {
   position: absolute;
   bottom: 35px;
@@ -166,13 +231,6 @@ header h1 {
   margin-right: 10px;
 }
 
-.price-box .new {
-  font-weight: bold;
-  color: rgb(0, 224, 0);
-  font-size: 18px;
-}
-
-/* 🔥 Mensagem de promoção expirada */
 .expired-msg {
   position: absolute;
   bottom: 35px;
@@ -180,41 +238,84 @@ header h1 {
   width: 100%;
   text-align: center;
   font-weight: bold;
-  color: var(--text);
+  color: #7e7e7e;
+  font-size: 14px;
   font-size: 18px;
   padding-bottom: 20px;
+  transition: 0.3s;
 }
 
 .expired-msg:hover {
   color: red;
 }
 
-.titulo {
-  font-style: italic;
-  font-size: 50px;
+.card h3 {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  color: #00ff00;
+  font-size: 30px;
+  text-shadow: 2px 2px 1px #b300ff;
+  margin-top: 8px;
 }
 
-.menu-link {
+.plataforma {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 16px;
+  font-weight: bold;
   color: var(--text);
-  text-decoration: none;
-  font-size: 20px;
+  transition: 0.3s;
 }
 
-.menu-link:visited {
-  color: var(--text);
-}
-
-.menu-link:active {
-  color: white;
-}
-
-.menu-link:hover { 
+.plataforma:hover {
   color: #b300ff;
-  transform: scale(1.10);
+}
+
+
+/* ========================= */
+/* CARD */
+/* ========================= */
+
+.card {
+  position: relative;
+  background: var(--card);
+  padding: 20px;
+  border-radius: 10px;
+  width: 250px;
+  height: 280px;
+  transition: 0.3s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 2px 2px #b300ff;
+  transition: 0.3s;
+}
+
+.card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.card h3 {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #00ff00;
+  font-size: 30px;
+  text-shadow: 2px 2px 1px #b300ff;
+  margin: 8px;
 }
 
 .game-title {
-  color: var(--text);
   font-size: 16px;
   margin-top: 10px;
   text-align: center;
@@ -225,12 +326,62 @@ header h1 {
   color: #b300ff;
 }
 
-.card-link {
-  text-decoration: none;
-  color: var(--text);
+/* ========================= */
+/* PREÇOS */
+/* ========================= */
+
+.price-box {
+  position: absolute;
+  bottom: 35px;
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
 }
 
-/* 🔥 PAGINAÇÃO EM CIMA */
+.price-box .old {
+  text-decoration: line-through;
+  color: red;
+  margin-right: 10px;
+}
+
+.price-box .por {
+  color: #b300ff;
+  margin-right: 10px;
+}
+
+.price-box .new {
+  font-weight: bold;
+  color: rgb(0, 224, 0);
+  font-size: 18px;
+}
+
+/* ========================= */
+/* FILTROS */
+/* ========================= */
+
+.filtros {
+  text-align: center;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  transition: 0.3s;
+}
+
+.filtro {
+  margin: 0 15px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.filtro.ativo {
+  color: #b300ff;
+}
+
+/* ========================= */
+/* PAGINAÇÃO */
+/* ========================= */
+
 .pagination {
   margin-bottom: 20px;
   text-align: center;
@@ -251,59 +402,9 @@ header h1 {
   font-weight: bold;
 }
 
-.pagination button:hover {
-  background: #ccc;
-}
-
-.filtros {
-  text-align: center;
-  margin-bottom: 20px;
-  padding-top: 10px;
-  padding-bottom: 20px;
-}
-
-.filtro {
-  margin: 0 15px;
-  cursor: pointer;
-  font-size: 18px;
-  font-weight: bold;
-  color: var(--text);
-  transition: 0.3s;
-}
-
-.filtro:hover {
-  color: #b300ff;
-  transform: scale(1.1);
-}
-
-.filtro.ativo {
-  color: #b300ff;
-  text-decoration: none;
-}
-
-.plataforma {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  font-size: 16px;
-  font-weight: bold;
-  color: var(--text);
-}
-
-.plataforma:hover {
-  color: #b300ff;
-}
-
-.rodape-link {
-  color: var(--text);
-  text-decoration: none;
-  font-weight: bold;
-  margin-left: 60px;
-}
-
-.rodape-link:hover {
-  color: #b300ff;
-}
+/* ========================= */
+/* RODAPÉ */
+/* ========================= */
 
 .rodape {
   display: flex;
@@ -318,6 +419,27 @@ header h1 {
   bottom: 0;
   left: 0;
 }
+
+.rodape-link {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: bold;
+  margin-left: 60px;
+  transition: 0.3s ease;
+}
+
+.rodape-link:hover {
+  color: #b300ff;
+}
+
+ .rodape {
+    font-size: 11px;
+    transition: 0.3s ease;
+  }
+
+/* ========================= */
+/* SOBRE */
+/* ========================= */
 
 .btn-minycreeper {
   color: var(--text); 
@@ -334,6 +456,25 @@ header h1 {
   max-width: 900px;
   margin: 0 auto;
   color: var(--text);
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.sobre-nos.visible { 
+  opacity: 1; 
+  transform: translateY(0); /* volta ao normal */ 
+}
+
+main {
+  flex: 1;
+  padding: 20px;
+}
+
+main h1 {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 20px;
 }
 
 .titulo-sobre {
@@ -350,7 +491,7 @@ header h1 {
   text-align: justify;
   margin-left: 20px;
   padding-left: 20px;
-  text-align: center;
+  transition: 0.8s;
 }
 
 .missao-visao-valores h2 {
@@ -365,10 +506,9 @@ header h1 {
   margin-left: 20px;
 }
 
-.missao-visao-valores ul {
-  margin: 20px;
-  padding-left: 40px;
-  list-style-type: disc;
+.missao-visao-valores p {
+  font-size: 16px;
+  margin-left: 20px;
 }
 
 .equipe {
@@ -380,7 +520,9 @@ header h1 {
   margin-top: 20px;
   display: flex;
   gap: 20px;
-  margin-left: 552px;
+  flex-wrap: wrap;
+  text-align: center;
+  justify-content: center;
 }
 
 .btn-sobre {
@@ -404,6 +546,96 @@ header h1 {
   color: #fff;
 }
 
+/* ========================= */
+/* ATUALIZAÇÕES */
+/* ========================= */
+
 .versão {
   color: var(--text);
 }
+
+/* ========================= */
+/* MENU MOBILE */
+/* ========================= */
+
+.menu-toggle {
+  display: none;
+  position: fixed;
+  left: 8px;
+  top: 18px;
+  font-size: 22px;
+  background: #a100ff;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ========================= */
+/* RESPONSIVO */
+/* ========================= */
+
+@media (max-width: 768px) {
+
+  .layout {
+    display: block;
+  }
+
+  .titulo-ofertas {
+    font-size: 30px;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -220px;
+    width: 150px;
+    height: 100%;
+    z-index: 1000;
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr; /* 1 coluna no celular */
+    gap: 30px;
+    justify-items: center;
+  }
+
+  .titulo {
+    font-size: 50px;
+  }
+
+  .rodape {
+    font-size: 11px;
+  }
+
+}
+
+/* ========================= */
+/* ANIMAÇÃO */
+/* ========================= */
+
+  .content {
+    transition: transform 0.3s ease;
+  }
+
+  .content.shift {
+    transform: translateX(60px);
+   }
+
+  .titulo {
+    font-size: 50px;
+  }
+
+  .rodape {
+    font-size: 11px;
+    transition: 0.3s ease;
+  }

@@ -1,5 +1,5 @@
 let todosJogos = [];
-let listaFiltrada = []; // 🔥 nova variável para guardar o filtro atual
+let listaFiltrada = []; // 🔥 guarda o filtro atual
 let paginaAtual = 1;
 const jogosPorPagina = 12;
 
@@ -20,58 +20,64 @@ function carregarJogos() {
 
 function renderizar(lista) {
   const container = document.getElementById("cards-container");
-  container.innerHTML = "";
 
-  // 🔥 Calcula início e fim da página
-  const inicio = (paginaAtual - 1) * jogosPorPagina;
-  const fim = inicio + jogosPorPagina;
-  const pagina = lista.slice(inicio, fim);
+  // 🔥 aplica fade-out antes de trocar conteúdo
+  container.classList.add("fade-out");
 
-  pagina.forEach((jogo) => {
-    console.log("Plataforma recebida:", jogo.store);
+  setTimeout(() => {
+    container.innerHTML = "";
 
-    const imagem = jogo.thumb || "fallback.png";
+    // Calcula início e fim da página
+    const inicio = (paginaAtual - 1) * jogosPorPagina;
+    const fim = inicio + jogosPorPagina;
+    const pagina = lista.slice(inicio, fim);
 
-    const card = document.createElement("div");
-    card.className = "card";
+    pagina.forEach((jogo) => {
+      console.log("Plataforma recebida:", jogo.store);
 
-    if (jogo.expired) {
-      // 🔥 Caso promoção expirada
-      card.innerHTML = `
-        <a href="${jogo.link || "#"}" target="_blank" class="card-link">
-          <img src="${imagem}" alt="${jogo.title}" 
-               onerror="this.onerror=null;this.src='fallback.png'">
-          <h3>-${jogo.discount || 0}%</h3>
-          <p class="game-title">${jogo.title}</p>
-          <div class="expired-msg">Promoção expirada</div>
-          <small class="plataforma">${jogo.store}</small>
-        </a>
-      `;
-    } else {
-      // 🔥 Caso promoção válida
-      const precoNormal = jogo.normalPriceBRL || "Indisponível";
-      const precoPromo = jogo.salePriceBRL || "Indisponível";
+      const imagem = jogo.thumb || "fallback.png";
+      const card = document.createElement("div");
+      card.className = "card";
 
-      card.innerHTML = `
-        <a href="${jogo.link || "#"}" target="_blank" class="card-link">
-          <img src="${imagem}" alt="${jogo.title}" 
-               onerror="this.onerror=null;this.src='fallback.png'">
-          <h3>-${jogo.discount || 0}%</h3>
-          <p class="game-title">${jogo.title}</p>
-          <div class="price-box">
-            <span class="old">${precoNormal}</span>
-            <span class="por">por</span>
-            <span class="new">${precoPromo}</span>
-          </div>
-          <small class="plataforma">${jogo.store}</small>
-        </a>
-      `;
-    }
+      if (jogo.expired) {
+        card.innerHTML = `
+          <a href="${jogo.link || "#"}" target="_blank" class="card-link">
+            <img src="${imagem}" alt="${jogo.title}" 
+                 onerror="this.onerror=null;this.src='fallback.png'">
+            <h3>-${jogo.discount || 0}%</h3>
+            <p class="game-title">${jogo.title}</p>
+            <div class="expired-msg">Promoção expirada</div>
+            <small class="plataforma">${jogo.store}</small>
+          </a>
+        `;
+      } else {
+        const precoNormal = jogo.normalPriceBRL || "Indisponível";
+        const precoPromo = jogo.salePriceBRL || "Indisponível";
 
-    container.appendChild(card);
-  });
+        card.innerHTML = `
+          <a href="${jogo.link || "#"}" target="_blank" class="card-link">
+            <img src="${imagem}" alt="${jogo.title}" 
+                 onerror="this.onerror=null;this.src='fallback.png'">
+            <h3>-${jogo.discount || 0}%</h3>
+            <p class="game-title">${jogo.title}</p>
+            <div class="price-box">
+              <span class="old">${precoNormal}</span>
+              <span class="por">por</span>
+              <span class="new">${precoPromo}</span>
+            </div>
+            <small class="plataforma">${jogo.store}</small>
+          </a>
+        `;
+      }
 
-  renderizarPaginacao(lista.length);
+      container.appendChild(card);
+    });
+
+    renderizarPaginacao(lista.length);
+
+    // 🔥 remove fade-out para voltar ao normal (fade-in)
+    container.classList.remove("fade-out");
+  }, 300); // tempo da animação
 }
 
 function renderizarPaginacao(totalJogos) {
@@ -86,7 +92,7 @@ function renderizarPaginacao(totalJogos) {
     botao.className = (i === paginaAtual) ? "active" : "";
     botao.addEventListener("click", () => {
       paginaAtual = i;
-      renderizar(listaFiltrada); // 🔥 usa a lista filtrada, não todosJogos
+      renderizar(listaFiltrada); // 🔥 usa lista filtrada
     });
     paginacao.appendChild(botao);
   }
@@ -123,16 +129,64 @@ setInterval(carregarJogos, 300000);
 const button = document.getElementById("theme-Toggle");
 const body = document.body;
 
+// 🔥 Carrega tema salvo ao abrir a página
+const temaSalvo = localStorage.getItem("tema");
+if (temaSalvo) {
+  body.classList.remove("dark", "light");
+  body.classList.add(temaSalvo);
+  button.textContent = temaSalvo === "dark" ? "☀️" : "🌙";
+}
+
 if (button) {
   button.addEventListener("click", () => {
     if (body.classList.contains("dark")) {
       body.classList.remove("dark");
       body.classList.add("light");
       button.textContent = "🌙";
+      localStorage.setItem("tema", "light"); // 🔥 salva preferência
     } else {
       body.classList.remove("light");
       body.classList.add("dark");
       button.textContent = "☀️";
+      localStorage.setItem("tema", "dark"); // 🔥 salva preferência
     }
   });
 }
+
+/* =====================================
+   ANIMAÇÃO SUAVE SOBRE NÓS
+===================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+  const sobre = document.querySelector(".sobre-nos");
+
+  if (sobre) {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          sobre.classList.add("visible");
+        }
+      });
+    });
+
+    observer.observe(sobre);
+  }
+});
+
+/* =====================================
+   MENU TOGGLE
+===================================== */
+document.addEventListener("DOMContentLoaded", () => {
+  const toggle = document.querySelector(".menu-toggle");
+  const sidebar = document.querySelector(".sidebar");
+  const content = document.querySelector("main"); // 🔥 usa main no Sobre Nós
+
+  if (toggle && sidebar) {
+    toggle.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+      if (content) {
+        content.classList.toggle("shift");
+      }
+    });
+  }
+});
