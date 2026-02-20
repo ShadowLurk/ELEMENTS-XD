@@ -1,8 +1,12 @@
+require("dotenv").config();
+
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
 const path = require("path");
 const cheerio = require("cheerio");
+
+console.log("API KEY:", process.env.ITAD_API_KEY);
 
 const app = express();
 app.use(cors());
@@ -18,13 +22,8 @@ const EXPIRE_REMOVE_DAYS = 2;
 // =============================
 function normalizePrice(price) {
   if (!price) return 0;
-
   return Number(
-    price
-      .replace("R$", "")
-      .replace(/\./g, "")
-      .replace(",", ".")
-      .trim()
+    price.replace("R$", "").replace(/\./g, "").replace(",", ".").trim()
   );
 }
 
@@ -36,14 +35,31 @@ function checkExpired(base, final) {
 
 function shouldRemoveDeal(deal) {
   if (!deal.expired || !deal.expiredAt) return false;
-
   const now = new Date();
   const expiredDate = new Date(deal.expiredAt);
-
-  const diffTime = now - expiredDate;
-  const diffDays = diffTime / (1000 * 60 * 60 * 24);
-
+  const diffDays = (now - expiredDate) / (1000 * 60 * 60 * 24);
   return diffDays >= EXPIRE_REMOVE_DAYS;
+}
+
+function calcDiscount(oldPrice, newPrice) {
+  if (!oldPrice || !newPrice) return 0;
+  return Math.round(100 - (newPrice / oldPrice) * 100);
+}
+
+// Remove duplicados com base nas 6 primeiras letras do título
+function filtrarDuplicadosPorPrefixo(jogos) {
+  const vistos = new Set();
+  const filtrados = [];
+
+  for (const jogo of jogos) {
+    const prefixo = jogo.title.substring(0, 6).toLowerCase();
+    if (!vistos.has(prefixo)) {
+      vistos.add(prefixo);
+      filtrados.push(jogo);
+    }
+  }
+
+  return filtrados;
 }
 
 // =============================
@@ -72,27 +88,30 @@ async function getSteamBRPrice(appID) {
 }
 
 // =============================
-// 🟣 Epic
+// 🟣 Epic (Grátis + Pagos com desconto)
 // =============================
-async function getEpicFreeGames() {
+async function getEpicDeals() {
   try {
     const response = await axios.get(
-      "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions"
+      "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions?locale=pt-BR&country=BR",
+      {
+        headers: {
+          "Accept-Language": "pt-BR",
+          "User-Agent": "Mozilla/5.0",
+          "Cookie": "EPIC_LOCALE=pt-BR; EPIC_COUNTRY=BR;"
+        },
+        timeout: 8000
+      }
     );
 
-    const elements =
-      response.data.data.Catalog.searchStore.elements;
-
-    const freeGames = [];
+    const elements = response.data.data.Catalog.searchStore.elements;
+    const epicGames = [];
 
     elements.forEach((game) => {
       const priceInfo = game.price?.totalPrice;
+      if (!priceInfo) return;
 
-      if (
-        priceInfo &&
-        priceInfo.discountPrice === 0 &&
-        priceInfo.originalPrice > 0
-      ) {
+      if (priceInfo.discountPrice < priceInfo.originalPrice) {
         const mapping = game.catalogNs?.mappings?.[0];
         if (!mapping?.pageSlug) return;
 
@@ -101,12 +120,19 @@ async function getEpicFreeGames() {
             ? `https://store.epicgames.com/pt-BR/bundles/${mapping.pageSlug}`
             : `https://store.epicgames.com/pt-BR/p/${mapping.pageSlug}`;
 
-        freeGames.push({
+        const discountPercent = Math.round(
+          100 - (priceInfo.discountPrice / priceInfo.originalPrice) * 100
+        );
+
+        epicGames.push({
           title: game.title,
           thumb: game.keyImages?.[0]?.url || "",
           normalPriceBRL: `R$ ${(priceInfo.originalPrice / 100).toFixed(2)}`,
-          salePriceBRL: "GRÁTIS",
-          discount: 100,
+          salePriceBRL:
+            priceInfo.discountPrice === 0
+              ? "GRÁTIS"
+              : `R$ ${(priceInfo.discountPrice / 100).toFixed(2)}`,
+          discount: discountPercent,
           store: "Epic",
           link: epicUrl,
           expired: false,
@@ -115,11 +141,13 @@ async function getEpicFreeGames() {
       }
     });
 
-    return freeGames;
-  } catch {
+    return epicGames.slice(0, 15);
+  } catch (err) {
+    console.error("Erro ao buscar jogos da Epic:", err.message);
     return [];
   }
 }
+
 
 // =============================
 // 🟢 GOG Brasil
@@ -129,41 +157,29 @@ async function getGOGBrazilPrice(fullUrl) {
     const response = await axios.get(`https://www.gog.com${fullUrl}`, {
       headers: {
         "User-Agent": "Mozilla/5.0",
-        "Cookie": "gog_lc=BR_BRL; currency=BRL;",
+        Cookie: "gog_lc=BR_BRL; currency=BRL;",
       },
       timeout: 8000,
     });
 
     const $ = cheerio.load(response.data);
 
-    let base = $(".product-actions-price__base-amount")
-      .first()
-      .text()
-      .trim();
-
-    let final = $(".product-actions-price__final-amount")
-      .first()
-      .text()
-      .trim();
+    let base = $(".product-actions-price__base-amount").first().text().trim();
+    let final = $(".product-actions-price__final-amount").first().text().trim();
 
     if (!final) {
-      final = $(".product-actions-price__amount")
-        .first()
-        .text()
-        .trim();
+      final = $(".product-actions-price__amount").first().text().trim();
     }
 
     if (base) base = `R$ ${base}`;
     if (final) final = `R$ ${final}`;
 
-    return {
-      base: base || "Indisponível",
-      final: final || "Indisponível",
-    };
+    return { base: base || "Indisponível", final: final || "Indisponível" };
   } catch {
     return { base: "Indisponível", final: "Indisponível" };
   }
 }
+
 
 // =============================
 // 🔥 Atualiza Cache
@@ -180,7 +196,7 @@ async function updateDeals() {
       "https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=60"
     );
 
-    for (const game of cheapSharkResponse.data.slice(0, 15)) {
+    for (const game of cheapSharkResponse.data.slice(0, 24)) {
       if (!game.steamAppID) continue;
 
       const steamPrice = await getSteamBRPrice(game.steamAppID);
@@ -205,44 +221,76 @@ async function updateDeals() {
     }
 
     // 🟣 Epic
-    const epicResults = await getEpicFreeGames();
+    const epicResults = await getEpicDeals();
 
     // 🟢 GOG
-    const gogResponse = await axios.get(
-      "https://www.gog.com/games/ajax/filtered?mediaType=game&sort=popularity&page=1"
-    );
+    for (let page = 1; page <= 5; page++) {
+      const gogResponse = await axios.get(
+        `https://www.gog.com/games/ajax/filtered?mediaType=game&sort=popularity&page=${page}`
+      );
 
-    for (const game of gogResponse.data.products.slice(0, 10)) {
-      const gogPrice = await getGOGBrazilPrice(game.url);
+      for (const game of gogResponse.data.products) {
+        const gogPrice = await getGOGBrazilPrice(game.url);
+        const expired = checkExpired(gogPrice.base, gogPrice.final);
+        const titulo = game.title.toLowerCase();
 
-      const expired = checkExpired(gogPrice.base, gogPrice.final);
-
-      gogResults.push({
-        title: game.title,
-        thumb: `https:${game.image}_product_tile_256.jpg`,
-        normalPriceBRL: gogPrice.base,
-        salePriceBRL: gogPrice.final,
-        discount: expired ? 0 : game.price.discountPercentage || 0,
-        store: "GOG",
-        link: `https://www.gog.com${game.url}`,
-        expired,
-        expiredAt: expired ? new Date() : null,
-      });
+        if (
+          game.price.discountPercentage > 0 &&
+          (
+            game.category === "game" ||
+            (
+              !titulo.includes("soundtrack") &&
+              !titulo.includes("sound track") &&
+              !titulo.includes("collection") &&
+              !titulo.includes("collector") &&
+              !titulo.includes("dlc") &&
+              !titulo.includes("bundle") &&
+              !titulo.includes("pack")
+            )
+          )
+          && game.ageRating !== "18" &&
+          !titulo.includes("18+") &&
+          !titulo.includes("adult") &&
+          !titulo.includes("mature")
+        ) {
+          gogResults.push({
+            title: game.title,
+            thumb: `https:${game.image}_product_tile_256.jpg`,
+            normalPriceBRL: gogPrice.base,
+            salePriceBRL: gogPrice.final,
+            discount: game.price.discountPercentage,
+            store: "GOG",
+            link: `https://www.gog.com${game.url}`,
+            expired,
+            expiredAt: expired ? new Date() : null,
+          });
+        }
+      }
     }
 
+    // ✅ aplica filtro de duplicados por prefixo
+    const gogFinalResults = filtrarDuplicadosPorPrefixo(gogResults).slice(0, 30);
+
+    // ✅ Atualiza cache dentro do try
     cachedDeals = {
-      steam: steamResults.filter((deal) => !shouldRemoveDeal(deal)),
+      steam: steamResults.filter((d) => !shouldRemoveDeal(d)),
       epic: epicResults,
-      gog: gogResults.filter((deal) => !shouldRemoveDeal(deal)),
+      gog: gogFinalResults
     };
 
     lastUpdate = new Date();
+    console.log("Promoções atualizadas ✅");
 
-    console.log("Promoções atualizadas.");
+    if (sseClient && !firstUpdateSent) {
+  sseClient.write(`data: refresh\n\n`);
+  firstUpdateSent = true; // só dispara uma vez
+}
+
   } catch (error) {
     console.error("Erro ao atualizar promoções:", error.message);
   }
 }
+
 
 // =============================
 // 🌐 API
@@ -256,6 +304,31 @@ app.get("/api/deals", (req, res) => {
   });
 });
 
+// =============================
+// 🔔 SSE (Server-Sent Events)
+// =============================
+let firstUpdateSent = false; 
+let sseClient = null;
+
+app.get("/events", (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  sseClient = res; // guarda a conexão do navegador
+});
+
+
+// =============================
+// Página principal
+// =============================
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// =============================
+// Inicialização 
+// =============================
 updateDeals();
 setInterval(updateDeals, 300000);
 

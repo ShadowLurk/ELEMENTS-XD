@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+
 <body class="dark">
 
   <header>
@@ -15,25 +16,42 @@
 
   <div class="layout">
 
+    <!-- SIDEBAR -->
     <aside class="sidebar">
       <button class="menu-toggle">☰</button>
-     <h2 style="padding-left: 15px;font-size: 30px;">MENU</h2>
+
+      <h2 style="padding-left:15px;font-size:30px;">MENU</h2>
       <ul>
-        <li style="width: 100px;"><a href="/" class="menu-link">INÍCIO</a></li>
-        <li style="width: 100px;"><a href="/" class="menu-link">JOGOS</a></li>
-        <li style="width: 100px;"><a href="#" class="menu-link" onclick="alert('Esta opção se encontra em desenvolvimento!                                         Nos siga no Instagram para não perder futuras atualizações!            Instagram: @elements.xd ')">PC</a></li>
+        <li><a href="/" class="menu-link">INÍCIO</a></li>
+        <li><a href="/" class="menu-link">JOGOS</a></li>
+        <li>
+          <a href="#" class="menu-link"
+            onclick="alert('Esta opção se encontra em desenvolvimento!\nNos siga no Instagram para não perder futuras atualizações!\nInstagram: @elements.xd')">
+            PC
+          </a>
+        </li>
       </ul>
-     <h2 style="padding-top: 45px;padding-left: 15px;font-size: 30px;">INFO</h2>
+
+      <h2 style="padding-top:45px;padding-left:15px;font-size:30px;">INFO</h2>
       <ul>
-        <li style="width: 100px;"><a href="sobre.html" class="menu-link">SOBRE</li>
-        <li style="width: 100px;"><a href="#" class="menu-link" onclick="alert('Teve uma ideia que podemos acrescentar no site?                                Entre em contato pelo e-mail: elements13dk@gmail.com')">CONTATO</a></li>
+        <li>
+          <a href="sobre.html" class="menu-link">SOBRE</a>
+        </li>
+        <li>
+          <a href="#" class="menu-link"
+            onclick="alert('Teve uma ideia que podemos acrescentar no site?\nEntre em contato pelo e-mail: elements13dk@gmail.com')">
+            CONTATO
+          </a>
+        </li>
       </ul>
     </aside>
 
-    <main class="content" style="padding-top: 0px;">
+    <!-- CONTEÚDO -->
+    <main class="content" style="padding-top:0px;">
+
       <h2 class="titulo-ofertas">🔥 OFERTAS DA SEMANA 🔥</h2>
 
-      <!-- 🔥 Botões de filtro -->
+      <!-- FILTROS -->
       <div class="filtros">
         <span onclick="filtrar('Todos')" class="filtro ativo">Todos</span>
         <span onclick="filtrar('Steam')" class="filtro">Steam</span>
@@ -41,39 +59,54 @@
         <span onclick="filtrar('GOG')" class="filtro">GOG</span>
       </div>
 
-
-      <!-- 🔥 Botões de paginação em cima -->
+      <!-- PAGINAÇÃO -->
       <div id="pagination" class="pagination"></div>
 
-      <!-- 🔥 Container dos cards -->
+      <!-- CONTAINER ÚNICO DOS CARDS -->
       <div id="cards-container" class="cards-grid"></div>
 
-      <div class="cards">
-
-        <div class="cards" id="cards-container">
-        </div>
-
-
-        <div class="cards" id="cards-container">
-        </div>
-
-
-      </div>
     </main>
-
   </div>
 
+  <!-- RODAPÉ -->
   <footer>
     <div class="rodape">
-     © 2026 ELEMENTS XD - Todos os direitos reservados. 
-     <a href="https://instagram.com/elements.xd" target="_blank" class="rodape-link">@elements.xd</a>
+      © 2026 ELEMENTS XD - Todos os direitos reservados.
+      <a href="https://instagram.com/elements.xd" target="_blank" class="rodape-link">
+        @elements.xd
+      </a>
+      <a href="atualizacoes.html" class="versao">V-1.2</a>
     </div>
-
-
-    </h1>
   </footer>
 
   <script src="script.js"></script>
+
+<script>
+  const evtSource = new EventSource("/events");
+  evtSource.onmessage = function(event) {
+    console.log("Evento recebido:", event.data);
+    if (event.data === "refresh") {
+      // tenta primeiro o reload "forte"
+      try {
+        window.location.reload(true); // força ignorar cache
+      } catch (e) {
+        // fallback para mobile
+        location.href = location.href + "?t=" + new Date().getTime();
+      }
+    }
+  };
+</script>
+
+<script>
+  const evtSource = new EventSource("/events");
+  evtSource.onmessage = function(event) {
+    console.log("Evento recebido:", event.data);
+    if (event.data === "refresh") {
+      location.href = location.href; // força reload mesmo em mobile
+    }
+  };
+</script>
+
 
 </body>
 </html>

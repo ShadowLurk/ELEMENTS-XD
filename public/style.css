@@ -437,6 +437,17 @@ main h1 {
     transition: 0.3s ease;
   }
 
+.versao {
+  color: var(--text);
+  text-decoration: none;
+  margin-left: 60px;
+  font-size: 14px;
+  transition: 0.3s;
+}
+.versao:hover {
+  color: #b300ff;
+}
+
 /* ========================= */
 /* SOBRE */
 /* ========================= */
