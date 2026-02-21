@@ -9,8 +9,35 @@ const LIMITE_POR_LOJA = 60;
 /* =====================================
    CARREGAR JOGOS
 ===================================== */
+function mostrarLoading() {
+  const container = document.getElementById("cards-container");
+
+  // limpa os cards
+  container.innerHTML = "";
+
+  // primeiro card vazio
+  const vazio1 = document.createElement("div");
+  vazio1.className = "card vazio-card";
+  container.appendChild(vazio1);
+
+  // segundo card com loading
+  const loadingCard = document.createElement("div");
+  loadingCard.className = "card loading-card";
+  loadingCard.innerHTML = `
+    <div class="spinner"></div>
+    <p>Carregando ofertas...</p>
+  `;
+  container.appendChild(loadingCard);
+
+  // terceiro card vazio
+  const vazio2 = document.createElement("div");
+  vazio2.className = "card vazio-card";
+  container.appendChild(vazio2);
+}
 
 function carregarJogos() {
+  mostrarLoading();
+
   fetch("/api/deals")
     .then((res) => res.json())
     .then((data) => {

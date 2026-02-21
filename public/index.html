@@ -52,11 +52,11 @@
       <h2 class="titulo-ofertas">🔥 OFERTAS DA SEMANA 🔥</h2>
 
       <div class="filtros">
-  <span onclick="filtrar('Todos', this)" class="filtro ativo">Todos</span>
-  <span onclick="filtrar('Steam', this)" class="filtro">Steam</span>
-  <span onclick="filtrar('Epic', this)" class="filtro">Epic</span>
-  <span onclick="filtrar('GOG', this)" class="filtro">GOG</span>
-</div>
+        <span onclick="filtrar('Todos', this)" class="filtro ativo">Todos</span>
+        <span onclick="filtrar('Steam', this)" class="filtro">Steam</span>
+        <span onclick="filtrar('Epic', this)" class="filtro">Epic</span>
+        <span onclick="filtrar('GOG', this)" class="filtro">GOG</span>
+      </div>
 
       <!-- PAGINAÇÃO -->
       <div id="pagination" class="pagination"></div>
@@ -78,34 +78,8 @@
     </div>
   </footer>
 
+  <!-- SCRIPT PRINCIPAL -->
   <script src="script.js"></script>
-
-<script>
-  const evtSource = new EventSource("/events");
-  evtSource.onmessage = function(event) {
-    console.log("Evento recebido:", event.data);
-    if (event.data === "refresh") {
-      // tenta primeiro o reload "forte"
-      try {
-        window.location.reload(true); // força ignorar cache
-      } catch (e) {
-        // fallback para mobile
-        location.href = location.href + "?t=" + new Date().getTime();
-      }
-    }
-  };
-</script>
-
-<script>
-  const evtSource = new EventSource("/events");
-  evtSource.onmessage = function(event) {
-    console.log("Evento recebido:", event.data);
-    if (event.data === "refresh") {
-      location.href = location.href; // força reload mesmo em mobile
-    }
-  };
-</script>
-
 
 </body>
 </html>
