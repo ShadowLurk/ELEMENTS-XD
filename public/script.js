@@ -1,3 +1,9 @@
+console.log("Script carregado!");
+console.log("Botão tema:", document.getElementById("theme-Toggle"));
+console.log("Menu toggle:", document.querySelector(".menu-toggle"));
+console.log("Sidebar:", document.querySelector(".sidebar"));
+console.log("Main:", document.querySelector("main"));
+
 let todosJogos = [];
 let listaFiltrada = [];
 let paginaAtual = 1;

@@ -1,48 +1,49 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
- <head>
-   <meta charset="UTF-8">
-   <title>Elements DX</title>
-   <link rel="stylesheet" href="style.css">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  <meta charset="UTF-8">
+  <title>Elements DX</title>
+  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="dark">
 
- </head>
- <body class="dark">
+  <header>
+    <h1 class="titulo">ELEMENTS XD</h1>
+    <button id="theme-Toggle">☀️</button>
+  </header>
 
-   <header>
-     <h1 class="titulo">ELEMENTS XD
-     </h1>
-     <button id="theme-Toggle">☀️</button>
-   </header>
+  <div class="layout">
 
-   <div class="layout">
-
-     <aside class="sidebar">
-        <button class="menu-toggle">☰</button>
+    <aside class="sidebar">
+      <button class="menu-toggle">☰</button>
       <h2 style="padding-left: 15px;font-size: 30px;">MENU</h2>
-       <ul>
-         <li style="width: 100px;"><a href="/" class="menu-link">INÍCIO</a></li>
-         <li style="width: 100px;"><a href="/" class="menu-link">JOGOS</a></li>
-         <li style="width: 100px;"><a href="#" class="menu-link" onclick="alert('Esta opção se encontra em desenvolvimento!                                         Nos siga no Instagram para não perder futuras atualizações!            Instagram: @elements.xd ')">PC</a></li>
-       </ul>
+      <ul>
+        <li style="width: 100px;"><a href="/" class="menu-link">INÍCIO</a></li>
+        <li style="width: 100px;"><a href="/" class="menu-link">JOGOS</a></li>
+        <li style="width: 100px;">
+          <a href="#" class="menu-link" onclick="alert('Esta opção se encontra em desenvolvimento!                                         Nos siga no Instagram para não perder futuras atualizações!            Instagram: @elements.xd ')">PC</a>
+        </li>
+      </ul>
       <h2 style="padding-top: 45px;padding-left: 15px;font-size: 30px;">INFO</h2>
-       <ul>
-         <li style="width: 100px;"><a href="sobre.html" class="menu-link">SOBRE</li>
-         <li style="width: 100px;"><a href="#" class="menu-link" onclick="alert('Teve uma ideia que podemos acrescentar no site?                                Entre em contato pelo e-mail: elements13dk@gmail.com')">CONTATO</a></li>
-       </ul>
-     </aside>
+      <ul>
+        <li style="width: 100px;"><a href="sobre.html" class="menu-link">SOBRE</a></li>
+        <li style="width: 100px;">
+          <a href="#" class="menu-link" onclick="alert('Teve uma ideia que podemos acrescentar no site?                                Entre em contato pelo e-mail: elements13dk@gmail.com')">CONTATO</a>
+        </li>
+      </ul>
+    </aside>
 
- <main style="padding-top: 0px;">
-       <h1 style="font-size: 40px;">- - -  ATUALIZAÇÕES  - - -</h1>
-       <section class="sobre-texto">
+    <main style="padding-top: 0px;">
+      <h1 style="font-size: 40px;">- - -  ATUALIZAÇÕES  - - -</h1>
+      <section class="sobre-texto">
 
-     <div class="botoes-sobre">
-       <a href="sobre.html" class="btn-sobre">Sobre o Projeto</a>
-       <a href="atualizacoes.html" class="btn-sobre">Atualizações do Site</a>
-     </div>
+        <div class="botoes-sobre">
+          <a href="sobre.html" class="btn-sobre">Sobre o Projeto</a>
+          <a href="atualizacoes.html" class="btn-sobre">Atualizações do Site</a>
+        </div>
 
-
-     <div class="conteudo">
+<div class="conteudo">
       <h3 style="font-size: 35px;padding-left: 0px;padding-top: 40px;margin-bottom: 10px;">V-1.2</h3>
       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Atualização no sistema de carregamento de jogos</h3>
       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Renderização de jogos 10x mais rapida</h3>
@@ -84,50 +85,37 @@
        <h3 style="font-size: 20px;padding-left: 10px;padding-top: 0px;margin-bottom: 10px;margin-top: 5px;">Resumo:</h3>
        <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Configuração padrão de lançamento do site na web, cards com jogos de lojas oficiais famosas em rede global adicionadas, animações de atualização na tela incrementada.</h3>
 
-
      </div>
 
-         </p></section>
-     </main>
+      </section>
+    </main>
+  </div>
 
-   </div>
-
-   <footer>
-     <div class="rodape">
+  <footer>
+    <div class="rodape">
       © 2026 ELEMENTS XD - Todos os direitos reservados. 
       <a href="https://instagram.com/elements.xd" target="_blank" class="rodape-link">@elements.xd</a>
       <a href="atualizacoes.html" class="versao">V-1.2</a>
-     </div>
+    </div>
+  </footer>
 
-
-     </h1>
-   </footer>
-
-   <script src="script.js"></script>
-
-    <script>
-  document.addEventListener("DOMContentLoaded", function () {
-
-     const botoes = document.querySelectorAll(".btn-sobre");
-
-      // pega o nome da página atual
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const botoes = document.querySelectorAll(".btn-sobre");
       let paginaAtual = window.location.pathname.split("/").pop();
 
-      // se estiver vazio (ex: domínio.com/)
       if (paginaAtual === "" || paginaAtual === "index.html") {
         paginaAtual = "sobre.html";
       }
 
-       botoes.forEach(botao => {
-       const link = botao.getAttribute("href");
-
-       if (link === paginaAtual) {
-         botao.classList.add("ativo");
-       }
-     });
-
-  });
-</script>
-
- </body>
+      botoes.forEach(botao => {
+        const link = botao.getAttribute("href");
+        if (link === paginaAtual) {
+          botao.classList.add("ativo");
+        }
+      });
+    });
+  </script>
+</body>
 </html>
