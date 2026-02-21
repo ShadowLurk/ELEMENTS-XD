@@ -1,7 +1,10 @@
 let todosJogos = [];
 let listaFiltrada = [];
 let paginaAtual = 1;
+
 const jogosPorPagina = 12;
+const MAX_VISIBLE = 5;
+const LIMITE_POR_LOJA = 60;
 
 /* =====================================
    CARREGAR JOGOS
@@ -11,13 +14,15 @@ function carregarJogos() {
   fetch("/api/deals")
     .then((res) => res.json())
     .then((data) => {
-      todosJogos = [
-        ...data.steam,
-        ...data.epic,
-        ...data.gog,
-      ];
 
-      listaFiltrada = todosJogos;
+      // ✅ usa lista já misturada do backend
+todosJogos = (data.all || []);
+
+// se quiser ainda limitar por loja, pode aplicar slice aqui
+// todosJogos = (data.all || []).slice(0, LIMITE_POR_LOJA * 3);
+
+
+      listaFiltrada = [...todosJogos]; // ⭐ cópia segura
       paginaAtual = 1;
 
       renderizar(listaFiltrada);
@@ -43,74 +48,79 @@ function renderizar(lista) {
     const pagina = lista.slice(inicio, fim);
 
     pagina.forEach((jogo) => {
-      const imagem = jogo.thumb || "fallback.png";
-      const card = document.createElement("div");
-      card.className = "card";
+  const imagem = jogo.thumb || "fallback.png";
+  const card = document.createElement("div");
+  card.className = "card";
 
-      if (jogo.expired) {
-        card.innerHTML = `
-          <a href="${jogo.link || "#"}" target="_blank" class="card-link">
-            <img loading="lazy"
-                 src="${imagem}"
-                 alt="${jogo.title}"
-                 onerror="this.onerror=null;this.src='fallback.png'">
+  if (jogo.expired) {
+    card.innerHTML = `
+      <a href="${jogo.link || "#"}" target="_blank" class="card-link">
+        <img loading="lazy"
+             src="${imagem}"
+             alt="${jogo.title}"
+             onerror="this.onerror=null;this.src='fallback.png'">
 
-            ${jogo.discount > 0 ? `<h3>-${jogo.discount}%</h3>` : ""}
+        ${jogo.discount > 0 ? `<h3>-${jogo.discount}%</h3>` : ""}
 
-            <p class="game-title">${jogo.title}</p>
-            <div class="expired-msg">Promoção expirada</div>
-            <small class="plataforma">${jogo.store}</small>
-          </a>
-        `;
-      } else {
-        const precoNormal = jogo.normalPriceBRL || "";
-        const precoPromo = jogo.salePriceBRL || "";
-        const temDesconto = jogo.discount && jogo.discount > 0;
+        <p class="game-title">${jogo.title}</p>
+        <div class="expired-msg">Promoção expirada</div>
+        <small class="plataforma">${jogo.store}</small>
+      </a>
+    `;
+  } else {
+    const precoNormal = jogo.normalPriceBRL || "";
+    const precoPromo = jogo.salePriceBRL || "";
+    const temDesconto = jogo.discount && jogo.discount > 0;
 
-        card.innerHTML = `
-          <a href="${jogo.link || "#"}" target="_blank" class="card-link">
-            <img loading="lazy"
-                 src="${imagem}"
-                 alt="${jogo.title}"
-                 onerror="this.onerror=null;this.src='fallback.png'">
+    card.innerHTML = `
+      <a href="${jogo.link || "#"}" target="_blank" class="card-link">
+        <img loading="lazy"
+             src="${imagem}"
+             alt="${jogo.title}"
+             onerror="this.onerror=null;this.src='fallback.png'">
 
-            ${temDesconto ? `<h3>-${jogo.discount}%</h3>` : ""}
+        ${temDesconto ? `<h3>-${jogo.discount}%</h3>` : ""}
 
-            <p class="game-title">${jogo.title}</p>
+        <p class="game-title">${jogo.title}</p>
 
-            ${
-              temDesconto
-                ? `
-                  <div class="price-box">
-                    <span class="old">${precoNormal}</span>
-                    <span class="por">por</span>
-                    <span class="new">${precoPromo}</span>
-                  </div>
-                `
-                : `
-                  <div class="price-box">
-                    <span class="new">Ver na loja</span>
-                  </div>
-                `
-            }
+        ${
+          temDesconto
+            ? `
+            <div class="price-box">
+              <span class="old">${precoNormal}</span>
+              <span class="por">por</span>
+              <span class="new">${precoPromo}</span>
+            </div>`
+            : `
+            <div class="price-box">
+              <span class="new">Ver na loja</span>
+            </div>`
+        }
 
-            <small class="plataforma">${jogo.store}</small>
-          </a>
-        `;
-      }
+        <small class="plataforma">${jogo.store}</small>
+      </a>
+    `;
+  }
+
+  // 🔥 Selo "Novo" (vale para qualquer jogo)
+  if (jogo.isNew && new Date() < new Date(jogo.newUntil)) {
+    const selo = document.createElement("span");
+    selo.className = "novo-selo";
+    selo.textContent = "Novo";
+    card.appendChild(selo);
+  }
 
       container.appendChild(card);
     });
 
     renderizarPaginacao(lista.length);
     container.classList.remove("fade-out");
-  }, 300);
+  }, 200);
 }
 
 /* =====================================
-   PAGINAÇÃO
+   PAGINAÇÃO DINÂMICA (ESTILO STEAM)
 ===================================== */
-
 function renderizarPaginacao(totalJogos) {
   const paginacao = document.getElementById("pagination");
   if (!paginacao) return;
@@ -118,50 +128,111 @@ function renderizarPaginacao(totalJogos) {
   paginacao.innerHTML = "";
 
   const totalPaginas = Math.ceil(totalJogos / jogosPorPagina);
+  const MAX_VISIBLE = 5;
 
-  for (let i = 1; i <= totalPaginas && i <= 5; i++) {
+  let inicio = Math.max(1, paginaAtual - 2);
+  let fim = inicio + MAX_VISIBLE - 1;
+
+  if (fim > totalPaginas) {
+    fim = totalPaginas;
+    inicio = Math.max(1, fim - MAX_VISIBLE + 1);
+  }
+
+  // 🔥 função helper pra criar botão
+  function criarBotao(texto, paginaDestino, desabilitado = false) {
+    const btn = document.createElement("button");
+    btn.textContent = texto;
+    btn.className = "page-btn";
+
+    if (desabilitado) {
+      btn.classList.add("disabled");
+    } else {
+      btn.onclick = () => {
+        paginaAtual = paginaDestino;
+        renderizar(listaFiltrada);
+      };
+    }
+
+    paginacao.appendChild(btn);
+  }
+
+  // ⏮ PRIMEIRA (sempre visível)
+  criarBotao("⏮", 1, paginaAtual === 1);
+
+  // « ANTERIOR
+  criarBotao("«", paginaAtual - 1, paginaAtual === 1);
+
+  // BOTÕES NUMÉRICOS
+  for (let i = inicio; i <= fim; i++) {
     const botao = document.createElement("button");
-
     botao.textContent = i;
-    botao.className = i === paginaAtual ? "active" : "";
+    botao.className = "page-btn";
 
-    botao.addEventListener("click", () => {
+    if (i === paginaAtual) {
+      botao.classList.add("active");
+    }
+
+    botao.onclick = () => {
       paginaAtual = i;
       renderizar(listaFiltrada);
-    });
+    };
 
     paginacao.appendChild(botao);
   }
+
+  // » PRÓXIMO
+  criarBotao("»", paginaAtual + 1, paginaAtual === totalPaginas);
+
+  // ⏭ ÚLTIMA (sempre visível)
+  criarBotao("⏭", totalPaginas, paginaAtual === totalPaginas);
 }
 
 /* =====================================
-   FILTROS
+   ADICIONAIS DA PAGINAÇÃO
 ===================================== */
 
-function filtrar(loja) {
+function selecionar(botao) {
+
+  // remove seleção dos outros botões
+  document.querySelectorAll('.btn-plataforma')
+    .forEach(btn => btn.classList.remove('ativo'));
+
+  // ativa o botão clicado
+  botao.classList.add('ativo');
+}
+
+/* =====================================
+   FILTROS DAS LOJAS
+===================================== */
+
+function filtrar(loja, elemento) {
+
+  // troca visual do botão ativo
+  document.querySelectorAll(".filtro")
+    .forEach(btn => btn.classList.remove("ativo"));
+
+  if (elemento) {
+    elemento.classList.add("ativo");
+  }
+
+  // sempre volta pra primeira página
+  paginaAtual = 1;
+
+  // aplica filtro
   if (loja === "Todos") {
-    listaFiltrada = todosJogos;
+    listaFiltrada = [...todosJogos];
   } else {
     listaFiltrada = todosJogos.filter(
-      (jogo) =>
-        jogo.store?.trim().toLowerCase() === loja.trim().toLowerCase()
+      jogo => jogo.store === loja
     );
   }
 
-  paginaAtual = 1;
+  // re-renderiza
   renderizar(listaFiltrada);
-
-  document.querySelectorAll(".filtro").forEach((el) => {
-    el.classList.remove("ativo");
-
-    if (el.textContent.trim().toLowerCase() === loja.trim().toLowerCase()) {
-      el.classList.add("ativo");
-    }
-  });
 }
 
 /* =====================================
-   Inicialização
+   INICIALIZAÇÃO
 ===================================== */
 
 carregarJogos();

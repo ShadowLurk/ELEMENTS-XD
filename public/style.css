@@ -326,6 +326,20 @@ main h1 {
   color: #b300ff;
 }
 
+.novo-selo {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgb(204, 0, 255);
+  color: var(--header-bg);
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.3);
+  transition: 0.3s;
+}
+
 /* ========================= */
 /* PREÇOS */
 /* ========================= */
@@ -379,27 +393,98 @@ main h1 {
 }
 
 /* ========================= */
-/* PAGINAÇÃO */
+/* BOTÕES DE PLATAFORMA */
 /* ========================= */
 
-.pagination {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.pagination button {
-  margin: 0 5px;
-  padding: 8px 12px;
-  border: none;
-  background: #eee;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.pagination button.active {
-  background: #b300ff;
+.btn-plataforma {
+  padding: 14px 22px;      /* deixa maior */
+  font-size: 16px;
+  border-radius: 10px;
+  border: 2px solid #333;
+  background-color: #1e1e1e;
   color: #fff;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  margin: 5px;
+}
+
+/* efeito ao passar o mouse */
+.btn-plataforma:hover {
+  transform: scale(1.05);
+  border-color: #666;
+}
+
+/* botão selecionado */
+.btn-plataforma.ativo {
+  background-color: #00bcd4;
+  border-color: #00e5ff;
+  color: #000;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+}
+
+/* ========================= */
+/* PAGINAÇÃO - BOTÕES NUMÉRICOS (INTEGRADO AO TEMA)
+========================= */
+
+#pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  background: var(--card);
+  color: var(--text);
+  border: 2px solid transparent;
+
+  width: 38px;          /* 👈 largura fixa */
+  height: 38px;         /* 👈 altura fixa */
+
+  padding: 0;           /* remove crescimento interno */
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+
+  display: flex;        /* centraliza conteúdo */
+  align-items: center;
+  justify-content: center;
+
+  transition: all 0.25s ease;
   font-weight: bold;
+}
+
+/* hover */
+.page-btn:hover {
+  transform: scale(1.08);
+  border-color: #b300ff;
+  box-shadow: 0 0 8px rgba(179, 0, 255, 0.4);
+}
+
+/* página ativa */
+.page-btn.active {
+  background: #b300ff;
+  color: white;
+  border-color: #d34dff;
+  transform: scale(1.2);
+  box-shadow: 0 0 12px rgba(179, 0, 255, 0.7);
+}
+
+/* botões << e >> */
+.page-btn:first-child,
+.page-btn:last-child {
+  font-size: 18px;
+  padding: 12px 18px;
+}
+
+/* botão desabilitado */
+.page-btn.disabled {
+  opacity: 0.35;
+  cursor: default;
+  transform: none;
+  pointer-events: none;
 }
 
 /* ========================= */
@@ -456,6 +541,7 @@ main h1 {
   color: var(--text); 
   text-decoration: none;
   padding-left: 10px;
+  transition: 0.3s;
 }
 
 .btn-minycreeper:hover{
@@ -469,7 +555,7 @@ main h1 {
   color: var(--text);
   opacity: 0;
   transform: translateY(30px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .sobre-nos.visible { 
@@ -502,7 +588,7 @@ main h1 {
   text-align: justify;
   margin-left: 20px;
   padding-left: 20px;
-  transition: 0.8s;
+  transition: 0.3s;
 }
 
 .missao-visao-valores h2 {
@@ -628,7 +714,21 @@ main h1 {
     font-size: 11px;
   }
 
+  .page-btn {
+    width: 28px;   /* largura menor */
+    height: 28px;  /* altura menor */
+    font-size: 12px; /* fonte menor */
+    border-radius: 6px; /* opcional, deixa mais compacto */
+  }
+
+  /* se quiser também reduzir os botões especiais (<< >>) */
+  .page-btn:first-child,
+  .page-btn:last-child {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
 }
+
 
 /* ========================= */
 /* ANIMAÇÃO */
