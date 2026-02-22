@@ -13,10 +13,81 @@ const MAX_VISIBLE = 5;
 const LIMITE_POR_LOJA = 60;
 
 /* =====================================
+   RANKING (NOVO + AVALIAÇÃO)
+===================================== */
+
+function scoreNovidade(jogo) {
+  if (!jogo.isNew || !jogo.newUntil) return 10;
+
+  const horasRestantes =
+    (new Date(jogo.newUntil) - Date.now()) / 3600000;
+
+  if (horasRestantes > 42) return 100; // acabou de entrar
+  if (horasRestantes > 24) return 80;
+  if (horasRestantes > 12) return 60;
+  if (horasRestantes > 0) return 40;
+
+  return 10;
+}
+
+function scoreAvaliacao(jogo) {
+  const rating = jogo.rating || 0;        // ex: 92
+  const reviews = jogo.reviewCount || 0;  // ex: 50000
+
+  // evita jogo com 3 reviews dominar ranking
+  return rating * Math.log10(reviews + 1);
+}
+
+function horasDesdeEntrada(jogo) {
+  if (!jogo.newUntil) return 999;
+
+  // seu "novo" dura 48h
+  const entrada = new Date(jogo.newUntil).getTime() - (48 * 3600000);
+  return (Date.now() - entrada) / 3600000;
+}
+
+function calcularScore(jogo) {
+
+  const novidade = scoreNovidade(jogo);
+  const avaliacao = scoreAvaliacao(jogo);
+
+  const horas = horasDesdeEntrada(jogo);
+
+  let pesoNovidade;
+  let pesoAvaliacao;
+
+  // 🔥 acabou de entrar
+  if (horas < 6) {
+    pesoNovidade = 0.85;
+    pesoAvaliacao = 0.15;
+  }
+  // ainda muito novo
+  else if (horas < 24) {
+    pesoNovidade = 0.65;
+    pesoAvaliacao = 0.35;
+  }
+  // meio do ciclo
+  else if (horas < 48) {
+    pesoNovidade = 0.45;
+    pesoAvaliacao = 0.55;
+  }
+  // deixou de ser novo
+  else {
+    pesoNovidade = 0.15;
+    pesoAvaliacao = 0.85;
+  }
+
+  return (novidade * pesoNovidade) +
+         (avaliacao * pesoAvaliacao);
+}
+/* =====================================
    CARREGAR JOGOS
 ===================================== */
 function mostrarLoading() {
   const container = document.getElementById("cards-container");
+  if (!container) return; // se não existe, sai da função
+  container.innerHTML = "<div class='spinner'></div><p>Carregando jogos...</p>";
+
 
   // limpa os cards
   container.innerHTML = "";
@@ -55,14 +126,19 @@ todosJogos = (data.all || []);
 // todosJogos = (data.all || []).slice(0, LIMITE_POR_LOJA * 3);
 
 
-      listaFiltrada = [...todosJogos]; // ⭐ cópia segura
-      paginaAtual = 1;
+      listaFiltrada = [...todosJogos];
 
-      renderizar(listaFiltrada);
+// ⭐ ordena por novidade + qualidade
+listaFiltrada.sort((a, b) => {
+  return calcularScore(b) - calcularScore(a);
+});
+
+paginaAtual = 1;
+renderizar(listaFiltrada);
+
     })
     .catch((err) => console.error("Erro ao carregar jogos:", err));
 }
-
 /* =====================================
    RENDERIZAÇÃO DOS CARDS
 ===================================== */
@@ -251,7 +327,9 @@ function filtrar(loja, elemento) {
   // sempre volta pra primeira página
   paginaAtual = 1;
 
-  // aplica filtro
+  // =============================
+  // APLICA FILTRO
+  // =============================
   if (loja === "Todos") {
     listaFiltrada = [...todosJogos];
   } else {
@@ -259,6 +337,11 @@ function filtrar(loja, elemento) {
       jogo => jogo.store === loja
     );
   }
+
+  // ⭐ mantém ranking (NOVO + AVALIAÇÃO)
+  listaFiltrada.sort((a, b) => {
+    return calcularScore(b) - calcularScore(a);
+  });
 
   // re-renderiza
   renderizar(listaFiltrada);
@@ -275,30 +358,37 @@ setInterval(carregarJogos, 300000);
    SISTEMA DE TEMA
 ===================================== */
 
-const button = document.getElementById("theme-Toggle");
-const body = document.body;
+document.addEventListener("DOMContentLoaded", () => {
 
-const temaSalvo = localStorage.getItem("tema");
+  const button = document.getElementById("theme-Toggle");
+  if (!button) return;
 
-if (temaSalvo) {
+  const body = document.body;
+
+  // aplica tema salvo
+  const temaSalvo = localStorage.getItem("tema") || "dark";
+
   body.classList.remove("dark", "light");
   body.classList.add(temaSalvo);
-  if (button) button.textContent = temaSalvo === "dark" ? "☀️" : "🌙";
-}
 
-if (button) {
+  button.textContent = temaSalvo === "dark" ? "☀️" : "🌙";
+
+  // troca tema
   button.addEventListener("click", () => {
-    if (body.classList.contains("dark")) {
-      body.classList.replace("dark", "light");
-      button.textContent = "🌙";
-      localStorage.setItem("tema", "light");
-    } else {
-      body.classList.replace("light", "dark");
-      button.textContent = "☀️";
-      localStorage.setItem("tema", "dark");
-    }
+
+    const novoTema =
+      body.classList.contains("dark") ? "light" : "dark";
+
+    body.classList.replace(
+      novoTema === "dark" ? "light" : "dark",
+      novoTema
+    );
+
+    button.textContent = novoTema === "dark" ? "☀️" : "🌙";
+    localStorage.setItem("tema", novoTema);
   });
-}
+
+});
 
 /* =====================================
    ANIMAÇÃO SOBRE NÓS
@@ -325,8 +415,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("DOMContentLoaded", () => {
   const toggle = document.querySelector(".menu-toggle");
-  const sidebar = document.querySelector(".sidebar");
-  const content = document.querySelector("main");
+const sidebar = document.querySelector(".sidebar");
+const content = document.querySelector("main");
 
   if (!toggle || !sidebar) return;
 
