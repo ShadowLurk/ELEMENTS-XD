@@ -118,27 +118,31 @@ function carregarJogos() {
   fetch("/api/deals")
     .then((res) => res.json())
     .then((data) => {
-
       // ✅ usa lista já misturada do backend
-todosJogos = (data.all || []);
-
-// se quiser ainda limitar por loja, pode aplicar slice aqui
-// todosJogos = (data.all || []).slice(0, LIMITE_POR_LOJA * 3);
-
+      todosJogos = (data.all || []);
 
       listaFiltrada = [...todosJogos];
 
-// ⭐ ordena por novidade + qualidade
-listaFiltrada.sort((a, b) => {
-  return calcularScore(b) - calcularScore(a);
-});
+      // ⭐ ordena por novidade + qualidade
+      listaFiltrada.sort((a, b) => calcularScore(b) - calcularScore(a));
 
-paginaAtual = 1;
-renderizar(listaFiltrada);
-
+      paginaAtual = 1;
+      renderizar(listaFiltrada);
     })
     .catch((err) => console.error("Erro ao carregar jogos:", err));
 }
+
+// Só chama carregarJogos se estiver na index.html
+document.addEventListener("DOMContentLoaded", () => {
+  const path = window.location.pathname;
+
+  // Só roda no index.html ou na raiz /
+  if (path === "/" || path.endsWith("index.html")) {
+    carregarJogos();
+  }
+});
+
+
 /* =====================================
    RENDERIZAÇÃO DOS CARDS
 ===================================== */
