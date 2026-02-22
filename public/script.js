@@ -356,7 +356,7 @@ function filtrar(loja, elemento) {
 ===================================== */
 
 carregarJogos();
-setInterval(carregarJogos, 300000);
+setInterval(carregarJogos, 450000);
 
 /* =====================================
    SISTEMA DE TEMA

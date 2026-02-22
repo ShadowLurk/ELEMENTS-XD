@@ -263,7 +263,7 @@ async function getGogDeals() {
 
 let cache = null;
 let cacheTime = null;
-const CACHE_DURATION = 10 * 60 * 1000; // 10 minutos
+const CACHE_DURATION = 15 * 60 * 1000; // 10 minutos
 
 export default async function handler(req, res) {
   try {
