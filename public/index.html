@@ -5,6 +5,8 @@
   <title>Elements DX</title>
   <link rel="stylesheet" href="style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9096529771802459"
+     crossorigin="anonymous"></script>
 </head>
 
 <body class="dark">
@@ -17,63 +19,87 @@
   <div class="layout">
 
     <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <button class="menu-toggle">☰</button>
+<aside class="sidebar">
+  <button class="menu-toggle">☰</button>
 
-      <h2 style="padding-left:15px;font-size:30px;">MENU</h2>
-      <ul>
-        <li><a href="/" class="menu-link">INÍCIO</a></li>
-        <li><a href="/" class="menu-link">JOGOS</a></li>
-        <li>
-          <a href="#" class="menu-link"
-            onclick="alert('Esta opção se encontra em desenvolvimento!\nNos siga no Instagram para não perder futuras atualizações!\nInstagram: @elements.xd')">
-            PC
-          </a>
-        </li>
-      </ul>
+  <h2 style="padding-top: 20px;" class="menu-titulo">MENU</h2>
+  <ul class="menu-link">
+    <li onclick="irParaIndex(event, 'Todos')"class="filtro-categoria ativo">🔥 ALL</li>
+    <li onclick="irParaIndex(event, 'Jogos')" class="filtro-categoria">🎮 Jogos</li>
+    <li onclick="irParaIndex(event, 'Pecas')" class="filtro-categoria">🖥 PC</li>
+  </ul>
 
-      <h2 style="padding-top:45px;padding-left:15px;font-size:30px;">INFO</h2>
-      <ul>
-        <li>
-          <a href="sobre.html" class="menu-link">SOBRE</a>
-        </li>
-        <li>
-          <a href="#" class="menu-link"
-            onclick="alert('Teve uma ideia que podemos acrescentar no site?\nEntre em contato pelo e-mail: elements13dk@gmail.com')">
-            CONTATO
-          </a>
-        </li>
-      </ul>
-    </aside>
+  <h2 style="padding-top: 40px;" class="menu-titulo">INFO</h2>
+  <ul class="menu-link">
+    <li onclick="irParaSobre()" class="filtro-categoria">ℹ️ Sobre</li>
+    <li onclick="alert('Teve uma ideia que podemos acrescentar no site?\nEntre em contato pelo e-mail: elements13dk@gmail.com')" class="filtro-categoria">📧 Contato</li>
+  </ul>
+</aside>
 
     <!-- CONTEÚDO -->
     <main class="content" style="padding-top:0px;">
 
       <h2 class="titulo-ofertas">🔥 OFERTAS DA SEMANA 🔥</h2>
 
-<!-- Bloco -->
+          <!-- Bloco PC -->
+      <div class="ad-central">
 <ins class="adsbygoogle"
-     style="display:block"
+     style="display:block;background-color:rgb(200,200,200);display:inline-block;width:500px;height:100px"
+     data-ad-format="fluid"
+     data-ad-layout-key="-fb+5w+4e-db+86"
      data-ad-client="ca-pub-9096529771802459"
-     data-ad-slot="3021495837"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
+     data-adtest="on"
+     data-ad-slot="8494084875"></ins>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
+</div>
 
-      <div class="filtros">
-        <span onclick="filtrar('Todos', this)" class="filtro ativo">Todos</span>
-        <span onclick="filtrar('Steam', this)" class="filtro">Steam</span>
-        <span onclick="filtrar('Epic', this)" class="filtro">Epic</span>
-        <span onclick="filtrar('GOG', this)" class="filtro">GOG</span>
-      </div>
+<div class="filtros-categoria">
+  <span onclick="filtrar('Todos', this)" class="filtro-categoria ativo">ALL</span>
+  <span onclick="filtrar('Jogos', this)" class="filtro-categoria">JOGOS</span>
+  <span onclick="filtrar('Pecas', this)" class="filtro-categoria">PEÇAS</span>
+</div>
+
+      <div class="filtros" id="filtros-lojas">
+  <span onclick="filtrar('Todas', this)" class="filtro">Todas</span>
+  <span onclick="filtrar('Steam', this)" class="filtro">Steam</span>
+  <span onclick="filtrar('Epic', this)" class="filtro">Epic</span>
+  <span onclick="filtrar('GOG', this)" class="filtro">GOG</span>
+  <span onclick="filtrar('Amazon', this)" class="filtro loja-amazon">Amazon</span>
+  <button onclick="filtrar('PC', this)" class="filtro filtro-peca">PC</button>
+<button onclick="filtrar('GPU', this)" class="filtro filtro-peca">GPU</button>
+<button onclick="filtrar('RAM', this)" class="filtro filtro-peca">RAM</button>
+<button onclick="filtrar('CPU', this)" class="filtro filtro-peca">CPU</button>
+<button onclick="filtrar('Placa mãe', this)" class="filtro filtro-peca">Placa mãe</button>
+</div>
+<div class="filtros" id="filtros-lojas">
+<button onclick="filtrar('Fonte', this)" class="filtro filtro-peca">Fonte</button>
+<button onclick="filtrar('Cooler', this)" class="filtro filtro-peca">Cooler</button>
+<button onclick="filtrar('Gabinete', this)" class="filtro filtro-peca">Gabinete</button>
+<button onclick="filtrar('Armazenamento', this)" class="filtro filtro-peca">Armazenamento</button>
+
+</div>
 
       <!-- PAGINAÇÃO -->
       <div id="pagination" class="pagination"></div>
 
       <!-- CONTAINER ÚNICO DOS CARDS -->
       <div id="cards-container" class="cards-grid"></div>
+
+           <!-- Bloco PC -->
+      <div class="ad-central">
+<ins class="adsbygoogle"
+     style="display:block;background-color:rgb(200,200,200);display:inline-block;width:500px;height:100px"
+     data-ad-format="fluid"
+     data-ad-layout-key="-fb+5w+4e-db+86"
+     data-ad-client="ca-pub-9096529771802459"
+     data-adtest="on"
+     data-ad-slot="8494084875"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
 
     </main>
   </div>
@@ -85,7 +111,7 @@
       <a href="https://instagram.com/elements.xd" target="_blank" class="rodape-link">
         @elements.xd
       </a>
-      <a href="atualizacoes.html" class="versao">V-1.2</a>
+      <a href="atualizacoes.html" class="versao">V-1.3</a>
     </div>
   </footer>
 

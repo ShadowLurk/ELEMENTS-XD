@@ -5,6 +5,8 @@
   <title>Elements DX</title>
   <link rel="stylesheet" href="style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9096529771802459"
+     crossorigin="anonymous"></script>
 
 </head>
 <body class="dark">
@@ -17,22 +19,23 @@
 
   <div class="layout">
 
-    <aside class="sidebar">
+    <!-- SIDEBAR -->
+<aside class="sidebar">
+  <button class="menu-toggle">☰</button>
 
-            <button class="menu-toggle">☰</button>
-            
-     <h2 style="padding-left: 15px;font-size: 30px;">MENU</h2>
-      <ul>
-        <li><a href="/" class="menu-link">INÍCIO</a></li>
-        <li><a href="/" class="menu-link">JOGOS</a></li>
-        <li><a href="#" class="menu-link" onclick="alert('Esta opção se encontra em desenvolvimento!                                         Nos siga no Instagram para não perder futuras atualizações!            Instagram: @elements.xd ')">PC</a></li>
-      </ul>
-     <h2 style="padding-top: 45px;padding-left: 15px;font-size: 30px;">INFO</h2>
-      <ul>
-        <li><a href="sobre.html" class="menu-link">SOBRE</a></li><a href="sobre.html" class="menu-link">
-        </a><li><a href="sobre.html" class="menu-link"></a><a href="#" class="menu-link" onclick="alert('Teve uma ideia que podemos acrescentar no site?                                Entre em contato pelo e-mail: elements13dk@gmail.com')">CONTATO</a></li>
-      </ul>
-    </aside>
+  <h2 style="padding-top: 20px;" class="menu-titulo">MENU</h2>
+  <ul class="menu-link">
+    <li onclick="irParaIndex(event, 'Todos')"class="filtro-categoria ativo">🔥 ALL</li>
+    <li onclick="irParaIndex(event, 'Jogos')" class="filtro-categoria">🎮 Jogos</li>
+    <li onclick="irParaIndex(event, 'Pecas')" class="filtro-categoria">🖥 PC</li>
+  </ul>
+
+  <h2 style="padding-top: 40px;" class="menu-titulo">INFO</h2>
+  <ul class="menu-link">
+    <li onclick="irParaSobre()" class="filtro-categoria">ℹ️ Sobre</li>
+    <li onclick="alert('Teve uma ideia que podemos acrescentar no site?\nEntre em contato pelo e-mail: elements13dk@gmail.com')" class="filtro-categoria">📧 Contato</li>
+  </ul>
+</aside>
 
 <main style="padding-top: 0px;">
       <h1 style="font-size: 40px;">- - - -  SOBRE NÓS  - - - -</h1>
@@ -42,6 +45,21 @@
        <a href="sobre.html" class="btn-sobre ativo">Sobre o Projeto</a>
        <a href="atualizacoes.html" class="btn-sobre">Atualizações do Site</a>
      </div>
+
+     <!-- Bloco PC -->
+      <div class="ad-central">
+<ins class="adsbygoogle"
+     style="display:block;background-color:rgb(200,200,200);display:inline-block;width:500px;height:100px"
+     data-ad-format="fluid"
+     data-ad-layout-key="-fb+5w+4e-db+86"
+     data-ad-client="ca-pub-9096529771802459"
+     data-adtest="on"
+     data-ad-slot="8494084875"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
 
         <p style="padding-right: 20px;padding-left: 0px;padding-top: 40px;">
           A <strong>ELEMENTS XD</strong> nasceu com o objetivo de transformar a experiência dos gamers, reunindo em um só espaço as melhores promoções de jogos e peças de computador.
@@ -83,7 +101,7 @@
     <div class="rodape">
      © 2026 ELEMENTS XD - Todos os direitos reservados. 
      <a href="https://instagram.com/elements.xd" target="_blank" class="rodape-link">@elements.xd</a>
-     <a href="atualizacoes.html" class="versao">V-1.2</a>
+     <a href="atualizacoes.html" class="versao">V-1.3</a>
     </div>
 
 

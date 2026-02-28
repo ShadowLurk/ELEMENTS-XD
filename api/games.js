@@ -1,27 +1,23 @@
-const express = require("express");
-const axios = require("axios");
-const cors = require("cors");
-const path = require("path");
-
-const app = express();
-app.use(cors());
-app.use(express.static(path.join(__dirname, "public")));
-
-let cachedDeals = { steam: [], epic: [], gog: [] };
-let lastUpdate = null;
+import axios from "axios";
 
 const EXPIRE_REMOVE_DAYS = 2;
 
-const STEAM_LIMIT = 60;
-const GOG_LIMIT = 60;
+const STEAM_LIMIT = 120;
+const GOG_LIMIT = 100;
 
 // =============================
 // 🧠 Helpers
 // =============================
-function normalizePrice(price) {
-  if (!price) return 0;
+function normalizePrice(value) {
+  if (!value) return 0;
+
   return Number(
-    price.replace("R$", "").replace(/\./g, "").replace(",", ".").trim()
+    value
+      .replace("R$", "")
+      .replace(/\./g, "")
+      .replace(",", ".")
+      .replace(/[^\d.]/g, "")
+      .trim()
   );
 }
 
@@ -37,12 +33,15 @@ function shouldRemoveDeal(deal) {
   return diffDays >= EXPIRE_REMOVE_DAYS;
 }
 
-function filtrarDuplicadosPorPrefixo(jogos) {
+function filtrarDuplicadosPorTituloExato(jogos) {
   const vistos = new Set();
+
   return jogos.filter((j) => {
-    const prefixo = j.title.substring(0, 6).toLowerCase();
-    if (vistos.has(prefixo)) return false;
-    vistos.add(prefixo);
+    const titulo = j.title.toLowerCase().trim();
+
+    if (vistos.has(titulo)) return false;
+
+    vistos.add(titulo);
     return true;
   });
 }
@@ -70,58 +69,87 @@ async function getSteamBRPrice(appID) {
 // =============================
 // 🔵 Steam Deals (PARALELO CONTROLADO)
 // =============================
-async function getSteamDeals() {
-  const MAX_FETCH = 200; // busca mais resultados para garantir
-  const cheapShark = await axios.get(
-    "https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=60"
+export async function getSteamDeals() {
+  const MAX_FETCH = 120; // busca mais resultados para garantir
+  
+  let page = 0;
+let allDeals = [];
+
+while (allDeals.length < MAX_FETCH && page < 5) {
+  const response = await axios.get(
+    "https://www.cheapshark.com/api/1.0/deals",
+    {
+      params: {
+        storeID: 1,
+        upperPrice: 60,
+        pageNumber: page,
+        pageSize: 60
+      }
+    }
   );
 
-  const games = cheapShark.data.slice(0, MAX_FETCH);
+  if (!response.data.length) break;
 
-  const batchSize = 8;
+  allDeals.push(...response.data);
+  page++;
+}
+
+const games = allDeals.slice(0, MAX_FETCH);
+
+  const batchSize = 6;
   const results = [];
 
   for (let i = 0; i < games.length && results.length < STEAM_LIMIT; i += batchSize) {
     const batch = games.slice(i, i + batchSize);
 
     const promises = batch.map(async (game) => {
-      if (!game.steamAppID) return null;
+  if (!game.steamAppID) {
+    console.log("Sem steamAppID:", game.title);
+    return null;
+  }
 
-      const price = await getSteamBRPrice(game.steamAppID);
-      if (!price) return null;
+  const price = await getSteamBRPrice(game.steamAppID);
+  if (!price) {
+    console.log("Ignorando jogo sem preço Steam BR:", game.title);
+    return null; // ❌ não mostra jogo sem preço oficial
+  }
 
-      const expired = checkExpired(
-        price.initial_formatted,
-        price.final_formatted
-      );
+  const expired = checkExpired(
+    price.initial_formatted,
+    price.final_formatted
+  );
 
-      return {
-        title: game.title,
-        thumb: game.thumb,
-        normalPriceBRL: price.initial_formatted,
-        salePriceBRL: price.final_formatted,
-        discount: expired ? 0 : price.discount_percent,
-        store: "Steam",
-        link: `https://store.steampowered.com/app/${game.steamAppID}`,
-        expired,
-        expiredAt: expired ? new Date() : null,
-        addedAt: new Date()
-      };
-    });
+  return {
+    title: game.title,
+    thumb: game.thumb,
+    normalPriceBRL: price.initial_formatted,
+    salePriceBRL: price.final_formatted,
+    discount: expired ? 0 : price.discount_percent,
+    store: "Steam",
+    link: `https://store.steampowered.com/app/${game.steamAppID}`,
+    expired,
+    expiredAt: expired ? new Date() : null,
+    addedAt: new Date(),
+  };
+});
+
 
     const batchResults = await Promise.all(promises);
     results.push(...batchResults.filter(Boolean));
-  }
 
-  return filtrarDuplicadosPorPrefixo(results)
-    .filter((d) => !shouldRemoveDeal(d))
-    .slice(0, STEAM_LIMIT);
+     // 👇 Delay entre batches
+  await new Promise(r => setTimeout(r, 300));
+}
+
+  return filtrarDuplicadosPorTituloExato(results)
+  .filter((d) => !shouldRemoveDeal(d))
+  .slice(0, STEAM_LIMIT);
 }
 
 // =============================
 // 🟣 Epic Deals
 // =============================
-async function getEpicDeals() {
+export async function getEpicDeals() {
   try {
     const response = await axios.get(
       "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions?locale=pt-BR&country=BR",
@@ -168,7 +196,7 @@ async function getEpicDeals() {
           link: epicUrl,
           expired: false,
           expiredAt: null,
-          addedAt: new Date()
+          addedAt: new Date(),
         });
       }
     });
@@ -183,12 +211,12 @@ async function getEpicDeals() {
 // =============================
 // 🟢 GOG Deals (API DIRETA RÁPIDA)
 // =============================
-async function getGogDeals() {
+export async function getGogDeals() {
   const gogResults = [];
   let page = 1;
 
   try {
-    while (gogResults.length < GOG_LIMIT && page <= 20) { // busca até 20 páginas no máximo
+    while (gogResults.length < GOG_LIMIT && page <= 35) { // busca até 20 páginas no máximo
       const response = await axios.get("https://www.gog.com/games/ajax/filtered", {
         params: {
           mediaType: "game",
@@ -218,12 +246,13 @@ async function getGogDeals() {
           titulo.includes("bundle") ||
           titulo.includes("pack")
         ) continue;
-        if (
+        /*if (
           game.ageRating === "18" ||
           titulo.includes("18+") ||
           titulo.includes("adult") ||
           titulo.includes("mature")
         ) continue;
+        */
 
         const base = `R$ ${game.price.baseAmount}`;
         const final = `R$ ${game.price.finalAmount}`;
@@ -239,7 +268,7 @@ async function getGogDeals() {
           link: `https://www.gog.com${game.url}`,
           expired,
           expiredAt: expired ? new Date() : null,
-          addedAt: new Date()
+          addedAt: new Date(),
         });
 
         if (gogResults.length >= GOG_LIMIT) break; // já atingiu o limite
@@ -248,9 +277,9 @@ async function getGogDeals() {
       page++;
     }
 
-    return filtrarDuplicadosPorPrefixo(gogResults)
-      .filter((d) => !shouldRemoveDeal(d))
-      .slice(0, GOG_LIMIT);
+    return filtrarDuplicadosPorTituloExato(gogResults)
+  .filter((d) => !shouldRemoveDeal(d))
+  .slice(0, GOG_LIMIT);
 
   } catch (err) {
     console.error("Erro GOG:", err.message);
@@ -258,68 +287,31 @@ async function getGogDeals() {
   }
 }
 
-// =============================
-// 🔥 UPDATE DEALS (ULTRA RÁPIDO)
-// =============================
-async function updateDeals() {
+export default async function handler(req, res) {
+
+  // ✅ CACHE REAL NA CDN (15 minutos)
+  res.setHeader(
+    "Cache-Control",
+    "s-maxage=900, stale-while-revalidate=300"
+  );
+
   try {
-    console.log("Atualizando promoções...");
+    console.log("♻️ Atualizando jogos...");
 
     const [steam, epic, gog] = await Promise.all([
-      getSteamDeals(),
-      getEpicDeals(),
-      getGogDeals(),
+      getSteamDeals().catch(() => []),
+      getEpicDeals().catch(() => []),
+      getGogDeals().catch(() => []),
     ]);
 
-    const allDeals = [...steam, ...epic, ...gog];
+    return res.status(200).json({
+      steam,
+      epic,
+      gog
+    });
 
-    // 🔥 Detecta jogos novos comparando com cache anterior
-const oldTitles = new Set((cachedDeals.all || []).map(d => d.title));
-
-const novos = [];
-const antigos = [];
-
-allDeals.forEach(deal => {
-  if (!oldTitles.has(deal.title)) {
-    // jogo novo → vai pro topo
-    deal.isNew = true;
-    deal.newUntil = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000); // válido por 2 dias
-    novos.push(deal);
-  } else {
-    antigos.push(deal);
-  }
-});
-
-// Junta: novos primeiro, depois antigos
-const sortedDeals = [...novos, ...antigos];
-
-
-    cachedDeals = { all: sortedDeals, steam, epic, gog };
-    lastUpdate = new Date();
-
-    console.log(`Promoções atualizadas ✅ (${novos.length} novos jogos)`);
   } catch (err) {
-    console.error("Erro:", err.message);
+    console.error("Erro games:", err);
+    return res.status(500).json({ error: "Erro ao buscar jogos" });
   }
 }
-
-// =============================
-// 🌐 API
-// =============================
-app.get("/api/deals", (req, res) => {
-  res.json({ lastUpdate, ...cachedDeals });
-});
-
-// =============================
-app.get("/", (req, res) =>
-  res.sendFile(path.join(__dirname, "public", "index.html"))
-);
-
-// =============================
-updateDeals();
-setInterval(updateDeals, 300000);
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () =>
-  console.log(`Servidor rodando na porta ${PORT} 🚀`)
-);
