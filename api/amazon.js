@@ -3,6 +3,19 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
+// =============================
+// 🔥 CACHE EM MEMÓRIA
+// =============================
+
+let amazonCache = null;
+let amazonLastUpdate = 0;
+
+// 6 HORAS (igual ao CDN)
+const AMAZON_CACHE_TIME = 6 * 60 * 60 * 1000;
+
+
+
+
 function normalizePrice(value) {
   if (!value) return 0;
 
@@ -175,7 +188,7 @@ export async function getAmazonDealsByCategory(categoryKey) {
 
   try {
     for (let page = 1; page <= 2; page++) {
-      await new Promise((r) => setTimeout(r, 1200));
+      await new Promise((r) => setTimeout(r, 300));
 
       const { data } = await axios.get(
         `${AMAZON_BASE}${config.url}&page=${page}`,
@@ -262,15 +275,23 @@ const link = `${AMAZON_BASE}/dp/${asin}`;
   }
 }
 
+
+
 export default async function handler(req, res) {
 
-  // 🔥 Cache real na CDN da Vercel (6 horas)
+  // 🔥 Cache CDN (6 horas)
   res.setHeader(
     "Cache-Control",
     "s-maxage=21600, stale-while-revalidate=3600"
   );
 
-  console.log("♻️ Atualizando Amazon...");
+  const now = Date.now();
+
+  // ✅ CACHE EM MEMÓRIA (super rápido)
+  if (amazonCache && now - amazonLastUpdate < AMAZON_CACHE_TIME) {
+    console.log("⚡ Amazon vindo do cache memória");
+    return res.status(200).json(amazonCache);
+  }
 
   const categories = [
     "GPU",
@@ -303,8 +324,13 @@ export default async function handler(req, res) {
         results[cat] = data;
       });
 
-      await new Promise(r => setTimeout(r, 1500));
+      // 🔥 pequeno delay entre lotes (anti bloqueio)
+      await new Promise(r => setTimeout(r, 400));
     }
+
+    // ✅ salva no cache memória
+    amazonCache = results;
+    amazonLastUpdate = now;
 
     return res.status(200).json(results);
 

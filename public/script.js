@@ -7,6 +7,7 @@ console.log("Main:", document.querySelector("main"));
 let todosJogos = [];
 let listaFiltrada = [];
 let paginaAtual = 1;
+let listaMisturadaGlobal = [];
 
 const jogosPorPagina = 12;
 const MAX_VISIBLE = 5;
@@ -85,12 +86,9 @@ function calcularScore(jogo) {
 ===================================== */
 function mostrarLoading() {
   const container = document.getElementById("cards-container");
-  if (!container) return; // se não existe, sai da função
-  container.innerHTML = "<div class='spinner'></div><p>Carregando jogos...</p>";
+  if (!container) return;
 
-
-  // limpa os cards
-  container.innerHTML = "";
+  container.innerHTML = ""; // limpa uma única vez
 
   // primeiro card vazio
   const vazio1 = document.createElement("div");
@@ -126,10 +124,13 @@ async function carregarDados() {
 
     // 🔥 Ordena antes de renderizar
     todosJogos.sort((a, b) =>
-      new Date(b.addedAt) - new Date(a.addedAt)
-    );
+  new Date(b.addedAt) - new Date(a.addedAt)
+);
 
-    renderizar(todosJogos);
+// 🔥 MISTURA AQUI TAMBÉM
+listaMisturadaGlobal = misturarJogosEPecas(todosJogos);
+listaFiltrada = listaMisturadaGlobal;
+renderizar(listaMisturadaGlobal);
 
     // 🔥 2️⃣ Carrega Amazon depois
     fetch("/api/amazon")
@@ -142,10 +143,13 @@ async function carregarDados() {
 
         // 🔥 ORDENAR DE NOVO
         todosJogos.sort((a, b) =>
-          new Date(b.addedAt) - new Date(a.addedAt)
-        );
+  new Date(b.addedAt) - new Date(a.addedAt)
+);
 
-        renderizar(todosJogos);
+// 🔥 Mistura novamente
+listaMisturadaGlobal = misturarJogosEPecas(todosJogos);
+listaFiltrada = listaMisturadaGlobal;
+renderizar(listaMisturadaGlobal);
       });
 
   } catch (err) {
@@ -276,7 +280,6 @@ if (jogo.addedAt && !jogo.expired) {
     container.classList.remove("fade-out");
   }, 200);
 }
-
 
 
 
@@ -501,10 +504,22 @@ function filtrar(valor, elemento) {
   // =============================
   // APLICA RANKING
   // =============================
-  listaFiltrada.sort((a, b) =>
-    calcularScore(b) - calcularScore(a)
-  );
+ listaFiltrada.sort((a, b) =>
+  calcularScore(b) - calcularScore(a)
+);
 
+// 🔥 Mistura apenas quando estiver em "Todos"
+if (categoriaAtual === "Todos") {
+
+  listaFiltrada = [...listaMisturadaGlobal];
+
+  if (lojaAtual !== "Todas") {
+    listaFiltrada = listaFiltrada.filter(item =>
+      item.store?.trim().toLowerCase() === lojaAtual.trim().toLowerCase()
+    );
+  }
+
+}
   // =============================
   // RENDERIZA
   // =============================
@@ -664,7 +679,69 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 }); 
-document.addEventListener("DOMContentLoaded", () => {
-  carregarJogos();
-  setInterval(carregarJogos, 450000);
+
+/* =====================================
+   Misturar jogos com Peças
+===================================== */
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function misturarJogosEPecas(lista) {
+
+  const jogos = lista.filter(j =>
+    ["Steam", "Epic", "GOG"].includes(j.store)
+  );
+
+  const pecas = lista.filter(j =>
+    j.store === "Amazon"
+  );
+
+  shuffle(jogos);
+  shuffle(pecas);
+
+  const resultado = [];
+
+  while (jogos.length > 0 || pecas.length > 0) {
+
+    // 60% chance de jogo
+    if (Math.random() < 0.6 && jogos.length > 0) {
+      resultado.push(jogos.shift());
+    }
+
+    // 40% chance de peça
+    else if (pecas.length > 0) {
+      resultado.push(pecas.shift());
+    }
+
+    // fallback se um acabar
+    else if (jogos.length > 0) {
+      resultado.push(jogos.shift());
+    }
+  }
+
+  return resultado;
+}
+
+
+window.addEventListener("load", () => {
+
+  const preloader = document.getElementById("preloader");
+
+  setTimeout(() => {
+
+    preloader.classList.add("hide");
+    document.body.classList.add("loaded");
+
+    // 🔥 Só carrega depois que o preloader sumir
+    carregarJogos();
+    setInterval(carregarJogos, 450000);
+
+  }, 3000);
+
 });
+

@@ -96,7 +96,7 @@ while (allDeals.length < MAX_FETCH && page < 5) {
 
 const games = allDeals.slice(0, MAX_FETCH);
 
-  const batchSize = 6;
+  const batchSize = 8;
   const results = [];
 
   for (let i = 0; i < games.length && results.length < STEAM_LIMIT; i += batchSize) {
@@ -138,7 +138,7 @@ const games = allDeals.slice(0, MAX_FETCH);
     results.push(...batchResults.filter(Boolean));
 
      // 👇 Delay entre batches
-  await new Promise(r => setTimeout(r, 300));
+  await new Promise(r => setTimeout(r, 150));
 }
 
   return filtrarDuplicadosPorTituloExato(results)
@@ -201,7 +201,7 @@ export async function getEpicDeals() {
       }
     });
 
-    return epicGames.slice(0, 18);
+    return epicGames.slice(0, 10);
   } catch (err) {
     console.error("Erro ao buscar jogos da Epic:", err.message);
     return [];
