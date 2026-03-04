@@ -194,11 +194,16 @@ export async function getAmazonDealsByCategory(categoryKey) {
         `${AMAZON_BASE}${config.url}&page=${page}`,
         {
           headers: {
-  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+  "User-Agent": "...",
   "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
   "Accept-Language": "pt-BR,pt;q=0.9",
-  "Connection": "keep-alive"
-          },
+  "Referer": "https://www.google.com/",
+  "Upgrade-Insecure-Requests": "1",
+  "Sec-Fetch-Dest": "document",
+  "Sec-Fetch-Mode": "navigate",
+  "Sec-Fetch-Site": "none",
+  "Sec-Fetch-User": "?1",
+},
           timeout: 10000,
         }
       );
