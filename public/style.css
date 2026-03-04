@@ -1070,3 +1070,72 @@ body::before {
   from { transform: translateY(0px); }
   to { transform: translateY(-30px); }
 }
+
+
+/* Fundo escuro */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Caixa branca */
+.modal-box {
+  background: var(--bg);
+  padding: 30px;
+  width: 350px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 20px 40px #b300ff;
+  animation: slideUp 0.3s ease;
+}
+
+.modal-box h2 {
+  margin-bottom: 10px;
+}
+
+.modal-box .email {
+  font-weight: bold;
+  color: #b700ff;
+  margin: 15px 0;
+}
+
+.modal-box button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #b300ff;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.modal-box button:hover {
+  background: #b300ff;
+  transform: matrix();
+  transform: translateY(-3px);
+  transform: scale(1.1);
+}
+
+.fechar {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+@keyframes slideUp {
+  from {transform: translateY(20px); opacity: 0;}
+  to {transform: translateY(0); opacity: 1;}
+}

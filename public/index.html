@@ -39,7 +39,7 @@
   <h2 style="padding-top: 40px;" class="menu-titulo">INFO</h2>
   <ul class="menu-link">
     <li onclick="irParaSobre()" class="filtro-categoria">ℹ️ Sobre</li>
-    <li onclick="alert('Teve uma ideia que podemos acrescentar no site?\nEntre em contato pelo e-mail: elements13dk@gmail.com')" class="filtro-categoria">📧 Contato</li>
+    <li onclick="abrirModal()" class="filtro-categoria">📧 Contato</li>
   </ul>
 </aside>
 
@@ -124,6 +124,31 @@
 
   <!-- SCRIPT PRINCIPAL -->
   <script src="/script.js"></script>
+
+  <!-- MODAL -->
+<div id="modalContato" class="modal">
+  <div class="modal-box">
+    <span class="fechar" onclick="fecharModal()">&times;</span>
+    <h2>Teve uma ideia que podemos acrescentar no site?</h2>
+    <p>Entre em contato pelo e-mail:</p>
+    <p class="email">elements13dk@gmail.com</p>
+    <button onclick="fecharModal()">Fechar</button>
+  </div>
+</div>
+
+<style>
+
+</style>
+
+<script>
+function abrirModal() {
+  document.getElementById("modalContato").style.display = "flex";
+}
+
+function fecharModal() {
+  document.getElementById("modalContato").style.display = "none";
+}
+</script>
 
 </body>
 
