@@ -188,7 +188,7 @@ export async function getAmazonDealsByCategory(categoryKey) {
 
   try {
     for (let page = 1; page <= 2; page++) {
-      await new Promise((r) => setTimeout(r, 300));
+      await new Promise((r) => setTimeout(r, 800));
 
       const { data } = await axios.get(
         `${AMAZON_BASE}${config.url}&page=${page}`,
@@ -330,7 +330,7 @@ export default async function handler(req, res) {
       });
 
       // 🔥 pequeno delay entre lotes (anti bloqueio)
-      await new Promise(r => setTimeout(r, 400));
+      await new Promise(r => setTimeout(r, 800));
     }
 
     // ✅ salva no cache memória
