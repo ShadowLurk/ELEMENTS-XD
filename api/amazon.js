@@ -2,6 +2,16 @@
 
 import axios from "axios";
 import * as cheerio from "cheerio";
+import https from "https";
+
+// =============================
+// 🔥 AGENT (CONEXÃO PERSISTENTE)
+// =============================
+
+const httpsAgent = new https.Agent({
+  keepAlive: true,
+  maxSockets: 5
+});
 
 // =============================
 // 🔥 CACHE EM MEMÓRIA
@@ -10,11 +20,11 @@ import * as cheerio from "cheerio";
 let amazonCache = null;
 let amazonLastUpdate = 0;
 
-// 6 HORAS (igual ao CDN)
-const AMAZON_CACHE_TIME = 6 * 60 * 60 * 1000;
+const AMAZON_CACHE_TIME = 12 * 60 * 60 * 1000;
 
-
-
+// =============================
+// HELPERS
+// =============================
 
 function normalizePrice(value) {
   if (!value) return 0;
@@ -30,12 +40,26 @@ function normalizePrice(value) {
 }
 
 // =============================
-// CONFIGURAÇÃO DAS CATEGORIAS
+// CONFIGURAÇÃO AMAZON
 // =============================
 
 const AMAZON_BASE = "https://www.amazon.com.br";
 
+const HEADERS = {
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/121 Safari/537.36",
+  "Accept-Language": "pt-BR,pt;q=0.9",
+  "Accept":
+    "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+  "Connection": "keep-alive",
+};
+
+// =============================
+// CONFIG CATEGORIAS
+// =============================
+
 const CATEGORY_CONFIG = {
+
   GPU: {
     url: "/s?i=computers&k=placa+de+video",
     categoria: "GPU",
@@ -43,45 +67,52 @@ const CATEGORY_CONFIG = {
       (t.includes("rtx") ||
         t.includes("gtx") ||
         t.includes("radeon") ||
-        t.includes("rx ")) &&
+        t.includes("rx")) &&
       t.includes("gb"),
   },
 
   RAM: {
     url: "/s?i=computers&k=memoria+ram",
     categoria: "RAM",
-    filter: (t) =>
-      t.includes("ram") &&
-      (t.includes("ddr4") ||
-        t.includes("ddr5") ||
-        t.includes("ddr6")),
+    filter: (t) => {
+
+      const hasCapacity =
+        t.includes("8gb") ||
+        t.includes("16gb") ||
+        t.includes("32gb") ||
+        t.includes("64gb");
+
+      const hasDDR =
+        t.includes("ddr4") ||
+        t.includes("ddr5");
+
+      return hasCapacity && hasDDR;
+    },
   },
 
   CPU: {
-  url: "/s?i=computers&k=processador",
-  categoria: "CPU",
-  filter: (t) => {
+    url: "/s?i=computers&k=processador",
+    categoria: "CPU",
+    filter: (t) => {
 
-    const hasCPUBrand =
-      t.includes("ryzen") ||
-      t.includes("intel core") ||
-      t.includes("core i3") ||
-      t.includes("core i5") ||
-      t.includes("core i7") ||
-      t.includes("core i9");
+      const cpu =
+        t.includes("ryzen") ||
+        t.includes("intel core") ||
+        t.includes("core i3") ||
+        t.includes("core i5") ||
+        t.includes("core i7") ||
+        t.includes("core i9");
 
-    const blocked =
-      t.includes("philips") ||
-      t.includes("walita") ||
-      t.includes("powerchop") ||
-      t.includes("liquidificador") ||
-      t.includes("multiprocessador") ||
-      t.includes("processador de alimentos") ||
-      t.includes("processador de comida");
+      const blocked =
+        t.includes("philips") ||
+        t.includes("walita") ||
+        t.includes("liquidificador") ||
+        t.includes("multiprocessador") ||
+        t.includes("alimentos");
 
-    return hasCPUBrand && !blocked;
-  }
-},
+      return cpu && !blocked;
+    },
+  },
 
   MOBO: {
     url: "/s?i=computers&k=placa+mae",
@@ -99,60 +130,54 @@ const CATEGORY_CONFIG = {
       (t.includes("w") ||
         t.includes("80 plus") ||
         t.includes("bronze") ||
-        t.includes("gold") ||
-        t.includes("silver") ||
-        t.includes("platinum")),
+        t.includes("gold")),
   },
 
   COOLER: {
     url: "/s?i=computers&k=cooler+pc",
     categoria: "Cooler",
     filter: (t) =>
+      t.includes("cooler") ||
       t.includes("fan") ||
-      t.includes("cpu cooler") ||
-      t.includes("water cooler") ||
-      t.includes("air cooler"),
+      t.includes("water cooler"),
   },
 
   CASE: {
     url: "/s?i=computers&k=gabinete+pc",
     categoria: "Gabinete",
-    filter: (t) =>
-      t.includes("gabinete") &&
-      (t.includes("atx") ||
-        t.includes("micro atx") ||
-        t.includes("mini itx") ||
-        t.includes("mid tower") ||
-        t.includes("full tower")),
+    filter: (t) => t.includes("gabinete"),
   },
 
   STORAGE: {
-    url: "/s?i=computers&k=ssd+hd",
+    url: "/s?i=computers&k=ssd+nvme",
     categoria: "Armazenamento",
     filter: (t) => {
+
       const isSSD =
         (t.includes("ssd") || t.includes("nvme")) &&
         (t.includes("gb") || t.includes("tb"));
 
-      const isHD =
-        (t.includes("hd") || t.includes("hdd")) &&
-        (t.includes("gb") || t.includes("tb"));
-
       const blocked =
-        t.includes("windows") ||
-        t.includes("notebook") ||
         t.includes("case") ||
         t.includes("adaptador") ||
-        t.includes("cabo") ||
-        t.includes("dock") ||
         t.includes("externo") ||
+        t.includes("dock") ||
         t.includes("usb");
 
-      return (isSSD || isHD) && !blocked;
+      return isSSD && !blocked;
     },
   },
 
   PC: {
+    url: "/s?i=computers&k=pc+gamer",
+    categoria: "PC",
+    filter: (t) =>
+      t.includes("pc gamer") ||
+      t.includes("vivobook") ||
+      t.includes("notebook"),
+  },
+
+  Notebook: {
     url: "/s?i=computers&k=computador+notebook",
     categoria: "PC",
     filter: (t) => {
@@ -177,123 +202,165 @@ const CATEGORY_CONFIG = {
 };
 
 // =============================
-// FUNÇÃO GENÉRICA
+// SCRAPER
 // =============================
 
 export async function getAmazonDealsByCategory(categoryKey) {
+
   const config = CATEGORY_CONFIG[categoryKey];
   if (!config) throw new Error("Categoria inválida");
 
   const products = [];
 
   try {
-    for (let page = 1; page <= 2; page++) {
-      await new Promise((r) => setTimeout(r, 800));
 
-      const { data } = await axios.get(
-        `${AMAZON_BASE}${config.url}&page=${page}`,
-        {
-          headers: {
-  "User-Agent": "...",
-  "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-  "Accept-Language": "pt-BR,pt;q=0.9",
-  "Referer": "https://www.google.com/",
-  "Upgrade-Insecure-Requests": "1",
-  "Sec-Fetch-Dest": "document",
-  "Sec-Fetch-Mode": "navigate",
-  "Sec-Fetch-Site": "none",
-  "Sec-Fetch-User": "?1",
-},
-          timeout: 10000,
-        }
-      );
+    const { data } = await axios.get(
+      `${AMAZON_BASE}${config.url}`,
+      {
+        headers: HEADERS,
+        httpsAgent,
+        timeout: 20000
+      }
+    );
 
-      const $ = cheerio.load(data);
+    if (
+  data.includes("Robot Check") ||
+  data.includes("captcha") ||
+  data.includes("Digite os caracteres")
+) {
+  console.log("Amazon bloqueou");
+  return [];
+}
 
-      $(".s-result-item[data-component-type='s-search-result']")
-        .each((i, el) => {
+    const $ = cheerio.load(data);
 
-          const title = $(el).find("h2 span").text().trim();
-          if (!title) return;
+    $("div[data-asin]").each((i, el) => {
 
-          const t = title.toLowerCase();
-          if (!config.filter(t)) return;
+      const element = $(el);
+      if (
+  element.attr("data-component-type") ===
+  "sp-sponsored-result"
+) return;
 
-          const asin = $(el).attr("data-asin");
+      const asin = element.attr("data-asin");
+      if (!asin || asin.length !== 10) return;
 
-if (!asin || asin.length !== 10) return;
+      const title = element.find("h2 span").text().trim();
+      if (!title) return;
 
-const link = `${AMAZON_BASE}/dp/${asin}`;
+      const t = title.toLowerCase();
+      if (!config.filter(t)) return;
 
-          const priceWhole = $(el)
-            .find(".a-price-whole")
-            .first()
-            .text();
+      // 🔥 ignora produtos sem preço na Amazon
+if (element.find(".a-price").length === 0) {
+  return;
+}
 
-          const priceFraction = $(el)
-            .find(".a-price-fraction")
-            .first()
-            .text();
+      let priceText =
+  element.find(".a-price .a-offscreen").first().text();
 
-          const oldPrice = $(el)
-            .find(".a-price.a-text-price span")
-            .first()
-            .text();
+if (!priceText) {
+  const priceWhole =
+    element.find(".a-price-whole").first().text();
 
-          if (!priceWhole) return;
+  const priceFraction =
+    element.find(".a-price-fraction").first().text();
 
-          const salePrice = normalizePrice(
-            priceWhole + "," + priceFraction
-          );
+  if (priceWhole) {
+    priceText = `${priceWhole},${priceFraction || "00"}`;
+  }
+}
 
-          const normalPrice = normalizePrice(oldPrice);
+const salePrice = normalizePrice(priceText);
 
-          const discount =
-            normalPrice > 0
-              ? Math.round(
-                  100 - (salePrice / normalPrice) * 100
-                )
-              : 0;
+// 🔥 ignora produtos sem preço
+if (!salePrice || salePrice <= 0) {
+  return;
+}
 
-          if (discount <= 0) return;
+const oldPrice =
+  element
+    .find(".a-price.a-text-price span.a-offscreen")
+    .first()
+    .text();
 
-          products.push({
-            title,
-            thumb: $(el).find("img.s-image").attr("src"),
-            normalPriceBRL: `R$ ${normalPrice}`,
-            salePriceBRL: `R$ ${salePrice}`,
-            discount,
-            store: "Amazon",
-            categoria: config.categoria,
-            link,
-            expired: false,
-            addedAt: new Date(),
-          });
-        });
-    }
+      const normalPrice = normalizePrice(oldPrice);
 
-    return products.slice(0, 20);
+      let finalNormalPrice = normalPrice;
+
+      if (!finalNormalPrice || finalNormalPrice < salePrice) {
+        finalNormalPrice = salePrice;
+      }
+
+      const discount =
+        finalNormalPrice > salePrice
+          ? Math.round(
+              100 - (salePrice / finalNormalPrice) * 100
+            )
+          : 0;
+
+          // 🔥 ignora produtos sem desconto
+if (discount <= 0) {
+  return;
+}
+
+      if (salePrice <= 0) return;
+
+      // 🔥 filtro final de segurança
+if (!title || !salePrice || salePrice <= 0) {
+  return;
+}
+
+      const img =
+  element.find("img.s-image").attr("src") ||
+  element.find("img.s-image").attr("data-src");
+
+  // 🔥 filtro definitivo contra "ver na loja"
+if (!priceText || !salePrice || !finalNormalPrice) {
+  return;
+}
+
+products.push({
+  title,
+  thumb: img,
+  normalPriceBRL: finalNormalPrice > 0 ? `R$ ${finalNormalPrice}` : null,
+  salePriceBRL: salePrice > 0 ? `R$ ${salePrice}` : null,
+        discount,
+        store: "Amazon",
+        categoria: config.categoria,
+        link: `${AMAZON_BASE}/dp/${asin}`,
+        expired: false,
+        addedAt: new Date(),
+      });
+
+    });
+
+   return products
+  .filter(p => p.salePriceBRL && p.discount > 0)
+  .slice(0, 20);
 
   } catch (err) {
+
     console.error(`Erro Amazon ${categoryKey}:`, err.message);
     return [];
   }
 }
 
-
+// =============================
+// API HANDLER
+// =============================
 
 export default async function handler(req, res) {
 
-  // 🔥 Cache CDN (6 horas)
   res.setHeader(
     "Cache-Control",
-    "s-maxage=21600, stale-while-revalidate=3600"
+    "s-maxage=43200, stale-while-revalidate=7200, stale-if-error=86400"
   );
 
   const now = Date.now();
 
-  // ✅ CACHE EM MEMÓRIA (super rápido)
   if (amazonCache && now - amazonLastUpdate < AMAZON_CACHE_TIME) {
+
     console.log("⚡ Amazon vindo do cache memória");
     return res.status(200).json(amazonCache);
   }
@@ -307,20 +374,28 @@ export default async function handler(req, res) {
     "COOLER",
     "CASE",
     "STORAGE",
-    "PC"
+    "PC",
+    "Notebook"
   ];
 
   try {
+
     const results = {};
-    const batchSize = 3;
+    const batchSize = 2;
 
     for (let i = 0; i < categories.length; i += batchSize) {
+
       const batch = categories.slice(i, i + batchSize);
 
       const responses = await Promise.all(
         batch.map(async (cat) => {
-          console.log(`🟠 Buscando Amazon ${cat}...`);
-          const data = await getAmazonDealsByCategory(cat).catch(() => []);
+
+          console.log(`🟠 Buscando Amazon ${cat}`);
+
+          const data =
+            await getAmazonDealsByCategory(cat)
+            .catch(() => []);
+
           return { cat, data };
         })
       );
@@ -329,18 +404,22 @@ export default async function handler(req, res) {
         results[cat] = data;
       });
 
-      // 🔥 pequeno delay entre lotes (anti bloqueio)
-      await new Promise(r => setTimeout(r, 800));
+      await new Promise(r =>
+  setTimeout(r, 500 + Math.random() * 1000)
+);
     }
 
-    // ✅ salva no cache memória
     amazonCache = results;
     amazonLastUpdate = now;
 
     return res.status(200).json(results);
 
   } catch (err) {
+
     console.error("Erro geral Amazon:", err.message);
-    return res.status(500).json({ error: "Erro ao buscar Amazon" });
+
+    return res.status(500).json({
+      error: "Erro ao buscar Amazon"
+    });
   }
 }
