@@ -8,10 +8,19 @@ let todosJogos = [];
 let listaFiltrada = [];
 let paginaAtual = 1;
 let listaMisturadaGlobal = [];
+let likesGlobal = {};
 
 const jogosPorPagina = 12;
 const MAX_VISIBLE = 5;
 const LIMITE_POR_LOJA = 60;
+
+/*carregar likes*/
+async function carregarLikes(){
+
+  const res = await fetch("/api/likes");
+  likesGlobal = await res.json();
+
+}
 
 /* =====================================
    RANKING (NOVO + AVALIAÇÃO)
@@ -39,6 +48,23 @@ function scoreAvaliacao(jogo) {
   return rating * Math.log10(reviews + 1);
 }
 
+function scoreLikes(jogo){
+
+  const likes = JSON.parse(localStorage.getItem("likes")) || {};
+  const id = jogo.id || jogo.title + jogo.store;
+
+  return likes[id] ? 1 : 0;
+
+}
+
+function getLikesCount(jogo){
+
+  const id = jogo.id || jogo.title + jogo.store;
+
+  return likesGlobal[id] || 0;
+
+}
+
 function horasDesdeEntrada(jogo) {
   if (!jogo.newUntil) return 999;
 
@@ -51,35 +77,42 @@ function calcularScore(jogo) {
 
   const novidade = scoreNovidade(jogo);
   const avaliacao = scoreAvaliacao(jogo);
+  const likes = scoreLikes(jogo) * 15;
 
   const horas = horasDesdeEntrada(jogo);
 
   let pesoNovidade;
   let pesoAvaliacao;
+  let pesoLikes = 0.25;
 
   // 🔥 acabou de entrar
   if (horas < 6) {
-    pesoNovidade = 0.85;
-    pesoAvaliacao = 0.15;
-  }
+  pesoNovidade = 0.75;
+  pesoAvaliacao = 0.15;
+  pesoLikes = 0.10;
+}
   // ainda muito novo
   else if (horas < 24) {
-    pesoNovidade = 0.65;
-    pesoAvaliacao = 0.35;
-  }
+  pesoNovidade = 0.55;
+  pesoAvaliacao = 0.30;
+  pesoLikes = 0.15;
+}
   // meio do ciclo
   else if (horas < 48) {
-    pesoNovidade = 0.45;
-    pesoAvaliacao = 0.55;
-  }
+  pesoNovidade = 0.35;
+  pesoAvaliacao = 0.45;
+  pesoLikes = 0.20;
+}
   // deixou de ser novo
   else {
-    pesoNovidade = 0.15;
-    pesoAvaliacao = 0.85;
-  }
+  pesoNovidade = 0.10;
+  pesoAvaliacao = 0.65;
+  pesoLikes = 0.25;
+}
 
   return (novidade * pesoNovidade) +
-         (avaliacao * pesoAvaliacao);
+       (avaliacao * pesoAvaliacao) +
+       (likes * pesoLikes);
 }
 /* =====================================
    CARREGAR JOGOS
@@ -111,6 +144,9 @@ function mostrarLoading() {
 }
 
 async function carregarDados() {
+
+  await carregarLikes();
+
   try {
     // 🔥 1️⃣ Carrega games primeiro
     const gamesRes = await fetch("/api/games");
@@ -129,6 +165,12 @@ async function carregarDados() {
 
 // 🔥 MISTURA AQUI TAMBÉM
 listaMisturadaGlobal = misturarJogosEPecas(todosJogos);
+
+// 🔥 aplica ranking
+listaMisturadaGlobal.sort((a,b) =>
+  calcularScore(b) - calcularScore(a)
+);
+
 listaFiltrada = listaMisturadaGlobal;
 renderizar(listaMisturadaGlobal);
 
@@ -148,6 +190,12 @@ renderizar(listaMisturadaGlobal);
 
 // 🔥 Mistura novamente
 listaMisturadaGlobal = misturarJogosEPecas(todosJogos);
+
+// 🔥 aplica ranking
+listaMisturadaGlobal.sort((a,b) =>
+  calcularScore(b) - calcularScore(a)
+);
+
 listaFiltrada = listaMisturadaGlobal;
 renderizar(listaMisturadaGlobal);
       });
@@ -189,6 +237,29 @@ document.addEventListener("DOMContentLoaded", () => {
    RENDERIZAÇÃO DOS CARDS
 ===================================== */
 
+function getTopLikes(lista){
+
+  const likes = JSON.parse(localStorage.getItem("likes")) || {};
+
+  const copia = [...lista];
+
+  copia.sort((a,b) => {
+
+    const idA = a.id || a.title + a.store;
+    const idB = b.id || b.title + b.store;
+
+    const likeA = likes[idA] ? 1 : 0;
+    const likeB = likes[idB] ? 1 : 0;
+
+    return likeB - likeA;
+
+  });
+
+  return copia.slice(0,5).map(j => j.id || j.title + j.store);
+
+}
+
+
 function renderizar(lista) {
   const container = document.getElementById("cards-container");
   if (!container) return;
@@ -202,13 +273,22 @@ function renderizar(lista) {
     const fim = inicio + jogosPorPagina;
     const pagina = lista.slice(inicio, fim);
 
-    pagina.forEach((jogo) => {
+    const likes = JSON.parse(localStorage.getItem("likes")) || {};
+    const topLikes = getTopLikes(lista);
+
+   pagina.forEach((jogo, index) => {
+
   const imagem = jogo.thumb || "fallback.png";
   const card = document.createElement("div");
   card.className = "card";
 
+  card.style.animationDelay = `${index * 0.07}s`;
+
   if (jogo.expired) {
     card.innerHTML = `
+
+    <button class="like-btn" data-id="${jogo.id || jogo.title + jogo.store}" onclick="toggleLike(event,this)">♡</button>
+
       <a href="${jogo.link || "#"}" target="_blank" class="card-link">
         <img loading="lazy"
              src="${imagem}"
@@ -228,49 +308,86 @@ function renderizar(lista) {
     const temDesconto = jogo.discount && jogo.discount > 0;
 
     card.innerHTML = `
-      <a href="${jogo.link || "#"}" target="_blank" class="card-link">
-        <img loading="lazy"
-             src="${imagem}"
-             alt="${jogo.title}"
-             onerror="this.onerror=null;this.src='fallback.png'">
+  <a href="${jogo.link || "#"}" target="_blank" class="card-link">
 
-        ${temDesconto ? `<h3>-${jogo.discount}%</h3>` : ""}
+    <button class="like-btn" data-id="${jogo.id || jogo.title + jogo.store}" onclick="toggleLike(event,this)">♡</button>
 
-        <p class="game-title">${jogo.title}</p>
+    <img loading="lazy"
+         src="${imagem}"
+         alt="${jogo.title}"
+         onerror="this.onerror=null;this.src='fallback.png'">
 
-        ${
-          temDesconto
-            ? `
-            <div class="price-box">
-              <span class="old">${precoNormal}</span>
-              <span class="por">por</span>
-              <span class="new">${precoPromo}</span>
-            </div>`
-            : `
-            <div class="price-box">
-              <span class="new">Ver na loja</span>
-            </div>`
-        }
+    ${temDesconto ? `<h3>-${jogo.discount}%</h3>` : ""}
 
-        <small class="plataforma">${jogo.store}</small>
-      </a>
-    `;
+    <p class="game-title">${jogo.title}</p>
+
+    ${
+      temDesconto
+        ? `
+        <div class="price-box">
+          <span class="old">${precoNormal}</span>
+          <span class="por">por</span>
+          <span class="new">${precoPromo}</span>
+        </div>`
+        : `
+        <div class="price-box">
+          <span class="new">Ver na loja</span>
+        </div>`
+    }
+
+    <small class="plataforma">${jogo.store}</small>
+
+  </a>
+`;
   }
 
-  // 🔥 Selo "Novo" baseado em addedAt (48h)
-const DOIS_DIAS = 1000 * 60 * 60 * 24 * 2;
+const btn = card.querySelector(".like-btn");
 
-if (jogo.addedAt && !jogo.expired) {
 
-  const dataEntrada = new Date(jogo.addedAt).getTime();
+const likesCount = getLikesCount(jogo);
+
+const contador = document.createElement("span");
+contador.className = "likes-count";
+contador.textContent = likesCount;
+
+card.appendChild(contador);
+
+if(btn && likes[btn.dataset.id]){
+  btn.textContent = "❤️";
+  btn.classList.add("liked");
+}
+
+// 🔥 Selo "Novo" baseado em addedAt (48h)
+if (!jogo.expired && jogo.addedAt) {
+
+  const entrada = new Date(jogo.addedAt).getTime();
   const agora = Date.now();
 
-  if (!isNaN(dataEntrada) && (agora - dataEntrada) < DOIS_DIAS) {
+  const DOIS_DIAS = 48 * 60 * 60 * 1000;
+
+  if (agora - entrada < DOIS_DIAS) {
+
     const selo = document.createElement("span");
     selo.className = "novo-selo";
     selo.textContent = "🔥 Novo";
+
     card.appendChild(selo);
+
   }
+
+  const idJogo = jogo.id || jogo.title + jogo.store;
+
+if(topLikes.includes(idJogo)){
+
+  card.classList.add("hot-card");
+
+  const selo = document.createElement("span");
+  selo.className = "hot-selo";
+  selo.textContent = "";
+
+  card.appendChild(selo);
+
+}
 }
 
       container.appendChild(card);
@@ -280,7 +397,6 @@ if (jogo.addedAt && !jogo.expired) {
     container.classList.remove("fade-out");
   }, 200);
 }
-
 
 
 /* =====================================
@@ -519,7 +635,13 @@ if (categoriaAtual === "Todos") {
     );
   }
 
+  // 🔥 aplica ranking depois da mistura
+  listaFiltrada.sort((a, b) =>
+    calcularScore(b) - calcularScore(a)
+  );
+
 }
+
   // =============================
   // RENDERIZA
   // =============================
@@ -739,9 +861,99 @@ window.addEventListener("load", () => {
 
     // 🔥 Só carrega depois que o preloader sumir
     carregarJogos();
-    setInterval(carregarJogos, 450000);
+    setInterval(() => {
+
+  if(!document.hidden){
+    carregarJogos();
+  }
+
+},450000);
 
   }, 3000);
 
 });
+
+// ❤️ função do coração
+async function toggleLike(e,btn){
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  if(btn.disabled) return;
+  btn.disabled = true;
+
+  const id = btn.dataset.id;
+
+  const card = btn.closest(".card");
+  const contador = card.querySelector(".likes-count");
+
+  const liked = btn.classList.contains("liked");
+
+  const action = liked ? "unlike" : "like";
+
+  try{
+
+    const res = await fetch("/api/likes",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body: JSON.stringify({id,action})
+    });
+
+    const data = await res.json();
+
+    contador.textContent = data.likes;
+
+    if(liked){
+      btn.classList.remove("liked");
+      btn.textContent = "♡";
+    }else{
+      btn.classList.add("liked");
+      btn.textContent = "❤️";
+    }
+
+    toggleFavorito(id);
+
+  }catch(err){
+    console.error(err);
+  }
+
+  btn.disabled = false;
+
+}
+
+function toggleFavorito(id){
+
+  let favoritos = getFavoritos();
+
+  if(favoritos.includes(id)){
+    favoritos = favoritos.filter(f => f !== id);
+  }else{
+    favoritos.push(id);
+  }
+
+  localStorage.setItem("favoritos", JSON.stringify(favoritos));
+
+}
+
+function getFavoritos(){
+  return JSON.parse(localStorage.getItem("favoritos")) || [];
+}
+
+function mostrarFavoritos(){
+
+  const favoritos = getFavoritos();
+
+  listaFiltrada = listaMisturadaGlobal.filter(jogo => {
+
+    const id = jogo.id || jogo.title + jogo.store;
+    return favoritos.includes(id);
+
+  });
+
+  paginaAtual = 1;
+  renderizar(listaFiltrada);
+
+}
 

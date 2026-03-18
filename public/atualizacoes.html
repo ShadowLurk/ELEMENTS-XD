@@ -18,9 +18,14 @@
 <body class="dark">
 
   <header>
-    <h1 class="titulo">ELEMENTS XD</h1>
-    <button id="theme-Toggle">☀️</button>
-  </header>
+
+<h1 class="titulo">ELEMENTS XD</h1>
+
+<div class="top-actions">
+  <button id="theme-Toggle">☀️</button>
+</div>
+
+</header>
 
   <div class="layout">
 
@@ -38,7 +43,7 @@
   <h2 style="padding-top: 40px;" class="menu-titulo">INFO</h2>
   <ul class="menu-link">
     <li onclick="irParaSobre()" class="filtro-categoria">ℹ️ Sobre</li>
-    <li onclick="alert('Teve uma ideia que podemos acrescentar no site?\nEntre em contato pelo e-mail: elements13dk@gmail.com')" class="filtro-categoria">📧 Contato</li>
+    <li onclick="abrirModal()" class="filtro-categoria">📧 Contato</li>
   </ul>
 </aside>
 
@@ -67,6 +72,16 @@
 
 
 <div class="conteudo">
+       <h3 style="font-size: 35px;padding-left: 0px;padding-top: 40px;margin-bottom: 10px;">V-1.4</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Sistema de favoritos incrementado</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Filtro favoritos adicionado</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Sistema de rank de likes</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Top 5 no rank de likes com destaque</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Informações adicionais no inicio</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Atualização no pacote de animação</h3>
+       <h3 style="font-size: 20px;padding-left: 10px;padding-top: 0px;margin-bottom: 10px;margin-top: 5px;">Resumo:</h3>
+       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Agora com sistema de favoritos, filtro dedicado, ranking por likes com Top 5 em destaque, mais informações na tela inicial e animações aprimoradas para uma experiência mais fluida.</h3>
+
       <h3 style="font-size: 35px;padding-left: 0px;padding-top: 40px;margin-bottom: 10px; color: #b300ff">V-1.3</h3>
       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Nova tel de loading do site</h3>
       <h3 style="margin-top: 4px;padding-left: 20px;font-size: 16px;margin-bottom: 2px;">• Nova função de PC incrementada</h3>
@@ -143,11 +158,34 @@
     <div class="rodape">
       © 2026 ELEMENTS XD - Todos os direitos reservados. 
       <a href="https://instagram.com/elements.xd" target="_blank" class="rodape-link">@elements.xd</a>
-      <a href="atualizacoes.html" class="versao">V-1.3</a>
+      <a href="atualizacoes.html" class="versao">V-1.4</a>
     </div>
   </footer>
 
   <script src="script.js"></script>
+
+    <!-- MODAL -->
+<div id="modalContato" class="modal">
+  <div class="modal-box">
+    <span class="fechar" onclick="fecharModal()">&times;</span>
+    <h2>Teve uma ideia que podemos acrescentar no site?</h2>
+    <p>Entre em contato pelo e-mail:</p>
+    <p class="email">elements13dk@gmail.com</p>
+    <button onclick="fecharModal()">Fechar</button>
+  </div>
+</div>
+
+<script>
+function abrirModal() {
+  document.getElementById("modalContato").style.display = "flex";
+}
+
+function fecharModal() {
+  document.getElementById("modalContato").style.display = "none";
+}
+</script>
+
+
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const botoes = document.querySelectorAll(".btn-sobre");

@@ -18,10 +18,14 @@
 <body class="dark">
 
   <header>
-    <h1 class="titulo">ELEMENTS XD
-    </h1>
-    <button id="theme-Toggle">☀️</button>
-  </header>
+
+<h1 class="titulo">ELEMENTS XD</h1>
+
+<div class="top-actions">
+  <button id="theme-Toggle">☀️</button>
+</div>
+
+</header>
 
   <div class="layout">
 
@@ -39,7 +43,7 @@
   <h2 style="padding-top: 40px;" class="menu-titulo">INFO</h2>
   <ul class="menu-link">
     <li onclick="irParaSobre()" class="filtro-categoria">ℹ️ Sobre</li>
-    <li onclick="alert('Teve uma ideia que podemos acrescentar no site?\nEntre em contato pelo e-mail: elements13dk@gmail.com')" class="filtro-categoria">📧 Contato</li>
+    <li onclick="abrirModal()" class="filtro-categoria">📧 Contato</li>
   </ul>
 </aside>
 
@@ -68,18 +72,22 @@
 
 
         <p style="padding-right: 20px;padding-left: 0px;padding-top: 40px;">
-          A <strong>ELEMENTS XD</strong> nasceu com o objetivo de transformar a experiência dos gamers, reunindo em um só espaço as melhores promoções de jogos e peças de computador.
+          A <strong>ELEMENTS XD</strong> nasceu com o objetivo de transformar a experiência dos gamers e entusiastas de tecnologia, reunindo em um único lugar as melhores promoções de jogos, periféricos e peças de computador. Nosso site foi criado para facilitar a busca por ofertas confiáveis, ajudando os usuários a economizar e encontrar produtos de qualidade para montar ou melhorar seu setup.
         </p>
-        <p style="padding-right: 20px;padding-left: 0px;">Nosso compromisso é oferecer conteúdo atualizado diariamente, sempre com foco em qualidade, acessibilidade e inovação. Mais do que um site de ofertas, queremos ser uma comunidade que conecta apaixonados por tecnologia e games, ajudando cada visitante a encontrar oportunidades reais para elevar sua experiência digital.
+        <p style="padding-right: 20px;padding-left: 0px;">Nosso compromisso é oferecer conteúdo atualizado diariamente, sempre priorizando qualidade, clareza e utilidade para quem visita a plataforma. Trabalhamos para apresentar promoções reais, análises e recomendações que ajudem cada pessoa a tomar decisões melhores na hora de comprar.
+        </p>
+        <p style="padding-right: 20px;padding-left: 0px;">Mais do que um simples site de ofertas, queremos construir uma comunidade para apaixonados por tecnologia e games, onde os visitantes possam descobrir novidades, acompanhar oportunidades e melhorar sua experiência digital.
         </p>
       </section>
 
       <section class="missao-visao-valores">
         <h2 style="padding-left: 0px;">Missão</h2>
-        <p style="padding-right: 20px;padding-left: 0px;">Proporcionar aos gamers acesso fácil e rápido às melhores promoções de jogos e hardware.</p>
+        <p style="padding-right: 20px;padding-left: 0px;">Nossa missão é facilitar o acesso dos gamers e entusiastas de tecnologia às melhores promoções de jogos, hardware e acessórios. Buscamos economizar o tempo dos usuários ao reunir ofertas relevantes em um só lugar, permitindo que todos encontrem rapidamente boas oportunidades para atualizar seu setup ou ampliar sua biblioteca de jogos.
+        </p>
       
         <h2 style="padding-left: 0px;">Visão</h2>
-        <p style="padding-right: 20px;padding-left: 0px;">Ser referência nacional em curadoria de promoções para o público gamer.</p>
+        <p style="padding-right: 20px;padding-left: 0px;">Nossa visão é nos tornar uma referência nacional em curadoria de promoções voltadas para o público gamer e tecnológico. Queremos ser reconhecidos como um portal confiável, onde os usuários saibam que podem encontrar ofertas reais, conteúdo útil e recomendações de qualidade.
+        </p>
 
         <h2 style="padding-left: 0px;">Valores</h2>
         <ul style="padding-right: 20px;padding-left: 14px;">
@@ -107,7 +115,7 @@
     <div class="rodape">
      © 2026 ELEMENTS XD - Todos os direitos reservados. 
      <a href="https://instagram.com/elements.xd" target="_blank" class="rodape-link">@elements.xd</a>
-     <a href="atualizacoes.html" class="versao">V-1.3</a>
+     <a href="atualizacoes.html" class="versao">V-1.4</a>
     </div>
 
 
@@ -115,6 +123,27 @@
   </footer>
 
   <script src="script.js"></script>
+
+  <!-- MODAL -->
+<div id="modalContato" class="modal">
+  <div class="modal-box">
+    <span class="fechar" onclick="fecharModal()">&times;</span>
+    <h2>Teve uma ideia que podemos acrescentar no site?</h2>
+    <p>Entre em contato pelo e-mail:</p>
+    <p class="email">elements13dk@gmail.com</p>
+    <button onclick="fecharModal()">Fechar</button>
+  </div>
+</div>
+
+<script>
+function abrirModal() {
+  document.getElementById("modalContato").style.display = "flex";
+}
+
+function fecharModal() {
+  document.getElementById("modalContato").style.display = "none";
+}
+</script>
 
  <script>
   document.addEventListener("DOMContentLoaded", function () {

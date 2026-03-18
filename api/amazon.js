@@ -39,20 +39,60 @@ function normalizePrice(value) {
   );
 }
 
+const AMAZON_TAG = "elementsxd-20";
+
+export function addAmazonAffiliate(link) {
+  if (!link) return link;
+
+  try {
+    const url = new URL(link);
+
+    // verifica se é amazon
+    if (!url.hostname.includes("amazon")) {
+      return link;
+    }
+
+    // adiciona ou substitui tag
+    url.searchParams.set("tag", AMAZON_TAG);
+
+    return url.toString();
+
+  } catch (err) {
+    return link;
+  }
+}
+
+function getRandomCategories(allCategories, limit = 3) {
+  const shuffled = [...allCategories].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, limit);
+}
+
 // =============================
 // CONFIGURAÇÃO AMAZON
 // =============================
 
 const AMAZON_BASE = "https://www.amazon.com.br";
 
-const HEADERS = {
-  "User-Agent":
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/121 Safari/537.36",
-  "Accept-Language": "pt-BR,pt;q=0.9",
-  "Accept":
-    "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-  "Connection": "keep-alive",
-};
+const USER_AGENTS = [
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/121 Safari/537.36",
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/17.0 Safari/605.1.15",
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+  "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Version/17.0 Mobile Safari/604.1"
+];
+
+function getHeaders() {
+  return {
+    "User-Agent":
+      USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)],
+
+    "Accept-Language": "pt-BR,pt;q=0.9",
+
+    "Accept":
+      "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+
+    "Connection": "keep-alive",
+  };
+}
 
 // =============================
 // CONFIG CATEGORIAS
@@ -91,28 +131,30 @@ const CATEGORY_CONFIG = {
   },
 
   CPU: {
-    url: "/s?i=computers&k=processador",
-    categoria: "CPU",
-    filter: (t) => {
+  url: "/s?i=computers&k=processador",
+  categoria: "CPU",
+  filter: (t) => {
 
-      const cpu =
-        t.includes("ryzen") ||
-        t.includes("intel core") ||
-        t.includes("core i3") ||
-        t.includes("core i5") ||
-        t.includes("core i7") ||
-        t.includes("core i9");
+    const hasCPUBrand =
+      t.includes("ryzen") ||
+      t.includes("intel core") ||
+      t.includes("core i3") ||
+      t.includes("core i5") ||
+      t.includes("core i7") ||
+      t.includes("core i9");
 
-      const blocked =
-        t.includes("philips") ||
-        t.includes("walita") ||
-        t.includes("liquidificador") ||
-        t.includes("multiprocessador") ||
-        t.includes("alimentos");
+    const blocked =
+      t.includes("philips") ||
+      t.includes("walita") ||
+      t.includes("powerchop") ||
+      t.includes("liquidificador") ||
+      t.includes("multiprocessador") ||
+      t.includes("processador de alimentos") ||
+      t.includes("processador de comida");
 
-      return cpu && !blocked;
-    },
-  },
+    return hasCPUBrand && !blocked;
+  }
+},
 
   MOBO: {
     url: "/s?i=computers&k=placa+mae",
@@ -217,7 +259,7 @@ export async function getAmazonDealsByCategory(categoryKey) {
     const { data } = await axios.get(
       `${AMAZON_BASE}${config.url}`,
       {
-        headers: HEADERS,
+        headers: getHeaders(),
         httpsAgent,
         timeout: 20000
       }
@@ -226,7 +268,8 @@ export async function getAmazonDealsByCategory(categoryKey) {
     if (
   data.includes("Robot Check") ||
   data.includes("captcha") ||
-  data.includes("Digite os caracteres")
+  data.includes("Digite os caracteres") ||
+  data.length < 50000 // página incompleta
 ) {
   console.log("Amazon bloqueou");
   return [];
@@ -328,7 +371,7 @@ products.push({
         discount,
         store: "Amazon",
         categoria: config.categoria,
-        link: `${AMAZON_BASE}/dp/${asin}`,
+        link: addAmazonAffiliate(`${AMAZON_BASE}/dp/${asin}`),
         expired: false,
         addedAt: new Date(),
       });
@@ -365,18 +408,20 @@ export default async function handler(req, res) {
     return res.status(200).json(amazonCache);
   }
 
-  const categories = [
-    "GPU",
-    "RAM",
-    "CPU",
-    "MOBO",
-    "PSU",
-    "COOLER",
-    "CASE",
-    "STORAGE",
-    "PC",
-    "Notebook"
-  ];
+  const ALL_CATEGORIES = [
+  "GPU",
+  "RAM",
+  "CPU",
+  "MOBO",
+  "PSU",
+  "COOLER",
+  "CASE",
+  "STORAGE",
+  "PC",
+  "Notebook"
+];
+
+const categories = getRandomCategories(ALL_CATEGORIES, 3);
 
   try {
 
@@ -405,7 +450,7 @@ export default async function handler(req, res) {
       });
 
       await new Promise(r =>
-  setTimeout(r, 500 + Math.random() * 1000)
+  setTimeout(r, 500 + Math.random() * 1500)
 );
     }
 
