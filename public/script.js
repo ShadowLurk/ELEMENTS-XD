@@ -959,18 +959,17 @@ function getFavoritos(){
 
 function mostrarFavoritos(){
 
-  const favoritos = getFavoritos();
+  const likes = JSON.parse(localStorage.getItem("likes")) || {};
 
   listaFiltrada = listaMisturadaGlobal.filter(jogo => {
 
     const id = jogo.id || jogo.title + jogo.store;
-    return favoritos.includes(id);
+    return likes[id]; // 🔥 aqui
 
   });
 
   paginaAtual = 1;
   renderizar(listaFiltrada);
-
 }
 
 function resetLikes() {
