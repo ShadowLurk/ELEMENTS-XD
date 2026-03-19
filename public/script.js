@@ -908,10 +908,12 @@ async function toggleLike(e,btn){
   btn.classList.remove("liked");
   btn.textContent = "♡";
   salvarLikeLocal(id, false);
+  toggleFavorito(id);
 }else{
   btn.classList.add("liked");
   btn.textContent = "❤️";
   salvarLikeLocal(id, true);
+  toggleFavorito(id);
 }
 
 
