@@ -34,4 +34,19 @@ export default async function handler(req,res){
 
   }
 
+  if (req.method === "DELETE") {
+
+  if (req.headers.authorization !== "Bearer 123456") {
+    return res.status(401).json({ error: "Não autorizado" });
+  }
+
+  await redis.del("likes");
+
+  return res.status(200).json({
+    message: "Todos os likes foram resetados"
+  });
+
+}
+
+
 }

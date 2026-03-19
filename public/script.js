@@ -50,10 +50,9 @@ function scoreAvaliacao(jogo) {
 
 function scoreLikes(jogo){
 
-  const likes = JSON.parse(localStorage.getItem("likes")) || {};
   const id = jogo.id || jogo.title + jogo.store;
 
-  return likes[id] ? 1 : 0;
+  return (likesGlobal[id] || 0) * 0.01;
 
 }
 
@@ -906,14 +905,15 @@ async function toggleLike(e,btn){
     contador.textContent = data.likes;
 
     if(liked){
-      btn.classList.remove("liked");
-      btn.textContent = "♡";
-    }else{
-      btn.classList.add("liked");
-      btn.textContent = "❤️";
-    }
+  btn.classList.remove("liked");
+  btn.textContent = "♡";
+  salvarLikeLocal(id, false);
+}else{
+  btn.classList.add("liked");
+  btn.textContent = "❤️";
+  salvarLikeLocal(id, true);
+}
 
-    toggleFavorito(id);
 
   }catch(err){
     console.error(err);
@@ -921,6 +921,20 @@ async function toggleLike(e,btn){
 
   btn.disabled = false;
 
+}
+
+
+  function salvarLikeLocal(id, liked){
+
+  let likes = JSON.parse(localStorage.getItem("likes")) || {};
+
+  if(liked){
+    likes[id] = true;
+  }else{
+    delete likes[id];
+  }
+
+  localStorage.setItem("likes", JSON.stringify(likes));
 }
 
 function toggleFavorito(id){
@@ -955,5 +969,14 @@ function mostrarFavoritos(){
   paginaAtual = 1;
   renderizar(listaFiltrada);
 
+}
+
+function resetLikes() {
+  fetch("/api/resetLikes", {
+    method: "POST"
+  }).then(() => {
+    localStorage.removeItem("likes"); // limpa coração
+    location.reload();
+  });
 }
 
