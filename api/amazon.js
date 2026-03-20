@@ -421,7 +421,7 @@ export default async function handler(req, res) {
   "Notebook"
 ];
 
-const categories = getRandomCategories(ALL_CATEGORIES, 3);
+const categories = ALL_CATEGORIES;
 
   try {
 
@@ -450,7 +450,7 @@ const categories = getRandomCategories(ALL_CATEGORIES, 3);
       });
 
       await new Promise(r =>
-  setTimeout(r, 500 + Math.random() * 1500)
+  setTimeout(r, 1000 + Math.random() * 2000)
 );
     }
 
