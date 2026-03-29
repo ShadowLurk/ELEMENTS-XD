@@ -1,4 +1,6 @@
-// /api/amazon.js
+/* =====================================
+   API DA AMAZON
+   ===================================== */
 
 import axios from "axios";
 import * as cheerio from "cheerio";
@@ -131,17 +133,17 @@ const CATEGORY_CONFIG = {
   },
 
   CPU: {
-  url: "/s?i=computers&k=processador",
-  categoria: "CPU",
-  filter: (t) => {
+    url: "/s?i=computers&k=processador",
+    categoria: "CPU",
+    filter: (t) => {
 
     const hasCPUBrand =
-      t.includes("ryzen") ||
-      t.includes("intel core") ||
-      t.includes("core i3") ||
-      t.includes("core i5") ||
-      t.includes("core i7") ||
-      t.includes("core i9");
+  t.includes("ryzen") ||
+  t.includes("intel") ||
+  t.includes("i3") ||
+  t.includes("i5") ||
+  t.includes("i7") ||
+  t.includes("i9");
 
     const blocked =
       t.includes("philips") ||
@@ -153,7 +155,7 @@ const CATEGORY_CONFIG = {
       t.includes("processador de comida");
 
     return hasCPUBrand && !blocked;
-  }
+  },
 },
 
   MOBO: {
@@ -269,7 +271,7 @@ export async function getAmazonDealsByCategory(categoryKey) {
   data.includes("Robot Check") ||
   data.includes("captcha") ||
   data.includes("Digite os caracteres") ||
-  data.length < 50000 // página incompleta
+  data.length < 50000
 ) {
   console.log("Amazon bloqueou");
   return [];
@@ -354,27 +356,58 @@ if (!title || !salePrice || salePrice <= 0) {
   return;
 }
 
-      const img =
-  element.find("img.s-image").attr("src") ||
-  element.find("img.s-image").attr("data-src");
+      const imgElement = element.find("img.s-image");
+
+let img =
+  imgElement.attr("src") ||
+  imgElement.attr("data-src") ||
+  imgElement.attr("data-old-hires");
+
+// 🔥 srcset (pega melhor qualidade)
+if (!img) {
+  const srcset = imgElement.attr("srcset");
+  if (srcset) {
+    const parts = srcset.split(",");
+    img = parts[parts.length - 1].split(" ")[0];
+  }
+}
+
+// 🔥 JSON da Amazon (ESSENCIAL)
+if (!img) {
+  const dynamic = imgElement.attr("data-a-dynamic-image");
+  if (dynamic) {
+    try {
+      const json = JSON.parse(dynamic);
+      const images = Object.keys(json);
+      img = images[0];
+    } catch (e) {}
+  }
+}
+
+// 🔥 remove placeholder fake
+if (img && img.startsWith("data:image")) {
+  img = null;
+}
 
   // 🔥 filtro definitivo contra "ver na loja"
 if (!priceText || !salePrice || !finalNormalPrice) {
   return;
 }
 
+const fallbackImg = `https://images-na.ssl-images-amazon.com/images/P/${asin}.01._SCLZZZZZZZ_.jpg`;
+
 products.push({
   title,
-  thumb: img,
+  thumb: img || fallbackImg,
   normalPriceBRL: finalNormalPrice > 0 ? `R$ ${finalNormalPrice}` : null,
   salePriceBRL: salePrice > 0 ? `R$ ${salePrice}` : null,
-        discount,
-        store: "Amazon",
-        categoria: config.categoria,
-        link: addAmazonAffiliate(`${AMAZON_BASE}/dp/${asin}`),
-        expired: false,
-        addedAt: new Date(),
-      });
+  discount,
+  store: "Amazon",
+  categoria: config.categoria,
+  link: addAmazonAffiliate(`${AMAZON_BASE}/dp/${asin}`),
+  expired: false,
+  addedAt: new Date(),
+});
 
     });
 

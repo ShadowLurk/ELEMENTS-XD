@@ -1,6 +1,6 @@
 {
   "name": "elements-site",
-  "version": "1.4",
+  "version": "1.5",
   "description": "Servidor de promoções Gamer!",
   "type": "module",
   "engines": {
@@ -9,7 +9,9 @@
   "dependencies": {
     "@upstash/redis": "^1.36.4",
     "axios": "^1.13.5",
+    "axios-cookiejar-support": "^6.0.5",
     "cheerio": "^1.2.0",
-    "playwright": "^1.58.2"
+    "playwright": "^1.58.2",
+    "tough-cookie": "^6.0.1"
   }
 }

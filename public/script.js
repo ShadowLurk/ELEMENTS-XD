@@ -1,9 +1,16 @@
+/* =====================================
+   DEBUG / LOGS INICIAIS
+   ===================================== */
 console.log("Script carregado!");
 console.log("Botão tema:", document.getElementById("theme-Toggle"));
 console.log("Menu toggle:", document.querySelector(".menu-toggle"));
 console.log("Sidebar:", document.querySelector(".sidebar"));
 console.log("Main:", document.querySelector("main"));
 
+
+/* =====================================
+   ESTADO GLOBAL (DADOS DO APP)
+   ===================================== */
 let todosJogos = [];
 let listaFiltrada = [];
 let paginaAtual = 1;
@@ -14,7 +21,10 @@ const jogosPorPagina = 12;
 const MAX_VISIBLE = 5;
 const LIMITE_POR_LOJA = 60;
 
-/*carregar likes*/
+
+/* =====================================
+   SISTEMA DE LIKES (API + LOCAL)
+   ===================================== */
 async function carregarLikes(){
 
   const res = await fetch("/api/likes");
@@ -23,16 +33,17 @@ async function carregarLikes(){
 }
 
 /* =====================================
-   RANKING (NOVO + AVALIAÇÃO)
-===================================== */
+   SISTEMA DE RANKING (NOVO + AVALIAÇÃO + LIKES)
+   ===================================== */
 
+/* --- SCORE DE NOVIDADE --- */
 function scoreNovidade(jogo) {
   if (!jogo.isNew || !jogo.newUntil) return 10;
 
   const horasRestantes =
     (new Date(jogo.newUntil) - Date.now()) / 3600000;
 
-  if (horasRestantes > 42) return 100; // acabou de entrar
+  if (horasRestantes > 42) return 100;
   if (horasRestantes > 24) return 80;
   if (horasRestantes > 12) return 60;
   if (horasRestantes > 0) return 40;
@@ -40,6 +51,8 @@ function scoreNovidade(jogo) {
   return 10;
 }
 
+
+/* --- SCORE DE AVALIAÇÃO --- */
 function scoreAvaliacao(jogo) {
   const rating = jogo.rating || 0;        // ex: 92
   const reviews = jogo.reviewCount || 0;  // ex: 50000
@@ -48,6 +61,8 @@ function scoreAvaliacao(jogo) {
   return rating * Math.log10(reviews + 1);
 }
 
+
+/* --- SCORE DE LIKES --- */
 function scoreLikes(jogo){
 
   const id = jogo.id || jogo.title + jogo.store;
@@ -64,13 +79,16 @@ function getLikesCount(jogo){
 
 }
 
+
+/* --- SCORE FINAL --- */
 function horasDesdeEntrada(jogo) {
   if (!jogo.newUntil) return 999;
 
-  // seu "novo" dura 48h
+  // tag "novo" dura 48h
   const entrada = new Date(jogo.newUntil).getTime() - (48 * 3600000);
   return (Date.now() - entrada) / 3600000;
 }
+
 
 function calcularScore(jogo) {
 
@@ -113,6 +131,8 @@ function calcularScore(jogo) {
        (avaliacao * pesoAvaliacao) +
        (likes * pesoLikes);
 }
+
+
 /* =====================================
    CARREGAR JOGOS
 ===================================== */
@@ -120,84 +140,123 @@ function mostrarLoading() {
   const container = document.getElementById("cards-container");
   if (!container) return;
 
-  container.innerHTML = ""; // limpa uma única vez
+  container.innerHTML = "";
 
-  // primeiro card vazio
-  const vazio1 = document.createElement("div");
-  vazio1.className = "card vazio-card";
-  container.appendChild(vazio1);
+  // 🔥 detecta mobile
+  const isMobile = window.innerWidth <= 768;
 
-  // segundo card com loading
-  const loadingCard = document.createElement("div");
-  loadingCard.className = "card loading-card";
-  loadingCard.innerHTML = `
-    <div class="spinner"></div>
-    <p>Carregando ofertas...</p>
-  `;
-  container.appendChild(loadingCard);
+  if (isMobile) {
+    // 👉 só 1 card no celular
+    const loadingCard = document.createElement("div");
+    loadingCard.className = "card loading-card";
+    loadingCard.innerHTML = `
+      <div class="spinner"></div>
+      <p>Carregando ofertas...</p>
+    `;
+    container.appendChild(loadingCard);
 
-  // terceiro card vazio
-  const vazio2 = document.createElement("div");
-  vazio2.className = "card vazio-card";
-  container.appendChild(vazio2);
+  } else {
+    // 👉 3 cards no PC (igual já está)
+    
+    const vazio1 = document.createElement("div");
+    vazio1.className = "card vazio-card";
+    container.appendChild(vazio1);
+
+    const loadingCard = document.createElement("div");
+    loadingCard.className = "card loading-card";
+    loadingCard.innerHTML = `
+      <div class="spinner"></div>
+      <p>Carregando ofertas...</p>
+    `;
+    container.appendChild(loadingCard);
+
+    const vazio2 = document.createElement("div");
+    vazio2.className = "card vazio-card";
+    container.appendChild(vazio2);
+  }
 }
+
+
 
 async function carregarDados() {
 
   await carregarLikes();
 
   try {
-    // 🔥 1️⃣ Carrega games primeiro
+
+    // =============================
+    // 🔥 1️⃣ CARREGA SÓ JOGOS
+    // =============================
     const gamesRes = await fetch("/api/games");
     const gamesData = await gamesRes.json();
+
+    // ✅ MOSTRA METAS AQUI
+const metas = gamesData.metas;
+if (metas) {
+  const statusSteam = document.getElementById("metaSteam");
+  const statusGog = document.getElementById("metaGog");
+  const statusEpic = document.getElementById("metaEpic");
+
+  if (statusSteam) {
+    statusSteam.innerText = metas.steam.atingida
+      ? "🔥 Steam completa!"
+      : `⏳ Steam: ${metas.steam.atual}/${metas.steam.meta}`;
+  }
+
+  if (statusGog) {
+    statusGog.innerText = metas.gog.atingida
+      ? "🔥 GOG completa!"
+      : `⏳ GOG: ${metas.gog.atual}/${metas.gog.meta}`;
+  }
+
+  if (statusEpic) {
+    statusEpic.innerText = metas.epic.atingida
+      ? "🔥 Epic completa!"
+      : `⏳ Epic: ${metas.epic.atual}/${metas.epic.meta}`;
+  }
+}
 
     const steam = gamesData.steam || [];
     const epic = gamesData.epic || [];
     const gog = gamesData.gog || [];
 
-    todosJogos = [...steam, ...epic, ...gog];
+    let jogos = [...steam, ...epic, ...gog];
 
-    // 🔥 Ordena antes de renderizar
+    jogos.sort((a, b) =>
+      new Date(b.addedAt) - new Date(a.addedAt)
+    );
+
+    // 👉 MOSTRA JOGOS PRIMEIRO
+    listaFiltrada = jogos;
+    renderizar(jogos);
+
+    // =============================
+    // 🔥 2️⃣ CARREGA PEÇAS DEPOIS
+    // =============================
+    const amazonRes = await fetch("/api/amazon");
+    const amazonData = await amazonRes.json();
+    const amazon = Object.values(amazonData || {}).flat();
+
+    // junta tudo
+    todosJogos = [...jogos, ...amazon];
+
+    // ordena geral
     todosJogos.sort((a, b) =>
-  new Date(b.addedAt) - new Date(a.addedAt)
-);
+      new Date(b.addedAt) - new Date(a.addedAt)
+    );
 
-// 🔥 MISTURA AQUI TAMBÉM
-listaMisturadaGlobal = misturarJogosEPecas(todosJogos);
+    // mistura jogos + peças
+    listaMisturadaGlobal = misturarJogosEPecas(todosJogos);
 
-// 🔥 aplica ranking
-listaMisturadaGlobal.sort((a,b) =>
-  calcularScore(b) - calcularScore(a)
-);
+    // aplica ranking
+    listaMisturadaGlobal.sort((a, b) =>
+      calcularScore(b) - calcularScore(a)
+    );
 
-listaFiltrada = listaMisturadaGlobal;
-renderizar(listaMisturadaGlobal);
+    listaFiltrada = listaMisturadaGlobal;
 
-    // 🔥 2️⃣ Carrega Amazon depois
-    fetch("/api/amazon")
-      .then(res => res.json())
-      .then(amazonData => {
-        const amazon = Object.values(amazonData || {}).flat();
-
-        // Junta tudo
-        todosJogos = [...todosJogos, ...amazon];
-
-        // 🔥 ORDENAR DE NOVO
-        todosJogos.sort((a, b) =>
-  new Date(b.addedAt) - new Date(a.addedAt)
-);
-
-// 🔥 Mistura novamente
-listaMisturadaGlobal = misturarJogosEPecas(todosJogos);
-
-// 🔥 aplica ranking
-listaMisturadaGlobal.sort((a,b) =>
-  calcularScore(b) - calcularScore(a)
-);
-
-listaFiltrada = listaMisturadaGlobal;
-renderizar(listaMisturadaGlobal);
-      });
+    // 👉 ATUALIZA COM TUDO MISTURADO
+    renderizar(listaMisturadaGlobal);
 
   } catch (err) {
     console.error(err);
@@ -235,7 +294,6 @@ document.addEventListener("DOMContentLoaded", () => {
 /* =====================================
    RENDERIZAÇÃO DOS CARDS
 ===================================== */
-
 function getTopLikes(lista){
 
   const likes = JSON.parse(localStorage.getItem("likes")) || {};
@@ -356,38 +414,28 @@ if(btn && likes[btn.dataset.id]){
   btn.classList.add("liked");
 }
 
-// 🔥 Selo "Novo" baseado em addedAt (48h)
-if (!jogo.expired && jogo.addedAt) {
 
-  const entrada = new Date(jogo.addedAt).getTime();
-  const agora = Date.now();
 
-  const DOIS_DIAS = 48 * 60 * 60 * 1000;
+const idJogo = jogo.id || jogo.title + jogo.store;
 
-  if (agora - entrada < DOIS_DIAS) {
+const isTopLike = topLikes.includes(idJogo);
+const isHighDiscount = jogo.discount && jogo.discount >= 75;
 
-    const selo = document.createElement("span");
-    selo.className = "novo-selo";
-    selo.textContent = "🔥 Novo";
-
-    card.appendChild(selo);
-
-  }
-
-  const idJogo = jogo.id || jogo.title + jogo.store;
-
-if(topLikes.includes(idJogo)){
-
-  card.classList.add("hot-card");
+// 🔥 MOSTRA SELO HOT (geral)
+if (isTopLike || isHighDiscount) {
 
   const selo = document.createElement("span");
   selo.className = "hot-selo";
-  selo.textContent = "";
+  selo.textContent = "🔥 HOT";
 
   card.appendChild(selo);
+}
 
+// 💜 BORDA ROXA APENAS TOP LIKES
+if (isTopLike) {
+  card.classList.add("hot-card");
 }
-}
+
 
       container.appendChild(card);
     });
@@ -399,8 +447,8 @@ if(topLikes.includes(idJogo)){
 
 
 /* =====================================
-   PAGINAÇÃO DINÂMICA (ESTILO STEAM)
-===================================== */
+   SISTEMA DE PAGINAÇÃO
+   ===================================== */
 function renderizarPaginacao(totalJogos) {
   const paginacao = document.getElementById("pagination");
   if (!paginacao) return;
@@ -467,10 +515,10 @@ function renderizarPaginacao(totalJogos) {
   criarBotao("⏭", totalPaginas, paginaAtual === totalPaginas);
 }
 
+
 /* =====================================
    ADICIONAIS DA PAGINAÇÃO
 ===================================== */
-
 function selecionar(botao) {
 
   // remove seleção dos outros botões
@@ -481,6 +529,10 @@ function selecionar(botao) {
   botao.classList.add('ativo');
 }
 
+
+/* =====================================
+   SISTEMA DE FILTROS
+   ===================================== */
 function filtrar(valor, elemento) {
 
   const filtrosLojas = document.querySelectorAll("#filtros-lojas .filtro");
@@ -575,10 +627,6 @@ function filtrar(valor, elemento) {
     filtrosPecas.forEach(btn => btn.style.display = "none");
   }
 
-  // =============================
-  // FILTRO DE DADOS
-  // =============================
-
   listaFiltrada = [...todosJogos];
 
   // 🔹 Filtra por categoria
@@ -593,7 +641,7 @@ function filtrar(valor, elemento) {
   else if (categoriaAtual === "Pecas") {
 
     listaFiltrada = listaFiltrada.filter(j =>
-      j.store === "Amazon"
+      ["Amazon", "AliExpress"].includes(j.store)
     );
 
   }
@@ -647,10 +695,10 @@ if (categoriaAtual === "Todos") {
   renderizar(listaFiltrada);
 }
 
-/* =====================================
-   SISTEMA DE TEMA
-===================================== */
 
+/* =====================================
+   SISTEMA DE TEMA (DARK / LIGHT)
+   ===================================== */
 document.addEventListener("DOMContentLoaded", () => {
 
   const button = document.getElementById("theme-Toggle");
@@ -683,10 +731,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-/* =====================================
-   ANIMAÇÃO SOBRE NÓS
-===================================== */
 
+/* =====================================
+   ANIMAÇÕES (INTERSECTION OBSERVER)
+   ===================================== */
 document.addEventListener("DOMContentLoaded", () => {
   const sobre = document.querySelector(".sobre-nos");
   if (!sobre) return;
@@ -702,10 +750,10 @@ document.addEventListener("DOMContentLoaded", () => {
   observer.observe(sobre);
 });
 
-/* =====================================
-   MENU SIDEBAR
-===================================== */
 
+/* =====================================
+   MENU LATERAL (SIDEBAR)
+   ===================================== */
 document.addEventListener("DOMContentLoaded", () => {
   const toggle = document.querySelector(".menu-toggle");
 const sidebar = document.querySelector(".sidebar");
@@ -720,7 +768,9 @@ const content = document.querySelector("main");
 });
 
 
-
+/* =====================================
+   NAVEGAÇÃO (INDEX / SOBRE)
+   ===================================== */
 function irParaSobre() {
   window.location.href = "sobre.html";
 }
@@ -796,14 +846,15 @@ document.addEventListener("DOMContentLoaded", () => {
   if (categoriaSalva) {
     filtrar(categoriaSalva);
   } else {
-    filtrar("Todos"); // padrão = ALL
+    filtrar("Todos");
   }
 
 }); 
 
+
 /* =====================================
-   Misturar jogos com Peças
-===================================== */
+   MISTURA DE JOGOS E PEÇAS (SHUFFLE)
+   ===================================== */
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -819,8 +870,8 @@ function misturarJogosEPecas(lista) {
   );
 
   const pecas = lista.filter(j =>
-    j.store === "Amazon"
-  );
+  ["Amazon", "AliExpress"].includes(j.store)
+);
 
   shuffle(jogos);
   shuffle(pecas);
@@ -849,6 +900,9 @@ function misturarJogosEPecas(lista) {
 }
 
 
+/* =====================================
+   PRELOADER + ATUALIZAÇÃO AUTOMÁTICA
+   ===================================== */
 window.addEventListener("load", () => {
 
   const preloader = document.getElementById("preloader");
@@ -872,7 +926,10 @@ window.addEventListener("load", () => {
 
 });
 
-// ❤️ função do coração
+
+/* =====================================
+   INTERAÇÃO DE LIKE (BOTÃO ❤️)
+   ===================================== */
 async function toggleLike(e,btn){
 
   e.preventDefault();
@@ -926,6 +983,9 @@ async function toggleLike(e,btn){
 }
 
 
+/* =====================================
+   SISTEMA DE FAVORITOS
+   ===================================== */
   function salvarLikeLocal(id, liked){
 
   let likes = JSON.parse(localStorage.getItem("likes")) || {};
@@ -964,7 +1024,7 @@ function mostrarFavoritos(){
   listaFiltrada = listaMisturadaGlobal.filter(jogo => {
 
     const id = jogo.id || jogo.title + jogo.store;
-    return likes[id]; // 🔥 aqui
+    return likes[id];
 
   });
 
@@ -976,8 +1036,30 @@ function resetLikes() {
   fetch("/api/resetLikes", {
     method: "POST"
   }).then(() => {
-    localStorage.removeItem("likes"); // limpa coração
+    localStorage.removeItem("likes");
     location.reload();
   });
 }
 
+
+async function resetLikes() {
+  const senha = prompt("Digite a senha:");
+
+  if (!senha) return;
+
+  const res = await fetch("/api/reset-likes", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ senha })
+  });
+
+  const data = await res.json();
+
+  if (res.ok) {
+    alert("✅ " + data.message);
+  } else {
+    alert("❌ " + data.error);
+  }
+}

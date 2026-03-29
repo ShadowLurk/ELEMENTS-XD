@@ -6,6 +6,8 @@ node_modules/
 
 # Ambiente
 .env
+.env.local
+.env.*.local
 
 # Build
 dist/

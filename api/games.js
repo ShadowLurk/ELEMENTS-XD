@@ -2,8 +2,10 @@ import axios from "axios";
 
 const EXPIRE_REMOVE_DAYS = 2;
 
-const STEAM_LIMIT = 120;
-const GOG_LIMIT = 100;
+/*META DE JOGOS*/ 
+const META_STEAM = 120;
+const META_GOG = 120;
+const META_EPIC = 2;
 
 // =============================
 // 🧠 Helpers
@@ -69,13 +71,13 @@ async function getSteamBRPrice(appID) {
 // =============================
 // 🔵 Steam Deals (PARALELO CONTROLADO)
 // =============================
-export async function getSteamDeals() {
-  const MAX_FETCH = 120; // busca mais resultados para garantir
+export async function getSteamDeals(limite) {
+  const MAX_FETCH = limite * 2; // busca mais resultados para garantir
   
   let page = 0;
 let allDeals = [];
 
-while (allDeals.length < MAX_FETCH && page < 5) {
+while (allDeals.length < limite && page < 5) {
   const response = await axios.get(
     "https://www.cheapshark.com/api/1.0/deals",
     {
@@ -99,7 +101,7 @@ const games = allDeals.slice(0, MAX_FETCH);
   const batchSize = 8;
   const results = [];
 
-  for (let i = 0; i < games.length && results.length < STEAM_LIMIT; i += batchSize) {
+  for (let i = 0; i < games.length && results.length < limite; i += batchSize) {
     const batch = games.slice(i, i + batchSize);
 
     const promises = batch.map(async (game) => {
@@ -143,13 +145,13 @@ const games = allDeals.slice(0, MAX_FETCH);
 
   return filtrarDuplicadosPorTituloExato(results)
   .filter((d) => !shouldRemoveDeal(d))
-  .slice(0, STEAM_LIMIT);
+  .slice(0, limite);
 }
 
 // =============================
 // 🟣 Epic Deals
 // =============================
-export async function getEpicDeals() {
+export async function getEpicDeals(limite) {
   try {
     const response = await axios.get(
       "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions?locale=pt-BR&country=BR",
@@ -201,7 +203,7 @@ export async function getEpicDeals() {
       }
     });
 
-    return epicGames.slice(0, 10);
+    return epicGames.slice(0, limite);
   } catch (err) {
     console.error("Erro ao buscar jogos da Epic:", err.message);
     return [];
@@ -211,12 +213,12 @@ export async function getEpicDeals() {
 // =============================
 // 🟢 GOG Deals (API DIRETA RÁPIDA)
 // =============================
-export async function getGogDeals() {
+export async function getGogDeals(limite) {
   const gogResults = [];
   let page = 1;
 
   try {
-    while (gogResults.length < GOG_LIMIT && page <= 35) { // busca até 20 páginas no máximo
+    while (gogResults.length < limite && page <= 35) { // busca até 20 páginas no máximo
       const response = await axios.get("https://www.gog.com/games/ajax/filtered", {
         params: {
           mediaType: "game",
@@ -271,7 +273,7 @@ export async function getGogDeals() {
           addedAt: new Date(),
         });
 
-        if (gogResults.length >= GOG_LIMIT) break; // já atingiu o limite
+        if (gogResults.length >= limite) break; // já atingiu o limite
       }
 
       page++;
@@ -279,7 +281,7 @@ export async function getGogDeals() {
 
     return filtrarDuplicadosPorTituloExato(gogResults)
   .filter((d) => !shouldRemoveDeal(d))
-  .slice(0, GOG_LIMIT);
+  .slice(0, limite);
 
   } catch (err) {
     console.error("Erro GOG:", err.message);
@@ -287,27 +289,47 @@ export async function getGogDeals() {
   }
 }
 
+
+
 export default async function handler(req, res) {
 
   // ✅ CACHE REAL NA CDN (15 minutos)
   res.setHeader(
     "Cache-Control",
-    "s-maxage=900, stale-while-revalidate=300"
+    "s-maxage=1200, stale-while-revalidate=300"
   );
 
   try {
     console.log("♻️ Atualizando jogos...");
 
-    const [steam, epic, gog] = await Promise.all([
-      getSteamDeals().catch(() => []),
-      getEpicDeals().catch(() => []),
-      getGogDeals().catch(() => []),
-    ]);
+const steam = await getSteamDeals(META_STEAM);
+const gog = await getGogDeals(META_GOG);
+const epic = await getEpicDeals(META_EPIC);
+
+
+const metas = {
+  steam: {
+    atual: steam.length,
+    meta: META_STEAM,
+    atingida: steam.length >= META_STEAM
+  },
+  gog: {
+    atual: gog.length,
+    meta: META_GOG,
+    atingida: gog.length >= META_GOG
+  },
+  epic: {
+    atual: epic.length,
+    meta: META_EPIC,
+    atingida: epic.length >= META_EPIC
+  },
+};
 
     return res.status(200).json({
       steam,
       epic,
-      gog
+      gog,
+      metas
     });
 
   } catch (err) {

@@ -1,3 +1,6 @@
+/* =====================================
+   API DE LIKES
+   ===================================== */
 import { Redis } from "@upstash/redis";
 
 const redis = Redis.fromEnv();
