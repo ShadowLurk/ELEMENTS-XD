@@ -1724,3 +1724,27 @@ body.light .logo-box img{
   }
 
 }
+
+/*BARRA DE PESQUISA*/
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin: 5px 0;
+}
+
+#searchInput {
+  width: 280px;
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: 2px solid #b300ff;
+  outline: none;
+  background: var(--card);
+  color: var(--text);
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+#searchInput:focus {
+  border-color: #b300ff;
+  box-shadow: 0 0 10px #a855f7;
+}

@@ -17,6 +17,9 @@ let paginaAtual = 1;
 let listaMisturadaGlobal = [];
 let likesGlobal = {};
 
+let categoriaAtual = "Todos";
+let lojaAtual = "Todas";
+
 const jogosPorPagina = 12;
 const MAX_VISIBLE = 5;
 const LIMITE_POR_LOJA = 60;
@@ -287,6 +290,68 @@ document.addEventListener("DOMContentLoaded", () => {
     path === "/index.html" ||
     path.endsWith("/index.html") ||
     path.endsWith("index.html");
+
+
+
+    /*Pesquisa*/
+  const searchInput = document.getElementById("searchInput");
+  if (!searchInput) return;
+
+  function buscarJogos(termo) {
+  paginaAtual = 1;
+
+  const termoLower = termo.toLowerCase();
+
+  // 🔥 se vazio → volta pro filtro normal
+  if (!termoLower) {
+    filtrar(categoriaAtual);
+    return;
+  }
+
+  // 🔥 1. começa da base COMPLETA
+  let base = [...todosJogos];
+
+  // 🔥 2. aplica categoria
+  if (categoriaAtual === "Jogos") {
+    base = base.filter(j =>
+      ["Steam", "Epic", "GOG"].includes(j.store)
+    );
+  }
+
+  else if (categoriaAtual === "Pecas") {
+    base = base.filter(j =>
+      ["Amazon", "AliExpress"].includes(j.store)
+    );
+  }
+
+  // 🔥 3. aplica loja
+  if (lojaAtual !== "Todas") {
+    base = base.filter(j =>
+      j.store === lojaAtual
+    );
+  }
+
+  // 🔥 4. aplica busca
+  listaFiltrada = base.filter(jogo =>
+    jogo.title?.toLowerCase().includes(termoLower)
+  );
+
+  renderizar(listaFiltrada);
+}
+
+  // 🔎 enquanto digita
+  searchInput.addEventListener("input", () => {
+    buscarJogos(searchInput.value);
+  });
+
+  // ⏎ enter
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      buscarJogos(searchInput.value);
+    }
+  });
+
 
 });
 
@@ -1063,3 +1128,4 @@ async function resetLikes() {
     alert("❌ " + data.error);
   }
 }
+
