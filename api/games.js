@@ -3,8 +3,8 @@ import axios from "axios";
 const EXPIRE_REMOVE_DAYS = 2;
 
 /*META DE JOGOS*/ 
-const META_STEAM = 120;
-const META_GOG = 120;
+const META_STEAM = 180;
+const META_GOG = 180;
 const META_EPIC = 2;
 
 // =============================
@@ -72,7 +72,7 @@ async function getSteamBRPrice(appID) {
 // 🔵 Steam Deals (PARALELO CONTROLADO)
 // =============================
 export async function getSteamDeals(limite) {
-  const MAX_FETCH = limite * 2; // busca mais resultados para garantir
+  const MAX_FETCH = limite; // busca mais resultados para garantir
   
   let page = 0;
 let allDeals = [];
@@ -98,7 +98,7 @@ while (allDeals.length < limite && page < 5) {
 
 const games = allDeals.slice(0, MAX_FETCH);
 
-  const batchSize = 8;
+  const batchSize = 12;
   const results = [];
 
   for (let i = 0; i < games.length && results.length < limite; i += batchSize) {
@@ -296,7 +296,7 @@ export default async function handler(req, res) {
   // ✅ CACHE REAL NA CDN (15 minutos)
   res.setHeader(
     "Cache-Control",
-    "s-maxage=1200, stale-while-revalidate=300"
+    "s-maxage=1800, stale-while-revalidate=1200"
   );
 
   try {

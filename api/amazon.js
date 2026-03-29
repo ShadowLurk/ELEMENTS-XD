@@ -413,7 +413,7 @@ products.push({
 
    return products
   .filter(p => p.salePriceBRL && p.discount > 0)
-  .slice(0, 20);
+  .slice(0, 16);
 
   } catch (err) {
 
