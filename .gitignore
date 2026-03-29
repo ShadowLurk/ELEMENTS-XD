@@ -3,7 +3,6 @@ npm-debug.log
 yarn-error.log
 node_modules/
 
-
 # Ambiente
 .env
 .env.local
@@ -13,3 +12,7 @@ node_modules/
 dist/
 build/
 .vercel
+
+# Seus arquivos personalizados
+edis.js
+likes.json
