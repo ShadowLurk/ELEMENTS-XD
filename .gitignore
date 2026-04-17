@@ -14,5 +14,6 @@ build/
 .vercel
 
 # Seus arquivos personalizados
-edis.js
+redis.js
 likes.json
+likes.js

@@ -1729,6 +1729,7 @@ body.light .logo-box img{
 .search-container {
   display: flex;
   justify-content: center;
+  align-items: center;
   margin: 5px 0;
 }
 
@@ -1747,4 +1748,60 @@ body.light .logo-box img{
 #searchInput:focus {
   border-color: #b300ff;
   box-shadow: 0 0 10px #a855f7;
+}
+
+
+/*Botão PUSH*/
+#searchBtn {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: 2px solid #b300ff;
+
+  background: linear-gradient(135deg, #1a1a1a, #2a003a);
+  color: #fff;
+
+  font-weight: bold;
+  letter-spacing: 1px;
+
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+
+  position: relative;
+  overflow: hidden;
+}
+
+/* 🔥 glow */
+#searchBtn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 15px #b300ff, 0 0 30px #b300ff55;
+  border-color: #d34dff;
+}
+
+/* clique */
+#searchBtn:active {
+  transform: scale(0.95);
+}
+
+/* ✨ efeito brilho passando */
+#searchBtn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.4),
+    transparent
+  );
+
+  transition: 0.5s;
+}
+
+#searchBtn:hover::before {
+  left: 100%;
 }
