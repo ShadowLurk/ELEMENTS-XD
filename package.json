@@ -1,0 +1,32 @@
+{
+  "name": "elements-site",
+  "description": "Servidor de promoções Gamer!",
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.38.0",
+    "axios": "^1.17.0",
+    "cheerio": "^1.2.0"
+  },
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShadowLurk/ELEMENTS-XD.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShadowLurk/ELEMENTS-XD/issues"
+  },
+  "homepage": "https://github.com/ShadowLurk/ELEMENTS-XD#readme"
+}

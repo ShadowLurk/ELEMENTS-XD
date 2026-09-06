@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Social — Elements XD</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="dark">
+
+  <header>
+    <div class="topbar">
+      <a href="/" class="logo" aria-label="Elements XD — início">
+        <span class="logo-text">ELEMENTS</span><span class="logo-x">XD</span>
+      </a>
+
+      <div class="top-actions">
+        <button class="icon-btn" onclick="irParaIndex(event,'Todos')" title="Favoritos" aria-label="Ver favoritos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-10-9.3C.5 8 2 4.5 5.5 4c2-.3 3.8.7 5 2.3C11.7 4.7 13.5 3.7 15.5 4c3.5.5 5 4 3.5 7.7C19 16.4 12 21 12 21Z"/></svg>
+        </button>
+        <button id="theme-Toggle" class="icon-btn" title="Alternar tema" aria-label="Alternar tema claro/escuro">☀️</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <aside class="sidebar">
+      <nav class="icon-nav">
+        <button class="icon-nav-item" data-categoria="Todos" onclick="irParaIndex(event, 'Todos')" title="Todas as ofertas" aria-label="Todas as ofertas">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c4 0 7-2.7 7-6.5C19 10.3 15.8 8 15 5c-.3 2.6-1.8 3.4-1.8 5.6 0-2-1-3-1-4.6-2 1.8-4.2 4.8-4.2 8C8 18.3 8.5 21 12 21Z"/></svg>
+          <span class="nav-label">Ofertas</span>
+        </button>
+        <button class="icon-nav-item" data-categoria="Jogos" onclick="irParaIndex(event, 'Jogos')" title="Jogos em oferta" aria-label="Jogos em oferta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="20" height="10" rx="5"/><path d="M7 11v4M5 13h4"/><circle cx="16" cy="12" r="1"/><circle cx="18.3" cy="14.3" r="1"/></svg>
+          <span class="nav-label">Jogos</span>
+        </button>
+        <button class="icon-nav-item" data-categoria="Pecas" onclick="irParaIndex(event, 'Pecas')" title="Peças de PC" aria-label="Peças de PC">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+          <span class="nav-label">Hardware</span>
+        </button>
+        <button class="icon-nav-item" onclick="irParaSobre()" title="Sobre" aria-label="Sobre">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+          <span class="nav-label">Sobre</span>
+        </button>
+        <button class="icon-nav-item" onclick="abrirModal()" title="Contato" aria-label="Contato">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          <span class="nav-label">Contato</span>
+        </button>
+        <button class="icon-nav-item ativo nav-item-channel" onclick="window.location.href='social.html'" title="Social" aria-label="Social">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6"/><circle cx="17.5" cy="9" r="2.3"/><path d="M15.8 14.3c2.6.4 4.7 2.4 4.7 5.7"/></svg>
+          <span class="nav-label nav-label-stack">Social<small>Canal &amp; Redes</small></span>
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <p class="sidebar-follow">SIGA-NOS</p>
+        <div class="sidebar-social">
+          <a href="https://www.youtube.com/@MinyCreeper" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="m10 9.5 5 2.5-5 2.5Z" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="https://www.twitch.tv/minycreeper_" target="_blank" rel="noopener" title="Twitch" aria-label="Twitch">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3h16v10l-4 4h-4l-3 3H7v-3H4Z"/><path d="M13 7v4M17 7v4"/></svg>
+          </a>
+          <a href="https://instagram.com/elements.xd" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+          </a>
+          <a href="https://www.tiktok.com/@miny_creeper" target="_blank" rel="noopener" title="TikTok" aria-label="TikTok">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v11.5a3.5 3.5 0 1 1-3-3.46"/><path d="M14 3c.5 2.5 2.3 4.2 5 4.5"/></svg>
+          </a>
+        </div>
+        <p class="sidebar-copy">© 2026 Elements XD<br>Todos os direitos reservados.</p>
+      </div>
+    </aside>
+
+    <main class="content">
+
+      <!-- HERO -->
+      <section class="sobre-hero social-hero">
+        <div class="sobre-hero-content">
+          <span class="sobre-kicker">CENTRAL DA COMUNIDADE</span>
+          <h1 class="sobre-title">CONECTE-SE COM <span class="grad">NOSSAS REDES</span></h1>
+          <p class="sobre-hero-text">
+            Aqui você encontra todas as nossas redes sociais,</p>
+          <p class="sobre-hero-text">
+            canais e informações importantes.
+          </p>
+        </div>
+
+        <div class="social-hero-visual" aria-hidden="true">
+          <img src="img/suzuki.png" alt="">
+          <div class="social-hero-tag">
+            <span class="social-hero-name">SUZUKI</span>
+            <span class="social-hero-icons">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="20" height="10" rx="5"/><path d="M7 11v4M5 13h4"/><circle cx="16" cy="12" r="1"/><circle cx="18.3" cy="14.3" r="1"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-11.8 7.8L4 21l1.7-5.2A8.5 8.5 0 1 1 21 11.5Z"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="m10 9.5 5 2.5-5 2.5Z" fill="currentColor" stroke="none"/></svg>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- CANAL PRINCIPAL (estilo YouTube) -->
+      <section class="yt-channel">
+        <div class="yt-banner">
+          <img src="img/yt-banner.png" alt="Banner do canal MinyCreeper">
+        </div>
+
+        <div class="yt-channel-header">
+          <img class="yt-avatar" src="img/yt-avatar.jpg" alt="Avatar do canal MinyCreeper">
+
+          <div class="yt-channel-info">
+            <h2>MinyCreeper</h2>
+            <div class="yt-channel-meta">
+              <span class="yt-inscritos" id="ytInscritos">841 inscritos</span>
+              <span class="yt-dot">•</span>
+              <span class="yt-views" id="ytViews">+12K visualizações</span>
+            </div>
+          </div>
+
+          <a href="https://www.youtube.com/@MinyCreeper" target="_blank" rel="noopener" class="btn-canal yt-inscrever">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 15.5 15.5 12 10 8.5v7Z"/><path d="M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+            Inscrever-se
+          </a>
+        </div>
+
+        <p class="yt-desc">
+          Conteúdo de qualidade com muita zoeira: <strong>lives</strong>, <strong>shorts</strong> e <strong>vídeos</strong> de games e humor toda semana!
+        </p>
+      </section>
+
+      <!-- MINHAS REDES -->
+      <h2 class="social-secao-titulo">MINHAS REDES</h2>
+      <p class="social-secao-sub">Acompanhe meu conteúdo em todas as plataformas.</p>
+
+      <div class="redes-grid">
+        <div class="rede-card rede-youtube">
+          <div class="rede-icone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="m10 9.5 5 2.5-5 2.5Z" fill="currentColor" stroke="none"/></svg>
+          </div>
+          <h3>YouTube</h3>
+          <p class="rede-handle">@MinyCreeper</p>
+          <p class="rede-desc">Vídeos, lives e muito mais!</p>
+          <a href="https://www.youtube.com/@MinyCreeper" target="_blank" rel="noopener" class="btn-rede">Acessar canal
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
+          </a>
+        </div>
+
+        <div class="rede-card rede-twitch">
+          <div class="rede-icone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3h16v10l-4 4h-4l-3 3H7v-3H4Z"/><path d="M13 7v4M17 7v4"/></svg>
+          </div>
+          <h3>Twitch</h3>
+          <p class="rede-handle">minycreeper_</p>
+          <p class="rede-desc">Lives com a galera. Jogos, conversas e zoeiras!</p>
+          <a href="https://www.twitch.tv/minycreeper_" target="_blank" rel="noopener" class="btn-rede">Acessar canal
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
+          </a>
+        </div>
+
+        <div class="rede-card rede-tiktok">
+          <div class="rede-icone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v11.5a3.5 3.5 0 1 1-3-3.46"/><path d="M14 3c.5 2.5 2.3 4.2 5 4.5"/></svg>
+          </div>
+          <h3>TikTok</h3>
+          <p class="rede-handle">@miny_creeper</p>
+          <p class="rede-desc">Clipes e momentos engraçados dos bastidores!</p>
+          <a href="https://www.tiktok.com/@miny_creeper" target="_blank" rel="noopener" class="btn-rede">Acessar perfil
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- ELEMENTS XD -->
+      <h2 class="social-secao-titulo">ELEMENTS XD</h2>
+      <p class="social-secao-sub">A plataforma feita de gamer para gamers.</p>
+
+      <div class="xd-grid">
+        <div class="xd-card">
+          <img src="favicon.png" alt="Elements XD" class="xd-logo">
+          <div>
+            <h3>ElementsXD</h3>
+            <p class="xd-slogan">De Gamer para Gamers.</p>
+            <p class="xd-desc">Reunimos os melhores jogos, peças de hardware e promoções em um só lugar para você economizar e montar o setup dos seus sonhos.</p>
+          </div>
+        </div>
+
+        <div class="xd-card xd-card-insta">
+          <div class="xd-insta-icone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+          </div>
+          <div>
+            <p class="xd-insta-kicker">Instagram Oficial</p>
+            <h3>@elements.xd</h3>
+            <p class="xd-desc">Novidades, promoções e bastidores da ElementsXD!</p>
+            <a href="https://instagram.com/elements.xd" target="_blank" rel="noopener" class="btn-canal btn-outline">Seguir no Instagram
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUZUKI -->
+      <h2 class="social-secao-titulo">CONHEÇA A SUZUKI</h2>
+      <p class="social-secao-sub">Mais que uma mascote, uma companheira para sua jornada gamer!</p>
+
+      <section class="suzuki-card">
+        <div class="suzuki-visual">
+          <img src="img/suzuki.png" alt="Suzuki, mascote do Elements XD">
+        </div>
+
+        <div class="suzuki-info">
+          <h3>Suzuki</h3>
+          <p class="suzuki-sub">AI Assistant da ElementsXD</p>
+          <p class="suzuki-desc">Suzuki é a assistente virtual oficial da ElementsXD. Ela está aqui para ajudar, dar recomendações, trazer novidades e tornar sua experiência ainda melhor!</p>
+          <div class="suzuki-tags">
+            <span>Inteligente</span>
+            <span>Divertida</span>
+            <span>Sempre Online</span>
+          </div>
+        </div>
+
+        <div class="suzuki-status">
+          <div class="suzuki-status-topo">
+            <span>STATUS</span>
+            <span class="suzuki-online"><i></i>ONLINE</span>
+          </div>
+          <div class="suzuki-bar">
+            <div class="suzuki-bar-label"><span>Personalidade</span><span>95%</span></div>
+            <div class="suzuki-bar-track"><div class="suzuki-bar-fill" style="width:95%"></div></div>
+          </div>
+          <div class="suzuki-bar">
+            <div class="suzuki-bar-label"><span>Interação</span><span>90%</span></div>
+            <div class="suzuki-bar-track"><div class="suzuki-bar-fill" style="width:90%"></div></div>
+          </div>
+          <div class="suzuki-bar">
+            <div class="suzuki-bar-label"><span>Conhecimento</span><span>92%</span></div>
+            <div class="suzuki-bar-track"><div class="suzuki-bar-fill" style="width:92%"></div></div>
+          </div>
+          <div class="suzuki-bar">
+            <div class="suzuki-bar-label"><span>Companheirismo</span><span>98%</span></div>
+            <div class="suzuki-bar-track"><div class="suzuki-bar-fill" style="width:98%"></div></div>
+          </div>
+          <p class="suzuki-quote">"Conte comigo sempre!" – Suzuki 💜</p>
+        </div>
+      </section>
+
+      <!-- CTA FINAL -->
+      <section class="social-cta-final">
+        <div class="social-cta-icone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6"/><circle cx="17.5" cy="9" r="2.3"/><path d="M15.8 14.3c2.6.4 4.7 2.4 4.7 5.7"/></svg>
+        </div>
+        <div class="social-cta-texto">
+          <h3>FAÇA PARTE DA COMUNIDADE</h3>
+          <p>Siga, acompanhe e interaja! Sua presença faz tudo isso ser ainda mais incrível.</p>
+        </div>
+        <div class="social-cta-icones">
+          <a href="https://www.youtube.com/@MinyCreeper" target="_blank" rel="noopener" title="YouTube">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="m10 9.5 5 2.5-5 2.5Z" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="https://www.twitch.tv/minycreeper_" target="_blank" rel="noopener" title="Twitch">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3h16v10l-4 4h-4l-3 3H7v-3H4Z"/><path d="M13 7v4M17 7v4"/></svg>
+          </a>
+          <a href="https://www.tiktok.com/@miny_creeper" target="_blank" rel="noopener" title="TikTok">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v11.5a3.5 3.5 0 1 1-3-3.46"/><path d="M14 3c.5 2.5 2.3 4.2 5 4.5"/></svg>
+          </a>
+          <a href="https://instagram.com/elements.xd" target="_blank" rel="noopener" title="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+          </a>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer>
+    <div class="rodape">
+      © 2026 ELEMENTS XD — Todos os direitos reservados.
+      <a href="https://instagram.com/elements.xd" target="_blank" rel="noopener" class="rodape-link">@elements.xd</a>
+      <a href="atualizacoes.html" class="versao">V-3.0</a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+
+    <div id="modalContato" class="modal">
+    <div class="modal-box modal-box-contato">
+      <span class="fechar" onclick="fecharModal()">&times;</span>
+      <h2>Teve uma ideia que podemos acrescentar no site?</h2>
+      <p class="modal-sub">Manda pra gente por qualquer um desses canais:</p>
+
+      <div class="contato-lista">
+        <a href="mailto:elements13dk@gmail.com" class="contato-item">
+          <span class="contato-icone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          </span>
+          <span class="contato-texto">
+            <span class="contato-label">E-mail</span>
+            <span class="contato-valor">elements13dk@gmail.com</span>
+          </span>
+        </a>
+
+        <a href="https://instagram.com/elements.xd" target="_blank" rel="noopener" class="contato-item">
+          <span class="contato-icone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+          </span>
+          <span class="contato-texto">
+            <span class="contato-label">Instagram</span>
+            <span class="contato-valor">@elements.xd</span>
+          </span>
+        </a>
+      </div>
+
+      <button onclick="fecharModal()">Fechar</button>
+    </div>
+  </div>
+
+  <script>
+    function abrirModal() { document.getElementById("modalContato").style.display = "flex"; }
+    function fecharModal() { document.getElementById("modalContato").style.display = "none"; }
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") fecharModal(); });
+    document.getElementById("modalContato").addEventListener("click", (e) => {
+      if (e.target.id === "modalContato") fecharModal();
+    });
+  </script>
+
+  <script>
+    // Busca os números reais do canal (atualizados a cada 30min pelo cron)
+    fetch("/api/youtube")
+      .then((r) => r.ok ? r.json() : Promise.reject())
+      .then((stats) => {
+        const inscritosEl = document.getElementById("ytInscritos");
+        const viewsEl = document.getElementById("ytViews");
+
+        if (inscritosEl && stats.subscribersText) {
+          inscritosEl.textContent = stats.subscribersText;
+        }
+
+        if (viewsEl) {
+          if (stats.viewsText) {
+            viewsEl.textContent = stats.viewsText;
+          } else {
+            viewsEl.remove(); // some o "•" órfão junto
+            document.querySelector(".yt-dot")?.remove();
+          }
+        }
+      })
+      .catch(() => {
+        // Mantém os valores estáticos do HTML se a API falhar
+      });
+  </script>
+
+</body>
+</html>

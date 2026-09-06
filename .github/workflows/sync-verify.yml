@@ -1,0 +1,17 @@
+name: Verify Games (remove expired promotions)
+
+on:
+  schedule:
+
+    - cron: "0 */12 * * *"
+  workflow_dispatch: {} 
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chamar endpoint de verificação
+        run: |
+          curl -sS -f -X GET \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.SITE_URL }}/api/cron/sync-verify"

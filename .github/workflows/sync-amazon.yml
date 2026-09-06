@@ -1,0 +1,16 @@
+name: Sync Amazon (por categoria)
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chamar endpoint de sync da Amazon
+        run: |
+          curl -sS -f -X GET \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.SITE_URL }}/api/cron/sync-amazon"

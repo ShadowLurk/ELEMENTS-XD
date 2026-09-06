@@ -1,0 +1,16 @@
+name: Verify Amazon (remove expired promotions)
+
+on:
+  schedule:
+    - cron: "30 */4 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chamar endpoint de verificação da Amazon
+        run: |
+          curl -sS -f -X GET \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.SITE_URL }}/api/cron/sync-amazon-verify"

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Atualizações — Elements XD</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="dark">
+
+  <header>
+    <div class="topbar">
+      <a href="/" class="logo" aria-label="Elements XD — início">
+        <span class="logo-text">ELEMENTS</span><span class="logo-x">XD</span>
+      </a>
+
+      <div class="top-actions">
+        <button class="icon-btn" onclick="irParaIndex(event,'Todos')" title="Favoritos" aria-label="Ver favoritos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-10-9.3C.5 8 2 4.5 5.5 4c2-.3 3.8.7 5 2.3C11.7 4.7 13.5 3.7 15.5 4c3.5.5 5 4 3.5 7.7C19 16.4 12 21 12 21Z"/></svg>
+        </button>
+        <button id="theme-Toggle" class="icon-btn" title="Alternar tema" aria-label="Alternar tema claro/escuro">☀️</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <aside class="sidebar">
+      <nav class="icon-nav">
+        <button class="icon-nav-item" data-categoria="Todos" onclick="irParaIndex(event, 'Todos')" title="Todas as ofertas" aria-label="Todas as ofertas">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c4 0 7-2.7 7-6.5C19 10.3 15.8 8 15 5c-.3 2.6-1.8 3.4-1.8 5.6 0-2-1-3-1-4.6-2 1.8-4.2 4.8-4.2 8C8 18.3 8.5 21 12 21Z"/></svg>
+          <span class="nav-label">Ofertas</span>
+        </button>
+        <button class="icon-nav-item" data-categoria="Jogos" onclick="irParaIndex(event, 'Jogos')" title="Jogos em oferta" aria-label="Jogos em oferta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="20" height="10" rx="5"/><path d="M7 11v4M5 13h4"/><circle cx="16" cy="12" r="1"/><circle cx="18.3" cy="14.3" r="1"/></svg>
+          <span class="nav-label">Jogos</span>
+        </button>
+        <button class="icon-nav-item" data-categoria="Pecas" onclick="irParaIndex(event, 'Pecas')" title="Peças de PC" aria-label="Peças de PC">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+          <span class="nav-label">Hardware</span>
+        </button>
+        <button class="icon-nav-item ativo" onclick="irParaSobre()" title="Sobre" aria-label="Sobre">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+          <span class="nav-label">Sobre</span>
+        </button>
+        <button class="icon-nav-item" onclick="abrirModal()" title="Contato" aria-label="Contato">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          <span class="nav-label">Contato</span>
+        </button>
+        <button class="icon-nav-item nav-item-channel" onclick="window.location.href='social.html'" title="Social" aria-label="Social">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6"/><circle cx="17.5" cy="9" r="2.3"/><path d="M15.8 14.3c2.6.4 4.7 2.4 4.7 5.7"/></svg>
+          <span class="nav-label nav-label-stack">MinyCreeper<small>Canal &amp; Redes</small></span>
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <p class="sidebar-follow">SIGA-NOS</p>
+        <div class="sidebar-social">
+          <a href="https://www.youtube.com/@MinyCreeper" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="m10 9.5 5 2.5-5 2.5Z" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="https://www.twitch.tv/minycreeper_" target="_blank" rel="noopener" title="Twitch" aria-label="Twitch">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3h16v10l-4 4h-4l-3 3H7v-3H4Z"/><path d="M13 7v4M17 7v4"/></svg>
+          </a>
+          <a href="https://instagram.com/elements.xd" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+          </a>
+          <a href="https://www.tiktok.com/@miny_creeper" target="_blank" rel="noopener" title="TikTok" aria-label="TikTok">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v11.5a3.5 3.5 0 1 1-3-3.46"/><path d="M14 3c.5 2.5 2.3 4.2 5 4.5"/></svg>
+          </a>
+        </div>
+        <p class="sidebar-copy">© 2026 Elements XD<br>Todos os direitos reservados.</p>
+      </div>
+    </aside>
+
+    <main class="content">
+
+      <div class="updates-header">
+        <h1>ATUALIZAÇÕES <span class="grad">DO SITE</span></h1>
+        <p>Acompanhe todas as melhorias, novidades e correções da Elements XD.</p>
+      </div>
+
+      <section class="sobre-texto">
+        <div class="botoes-sobre">
+          <a href="sobre.html" class="btn-sobre">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+            Sobre o Projeto
+          </a>
+          <a href="atualizacoes.html" class="btn-sobre ativo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.3 6.4L3 16m0 5v-5h5"/></svg>
+            Atualizações do Site
+          </a>
+        </div>
+
+        <div class="timeline">
+
+          <div class="timeline-item">
+            <span class="timeline-dot"></span>
+            <div class="timeline-card">
+              <div class="timeline-icon roxo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.2 6.8H21l-5.6 4.1 2.1 6.8L12 15.6l-5.5 4.1 2.1-6.8L3 8.8h6.8Z"/></svg>
+              </div>
+              <div class="timeline-body">
+                <div class="timeline-top">
+                  <span class="badge-update roxo">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.8H21l-5.6 4.1 2.1 6.8L12 15.6l-5.5 4.1 2.1-6.8L3 8.8h6.8Z"/></svg>
+                    SUZUKI UPDATE
+                  </span>
+                </div>
+                <h3 class="timeline-versao">V-3.0</h3>
+                <p class="timeline-tagline">A atualização mais completa da Elements XD até hoje — e a chegada oficial da Suzuki!</p>
+                <ul class="timeline-checklist">
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Aparência do site atualizada em todas as abas</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Novas imagens incluídas</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Nova aba "Social" com todas as redes sociais</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Coleta de jogos e peças agora sem limite, sempre atualizando em tempo real</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Novos filtros: Monitor, Teclado, Mouse e Headset</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Pacote de segurança atualizado para melhor experiência</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Novas animações</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>🐾 Suzuki integrada oficialmente como mascote e assistente do site</li>
+                </ul>
+                <div class="timeline-resumo">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6Z"/></svg>
+                  <p><strong>Resumo:</strong> Site com visual renovado em todas as abas, nova aba Social, coleta de jogos e peças sem limite em tempo real, novos filtros de periféricos, pacote de segurança reforçado, novas animações e, o mais importante: a Suzuki chegou oficialmente como mascote e assistente da Elements XD!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="timeline-dot"></span>
+            <div class="timeline-card">
+              <div class="timeline-icon ciano">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14c-1.66 0-3 1.34-3 3 0 1.31-1.16 2-2 2 .92 1.22 2.49 2 4 2 2.21 0 4-1.79 4-4 0-1.66-1.34-3-3-3zm13.71-9.37l-1.34-1.34c-.39-.39-1.02-.39-1.41 0L9 12.25 11.75 15l8.96-8.96c.39-.39.39-1.02 0-1.41z"/></svg>
+              </div>
+              <div class="timeline-body">
+                <div class="timeline-top">
+                  <span class="badge-update ciano">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14c-1.66 0-3 1.34-3 3 0 1.31-1.16 2-2 2 .92 1.22 2.49 2 4 2 2.21 0 4-1.79 4-4 0-1.66-1.34-3-3-3zm13.71-9.37l-1.34-1.34c-.39-.39-1.02-.39-1.41 0L9 12.25 11.75 15l8.96-8.96c.39-.39.39-1.02 0-1.41z"/></svg>
+                    REMAKE
+                  </span>
+                </div>
+                <h3 class="timeline-versao">V-2.0</h3>
+                <p class="timeline-tagline">Uma das maiores atualizações do site até agora!</p>
+                <ul class="timeline-checklist">
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Remasterização do site</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Meta da Steam: 180</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Novo sistema de busca de promoções</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Meta da Epic: 10</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Atualização completa no pacote de animações</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Meta da GOG: 180</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Limites de jogos e peças atualizados</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Sistema da Amazon atualizado</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Sistema de metas adicionado</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Nova aparência para todo o site</li>
+                </ul>
+                <div class="timeline-resumo">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6Z"/></svg>
+                  <p><strong>Resumo:</strong> Além da remasterização visual e do novo sistema de busca/metas, essa versão trouxe um pacote completo de animações novas (cards, botões, filtros, modal, preloader) mantendo a identidade de cores do site, além da correção de bugs.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="timeline-dot"></span>
+            <div class="timeline-card">
+              <div class="timeline-icon laranja">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c4 0 7-2.7 7-6.5C19 10.3 15.8 8 15 5c-.3 2.6-1.8 3.4-1.8 5.6 0-2-1-3-1-4.6-2 1.8-4.2 4.8-4.2 8C8 18.3 8.5 21 12 21Z"/></svg>
+              </div>
+              <div class="timeline-body">
+                <div class="timeline-top">
+                  <span class="badge-update laranja">🔥 HOT</span>
+                </div>
+                <h3 class="timeline-versao">V-1.5</h3>
+                <p class="timeline-tagline">Novas funcionalidades para deixar sua experiência ainda melhor.</p>
+                <ul class="timeline-checklist">
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Barra de pesquisa incrementada</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Limite da Steam: 180</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Selo HOT para cards acima de 75% off</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Limite da GOG: 180</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Sistema de rank de likes atualizado</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Site livre de anúncios</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Informações da equipe na aba Sobre</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Novo sistema para buscar jogos</li>
+                </ul>
+                <div class="timeline-resumo">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6Z"/></svg>
+                  <p><strong>Resumo:</strong> Nova atualização trazendo uma barra de pesquisa, novo selo HOT para grandes descontos, melhorias no sistema de likes, novo sistema de busca de jogos e otimizações gerais com novas animações e aumento no limite de jogos para Steam e GOG.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="timeline-dot"></span>
+            <div class="timeline-card">
+              <div class="timeline-icon rosa">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-10-9.3C.5 8 2 4.5 5.5 4c2-.3 3.8.7 5 2.3C11.7 4.7 13.5 3.7 15.5 4c3.5.5 5 4 3.5 7.7C19 16.4 12 21 12 21Z"/></svg>
+              </div>
+              <div class="timeline-body">
+                <div class="timeline-top">
+                  <span class="badge-update rosa">❤️ FAVORITOS</span>
+                </div>
+                <h3 class="timeline-versao">V-1.4</h3>
+                <p class="timeline-tagline">Sistema de favoritos e ranking por likes.</p>
+                <ul class="timeline-checklist">
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Sistema de favoritos incrementado</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Top 5 no rank de likes com destaque</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Filtro favoritos adicionado</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Informações adicionais no início</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Sistema de rank de likes</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Atualização no pacote de animação</li>
+                </ul>
+                <div class="timeline-resumo">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6Z"/></svg>
+                  <p><strong>Resumo:</strong> Agora com sistema de favoritos, filtro dedicado, ranking por likes com Top 5 em destaque, mais informações na tela inicial e animações aprimoradas para uma experiência mais fluida.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="timeline-dot"></span>
+            <div class="timeline-card">
+              <div class="timeline-icon azul">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+              </div>
+              <div class="timeline-body">
+                <div class="timeline-top">
+                  <span class="badge-update azul">🧩 EXPANSÃO</span>
+                </div>
+                <h3 class="timeline-versao">V-1.3</h3>
+                <p class="timeline-tagline">Chegada das peças de PC ao catálogo.</p>
+                <ul class="timeline-checklist">
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Peças de computadores integradas nos cards</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Novo limite da Steam: 60 para 120</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Filtros: PC, GPU, RAM, CPU, Placa mãe, Fonte, Cooler, Gabinete, Armazenamento</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Novo limite da GOG: 60 para 100</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Novo filtro "Amazon"</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Nova tela de loading do site</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Categorias: All, Jogos e Peças</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Logo oficial do site implantada</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Nova estética para a aba "Menu"</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Caixa de contato adicionada</li>
+                </ul>
+                <div class="timeline-resumo">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6Z"/></svg>
+                  <p><strong>Resumo:</strong> Trouxe a nova área de PC com peças integradas aos cards e filtros completos, aumento no limite de jogos da Steam (120) e GOG (100), melhorias no sistema de catálogo, nova estética no menu, novas animações, correções de bugs e otimizações gerais de desempenho.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="timeline-dot"></span>
+            <div class="timeline-card">
+              <div class="timeline-icon amarelo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 11-13h-7l0-7Z"/></svg>
+              </div>
+              <div class="timeline-body">
+                <div class="timeline-top">
+                  <span class="badge-update amarelo">⚡ PERFORMANCE</span>
+                </div>
+                <h3 class="timeline-versao">V-1.2</h3>
+                <p class="timeline-tagline">Mais organização e novos recursos.</p>
+                <ul class="timeline-checklist">
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Renderização de jogos 10x mais rápida</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Novo selo "NOVO" para lançamentos</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Novo limite da Steam: 18 para 60</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Sistema de paginação incrementado</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Novo limite da GOG: 18 para 60</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Atalho para versões no rodapé</li>
+                </ul>
+                <div class="timeline-resumo">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6Z"/></svg>
+                  <p><strong>Resumo:</strong> Carregamento de jogos até 10x mais veloz, catálogo ampliado para 60 títulos (Steam e GOG), selo "NOVO" em lançamentos, paginação otimizada, animações atualizadas e atalhos no rodapé.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="timeline-dot"></span>
+            <div class="timeline-card">
+              <div class="timeline-icon verde">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
+              </div>
+              <div class="timeline-body">
+                <div class="timeline-top">
+                  <span class="badge-update verde">📱 MOBILE</span>
+                </div>
+                <h3 class="timeline-versao">V-1.1</h3>
+                <p class="timeline-tagline">Elements XD chega ao celular.</p>
+                <ul class="timeline-checklist">
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Integração do suporte para o site no celular</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Novas animações para PC e celular</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Novo layout para PC e celular</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Atualização do sistema de troca de temas</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Botão para expansão da aba "Menu"</li>
+                </ul>
+                <div class="timeline-resumo">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6Z"/></svg>
+                  <p><strong>Resumo:</strong> Uma atualização completa de suporte do site para celular, novo pacote de animações, um botão para expandir e minimizar a aba "Menu" para melhor experiência no mobile e um ajuste no sistema de troca de temas do site.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="timeline-dot"></span>
+            <div class="timeline-card">
+              <div class="timeline-icon cinza">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4a1 1 0 0 1 1-1h9l4 4v3"/><path d="M19 13v8M15 17h8"/></svg>
+              </div>
+              <div class="timeline-body">
+                <div class="timeline-top">
+                  <span class="badge-update cinza">🚩 LANÇAMENTO</span>
+                </div>
+                <h3 class="timeline-versao">V-1.0</h3>
+                <p class="timeline-tagline">O início da Elements XD.</p>
+                <ul class="timeline-checklist">
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Desenvolvimento da estrutura base do site</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Integração Steam, Epic Games e GOG Brasil</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Título ELEMENTS XD adicionado à estrutura</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Filtros: Steam, Epic e GOG adicionados</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Campos Menu e Info adicionados</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Cards de jogos e paginação integrados</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Troca de tema adicionada</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Criação das áreas "Sobre Nós" e "Atualizações"</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Campo "Ofertas da Semana" adicionado</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>Rodapé com direitos reservados e Instagram</li>
+                </ul>
+                <div class="timeline-resumo">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6Z"/></svg>
+                  <p><strong>Resumo:</strong> Configuração padrão de lançamento do site na web, cards com jogos de lojas oficiais famosas em rede global adicionados, animações de atualização na tela incrementadas.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="info-site">
+        <div class="logo-box">
+          <img src="favicon.png" alt="Logo Elements XD">
+        </div>
+        <div class="texto-box">
+          <h3>ELEMENTS XD</h3>
+          <p>
+            Nosso site reúne as melhores ofertas de jogos e hardware para PC. Monitoramos lojas
+            como Steam, Epic, GOG e Amazon para trazer promoções atualizadas diariamente.
+          </p>
+          <p>
+            Cards com links diretos e confiáveis, para maior facilidade de acesso e segurança
+            de quem visita o site.
+          </p>
+        </div>
+        <div class="features-box">
+          <div class="feature">⚡ Rápido</div>
+          <div class="feature">🔒 Seguro</div>
+          <div class="feature">🛒 Links confiáveis</div>
+          <div class="feature">🎮 Ofertas atualizadas</div>
+        </div>
+      </section>
+
+      <section class="parceiros">
+        <h2 class="titulo-parceiros">Confira nossas lojas parceiras</h2>
+        <div class="parceiros-grid">
+          <div class="parceiro"><img src="img/steam.png" alt="Steam"><span>Steam</span></div>
+          <div class="parceiro"><img src="img/epic.png" alt="Epic Games"><span>Epic Games</span></div>
+          <div class="parceiro"><img src="img/gog.png" alt="GOG"><span>GOG</span></div>
+          <div class="parceiro"><img src="img/amazon.png" alt="Amazon"><span>Amazon</span></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <div class="rodape">
+      © 2026 ELEMENTS XD — Todos os direitos reservados.
+      <a href="https://instagram.com/elements.xd" target="_blank" rel="noopener" class="rodape-link">@elements.xd</a>
+      <a href="atualizacoes.html" class="versao">V-3.0</a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+
+    <div id="modalContato" class="modal">
+    <div class="modal-box modal-box-contato">
+      <span class="fechar" onclick="fecharModal()">&times;</span>
+      <h2>Teve uma ideia que podemos acrescentar no site?</h2>
+      <p class="modal-sub">Manda pra gente por qualquer um desses canais:</p>
+
+      <div class="contato-lista">
+        <a href="mailto:elements13dk@gmail.com" class="contato-item">
+          <span class="contato-icone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          </span>
+          <span class="contato-texto">
+            <span class="contato-label">E-mail</span>
+            <span class="contato-valor">elements13dk@gmail.com</span>
+          </span>
+        </a>
+
+        <a href="https://instagram.com/elements.xd" target="_blank" rel="noopener" class="contato-item">
+          <span class="contato-icone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+          </span>
+          <span class="contato-texto">
+            <span class="contato-label">Instagram</span>
+            <span class="contato-valor">@elements.xd</span>
+          </span>
+        </a>
+      </div>
+
+      <button onclick="fecharModal()">Fechar</button>
+    </div>
+  </div>
+
+  <script>
+    function abrirModal() { document.getElementById("modalContato").style.display = "flex"; }
+    function fecharModal() { document.getElementById("modalContato").style.display = "none"; }
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") fecharModal(); });
+    document.getElementById("modalContato").addEventListener("click", (e) => {
+      if (e.target.id === "modalContato") fecharModal();
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const botoes = document.querySelectorAll(".btn-sobre");
+      let paginaAtual = window.location.pathname.split("/").pop();
+      if (paginaAtual === "" || paginaAtual === "index.html") paginaAtual = "sobre.html";
+      botoes.forEach(botao => {
+        if (botao.getAttribute("href") === paginaAtual) botao.classList.add("ativo");
+      });
+    });
+  </script>
+
+</body>
+</html>

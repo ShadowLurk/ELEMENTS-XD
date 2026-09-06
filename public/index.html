@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Elements XD — Ofertas de Jogos e Peças de PC</title>
+  <meta name="description" content="As melhores ofertas de jogos (Steam, Epic, GOG) e peças de PC (Amazon), atualizadas automaticamente.">
+
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body class="dark">
+
+  <header>
+    <div class="topbar">
+      <a href="/" class="logo" aria-label="Elements XD — início">
+        <span class="logo-text">ELEMENTS</span><span class="logo-x">XD</span>
+      </a>
+
+      <div class="header-search">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="headerSearchInput" placeholder="Pesquise jogos, peças, periféricos e muito mais..." />
+        <span class="kbd-hint">Ctrl + K</span>
+      </div>
+
+      <div class="top-actions">
+        <button class="icon-btn" onclick="mostrarFavoritos()" title="Favoritos" aria-label="Ver favoritos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-10-9.3C.5 8 2 4.5 5.5 4c2-.3 3.8.7 5 2.3C11.7 4.7 13.5 3.7 15.5 4c3.5.5 5 4 3.5 7.7C19 16.4 12 21 12 21Z"/></svg>
+          <span class="dot-badge"></span>
+        </button>
+        <button id="theme-Toggle" class="icon-btn user-avatar" title="Alternar tema" aria-label="Alternar tema claro/escuro">
+          <img src="img/suzuki-mini.png" alt="Perfil">
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <nav class="icon-nav">
+        <button class="icon-nav-item ativo" data-categoria="Jogos" onclick="irParaIndex(event, 'Jogos')" title="Jogos" aria-label="Jogos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="20" height="10" rx="5"/><path d="M7 11v4M5 13h4"/><circle cx="16" cy="12" r="1"/><circle cx="18.3" cy="14.3" r="1"/></svg>
+          <span class="nav-label">Jogos</span>
+        </button>
+        <button class="icon-nav-item" data-categoria="Pecas" onclick="irParaIndex(event, 'Pecas')" title="Hardware" aria-label="Hardware">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+          <span class="nav-label">Hardware</span>
+        </button>
+        <button class="icon-nav-item" data-categoria="Todos" onclick="irParaIndex(event, 'Todos')" title="Ofertas" aria-label="Ofertas">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c4 0 7-2.7 7-6.5C19 10.3 15.8 8 15 5c-.3 2.6-1.8 3.4-1.8 5.6 0-2-1-3-1-4.6-2 1.8-4.2 4.8-4.2 8C8 18.3 8.5 21 12 21Z"/></svg>
+          <span class="nav-label">Ofertas</span>
+        </button>
+        <button class="icon-nav-item" onclick="irParaSobre()" title="Sobre" aria-label="Sobre">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+          <span class="nav-label">Sobre</span>
+        </button>
+        <button class="icon-nav-item" onclick="abrirModal()" title="Contato" aria-label="Contato">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          <span class="nav-label">Contato</span>
+        </button>
+        <button class="icon-nav-item nav-item-channel" onclick="window.location.href='social.html'" title="Canal &amp; Redes" aria-label="Canal e redes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6"/><circle cx="17.5" cy="9" r="2.3"/><path d="M15.8 14.3c2.6.4 4.7 2.4 4.7 5.7"/></svg>
+          <span class="nav-label nav-label-stack">Social<small>Canal &amp; Redes</small></span>
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <p class="sidebar-follow">SIGA-NOS</p>
+        <div class="sidebar-social">
+          <a href="https://www.youtube.com/@MinyCreeper" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="m10 9.5 5 2.5-5 2.5Z" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="https://www.twitch.tv/minycreeper_" target="_blank" rel="noopener" title="Twitch" aria-label="Twitch">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3h16v10l-4 4h-4l-3 3H7v-3H4Z"/><path d="M13 7v4M17 7v4"/></svg>
+          </a>
+          <a href="https://instagram.com/elements.xd" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+          </a>
+          <a href="https://www.tiktok.com/@miny_creeper" target="_blank" rel="noopener" title="TikTok" aria-label="TikTok">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v11.5a3.5 3.5 0 1 1-3-3.46"/><path d="M14 3c.5 2.5 2.3 4.2 5 4.5"/></svg>
+          </a>
+        </div>
+
+        <div class="sidebar-status">
+          <div class="sidebar-status-top">
+            <span class="status-dot"></span>
+            <span>SYSTEM ONLINE</span>
+          </div>
+          <strong id="metaOfertasAtivas">— OFERTAS ATIVAS</strong>
+          <div class="status-graph">
+            <svg viewBox="0 0 100 24" preserveAspectRatio="none"><polyline points="0,18 12,14 24,16 36,8 48,11 60,5 72,9 84,3 100,6"/></svg>
+          </div>
+        </div>
+
+        <p class="sidebar-copy">© 2026 Elements XD<br>Todos os direitos reservados.</p>
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO -->
+    <main class="content">
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-kicker">BEM-VINDO A</span>
+          <h1 class="hero-title">ELEMENTS <span class="grad">XD</span></h1>
+          <p class="hero-text">SEU SETUP, SEUS JOGOS E<br><strong>SUAS MELHORES OFERTAS!</strong></p>
+
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <span class="hero-stat-icon">🎮</span>
+              <div class="hero-stat-info">
+                <strong>JOGOS</strong>
+                <small><span id="metaJogosNum">—</span> jogos</small>
+              </div>
+            </div>
+            <div class="hero-stat">
+              <span class="hero-stat-icon">🖥️</span>
+              <div class="hero-stat-info">
+                <strong>HARDWARE</strong>
+                <small><span id="metaPecasNum">—</span> peças</small>
+              </div>
+            </div>
+            <div class="hero-stat">
+              <span class="hero-stat-icon">🔥</span>
+              <div class="hero-stat-info">
+                <strong>OFERTAS</strong>
+                <small>As melhores!</small>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+          <img src="img/hero-suzuki.png" alt="" class="hero-visual-img">
+        </div>
+      </section>
+
+      <!-- NAVEGAÇÃO POR CATEGORIA -->
+      <div class="category-nav">
+        <button class="category-card ativo" onclick="filtrarUnificado('Jogos', document.querySelector('#filtros-principal .chip'))">
+          <span class="category-icon cat-jogos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="20" height="10" rx="5"/><path d="M7 11v4M5 13h4"/><circle cx="16" cy="12" r="1"/><circle cx="18.3" cy="14.3" r="1"/></svg>
+          </span>
+          <span class="category-text">
+            <strong>JOGOS</strong>
+            <small>Steam • Epic • GOG</small>
+          </span>
+        </button>
+        <button class="category-card" onclick="filtrarUnificado('Pecas', document.querySelector('#filtros-principal .chip'))">
+          <span class="category-icon cat-setup">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+          </span>
+          <span class="category-text">
+            <strong>SETUP</strong>
+            <small>Hardware • Periféricos • Peças</small>
+          </span>
+        </button>
+        <button class="category-card" onclick="filtrarUnificado('Todas', document.querySelector('#filtros-principal .chip'))">
+          <span class="category-icon cat-ofertas">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c4 0 7-2.7 7-6.5C19 10.3 15.8 8 15 5c-.3 2.6-1.8 3.4-1.8 5.6 0-2-1-3-1-4.6-2 1.8-4.2 4.8-4.2 8C8 18.3 8.5 21 12 21Z"/></svg>
+          </span>
+          <span class="category-text">
+            <strong>OFERTAS</strong>
+            <small>Mais vendidos • Descontos • Novidades</small>
+          </span>
+        </button>
+      </div>
+
+      <div class="ofertas-header">
+        <div>
+          <h2 class="titulo-ofertas">🔥 Ofertas em Destaque</h2>
+          <p class="explication">As melhores ofertas da semana, escolhidas pela <span class="suzuki-name">Suzuki</span>!</p>
+        </div>
+      </div>
+
+      <!-- FILTROS + PESQUISA -->
+      <div class="filter-bar">
+        <div class="filtros-principal" id="filtros-principal">
+          <span onclick="filtrarUnificado('Todas', this)" class="chip ativo">Todas</span>
+          <span onclick="filtrarUnificado('Steam', this)" class="chip">Steam</span>
+          <span onclick="filtrarUnificado('Epic', this)" class="chip">Epic</span>
+          <span onclick="filtrarUnificado('GOG', this)" class="chip">GOG</span>
+          <span onclick="filtrarUnificado('Amazon', this)" class="chip">Amazon</span>
+          <span onclick="filtrarUnificado('Pecas', this)" class="chip">Peças</span>
+          <span onclick="filtrarUnificado('Jogos', this)" class="chip">Jogos</span>
+        </div>
+
+        <div class="search-container">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="searchInput" placeholder="Pesquise um jogo ou produto..." />
+        </div>
+      </div>
+
+      <!-- SUBCATEGORIAS DE PEÇAS -->
+      <div class="filtros" id="filtros-pecas">
+        <button onclick="filtrar('PC', this)"            class="filtro filtro-peca">PC</button>
+        <button onclick="filtrar('GPU', this)"           class="filtro filtro-peca">GPU</button>
+        <button onclick="filtrar('RAM', this)"           class="filtro filtro-peca">RAM</button>
+        <button onclick="filtrar('CPU', this)"           class="filtro filtro-peca">CPU</button>
+        <button onclick="filtrar('Placa mãe', this)"     class="filtro filtro-peca">Placa mãe</button>
+        <button onclick="filtrar('Fonte', this)"         class="filtro filtro-peca">Fonte</button>
+        <button onclick="filtrar('Cooler', this)"        class="filtro filtro-peca">Cooler</button>
+        <button onclick="filtrar('Gabinete', this)"      class="filtro filtro-peca">Gabinete</button>
+        <button onclick="filtrar('Armazenamento', this)" class="filtro filtro-peca">Armazenamento</button>
+        <button onclick="filtrar('Monitor', this)"       class="filtro filtro-peca">Monitor</button>
+        <button onclick="filtrar('Teclado', this)"       class="filtro filtro-peca">Teclado</button>
+        <button onclick="filtrar('Mouse', this)"         class="filtro filtro-peca">Mouse</button>
+        <button onclick="filtrar('Headset', this)"       class="filtro filtro-peca">Headset</button>
+      </div>
+
+      <!-- CARDS + PAINEL SUZUKI -->
+      <div class="ofertas-grid">
+        <div class="ofertas-main">
+          <!-- CARDS -->
+          <div id="cards-container" class="cards-grid"></div>
+
+          <!-- PAGINAÇÃO -->
+          <div id="pagination" class="pagination"></div>
+        </div>
+
+        <aside class="suzuki-panel">
+          <p class="suzuki-panel-title">✨ SUZUKI RECOMENDA</p>
+          <p class="suzuki-panel-text">Separei algumas ofertas que eu compraria! 🎮</p>
+          <img src="img/suzuki-mini.png" alt="Suzuki" class="suzuki-panel-img">
+          <button class="suzuki-panel-btn" onclick="filtrarSuzukiRecomenda()">
+            VER RECOMENDAÇÕES
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+          </button>
+        </aside>
+      </div>
+
+      <!-- INFO DO SITE -->
+      <section class="info-site">
+        <div class="logo-box">
+          <img src="favicon.png" alt="Logo Elements XD">
+        </div>
+
+        <div class="texto-box">
+          <h3>ELEMENTS XD</h3>
+          <p>
+            Nosso site reúne as melhores ofertas de jogos e hardware para PC.
+            Monitoramos lojas como Steam, Epic, GOG e Amazon para trazer
+            promoções atualizadas automaticamente.
+          </p>
+          <p>
+            Cards feitos com links diretos e confiáveis, para maior
+            facilidade de acesso e segurança de quem visita o site.
+          </p>
+        </div>
+
+        <div class="features-box">
+          <div class="feature">⚡ Rápido</div>
+          <div class="feature">🔒 Seguro</div>
+          <div class="feature">🛒 Links confiáveis</div>
+          <div class="feature">🎮 Ofertas atualizadas</div>
+        </div>
+      </section>
+
+      <!-- FAIXA DE CONFIANÇA -->
+      <section class="trust-strip">
+        <div class="trust-item">
+          <span class="trust-icon">🛡️</span>
+          <div>
+            <strong>OFERTAS REAIS</strong>
+            <small>Descontos atualizados em tempo real</small>
+          </div>
+        </div>
+        <div class="trust-item">
+          <span class="trust-icon">🔒</span>
+          <div>
+            <strong>COMPRA SEGURA</strong>
+            <small>Links verificados e 100% seguros</small>
+          </div>
+        </div>
+        <div class="trust-item">
+          <span class="trust-icon">⚡</span>
+          <div>
+            <strong>ENTREGA RÁPIDA</strong>
+            <small>Ative e jogue ou receba sua peça rapidinho</small>
+          </div>
+        </div>
+        <div class="trust-item">
+          <span class="trust-icon">💜</span>
+          <div>
+            <strong>SUZUKI APROVA</strong>
+            <small>Tudo selecionado com carinho por mim!</small>
+          </div>
+        </div>
+      </section>
+
+      <!-- PARCEIROS -->
+      <section class="parceiros">
+        <h2 class="titulo-parceiros">Confira nossas lojas parceiras</h2>
+
+        <div class="parceiros-grid">
+          <div class="parceiro">
+            <img src="img/steam.png" alt="Steam">
+            <span>Steam</span>
+          </div>
+          <div class="parceiro">
+            <img src="img/epic.png" alt="Epic Games">
+            <span>Epic Games</span>
+          </div>
+          <div class="parceiro">
+            <img src="img/gog.png" alt="GOG">
+            <span>GOG</span>
+          </div>
+          <div class="parceiro">
+            <img src="img/amazon.png" alt="Amazon">
+            <span>Amazon</span>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- RODAPÉ -->
+  <footer>
+    <div class="rodape">
+      © 2026 ELEMENTS XD — Todos os direitos reservados.
+      <a href="https://instagram.com/elements.xd" target="_blank" rel="noopener" class="rodape-link">@elements.xd</a>
+      <a href="atualizacoes.html" class="versao">V-3.0</a>
+    </div>
+  </footer>
+
+  <script src="/script.js"></script>
+
+  <!-- MODAL CONTATO -->
+    <div id="modalContato" class="modal">
+    <div class="modal-box modal-box-contato">
+      <span class="fechar" onclick="fecharModal()">&times;</span>
+      <h2>Teve uma ideia que podemos acrescentar no site?</h2>
+      <p class="modal-sub">Manda pra gente por qualquer um desses canais:</p>
+
+      <div class="contato-lista">
+        <a href="mailto:elements13dk@gmail.com" class="contato-item">
+          <span class="contato-icone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          </span>
+          <span class="contato-texto">
+            <span class="contato-label">E-mail</span>
+            <span class="contato-valor">elements13dk@gmail.com</span>
+          </span>
+        </a>
+
+        <a href="https://instagram.com/elements.xd" target="_blank" rel="noopener" class="contato-item">
+          <span class="contato-icone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+          </span>
+          <span class="contato-texto">
+            <span class="contato-label">Instagram</span>
+            <span class="contato-valor">@elements.xd</span>
+          </span>
+        </a>
+      </div>
+
+      <button onclick="fecharModal()">Fechar</button>
+    </div>
+  </div>
+
+  <script>
+    function abrirModal() {
+      document.getElementById("modalContato").style.display = "flex";
+    }
+    function fecharModal() {
+      document.getElementById("modalContato").style.display = "none";
+    }
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") fecharModal();
+    });
+    document.getElementById("modalContato").addEventListener("click", (e) => {
+      if (e.target.id === "modalContato") fecharModal();
+    });
+  </script>
+
+  <div id="preloader">
+    <div class="preloader-glow"></div>
+    <div class="preloader-grid"></div>
+    <div class="preloader-content">
+      <img src="favicon.png" class="preloader-icon" alt="Logo">
+      <h1>ELEMENTS XD</h1>
+      <p>DE GAMER PARA GAMERS</p>
+      <div class="loader-bar"></div>
+    </div>
+  </div>
+
+</body>
+</html>
