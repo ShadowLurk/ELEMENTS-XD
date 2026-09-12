@@ -2,8 +2,11 @@ name: Verify Games (remove expired promotions)
 
 on:
   schedule:
-
-    - cron: "0 */12 * * *"
+    # Antes rodava a cada 12h -- com um catálogo de 10-15 mil jogos na Steam,
+    # isso levaria dias pra cobrir tudo (cada execução só reconfere uma
+    # fatia). Rodando a cada 10 min, a fatia de 300 jogos por vez dá conta
+    # do catálogo inteiro em poucas horas, girando o cursor.
+    - cron: "*/10 * * * *"
   workflow_dispatch: {} 
 
 jobs:

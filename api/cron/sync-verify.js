@@ -52,12 +52,17 @@ async function checkSteamGame(jogoSalvo) {
 
 async function verificarSteam() {
   return refreshStoreGames("Steam", checkSteamGame, {
-    concorrencia: 8,
-    delayEntreLotesMs: 250,
-    // Reconfere só uma fatia do catálogo Steam por execução (cursor
-    // gira pro resto no próximo cron), senão com muitos jogos a função
-    // estoura o tempo máximo da Vercel e o cron cai com 504.
-    paginacao: { chave: "verify:steam", tamanho: 60 },
+    concorrencia: 12,
+    delayEntreLotesMs: 150,
+    // Com o catálogo Steam crescendo pra 10-15 mil jogos, NÃO dá pra
+    // verificar tudo numa chamada só -- não existe configuração que
+    // caiba isso dentro do tempo máximo de uma função serverless.
+    // A saída é reconferir uma fatia maior por execução (300, ainda com
+    // folga de sobra dentro dos 60s) e rodar o cron bem mais seguido
+    // (ver .github/workflows/sync-verify.yml) -- assim, girando o
+    // cursor, o catálogo inteiro é coberto em poucas horas em vez de
+    // dias, sem nunca estourar o tempo de uma única execução.
+    paginacao: { chave: "verify:steam", tamanho: 300 },
   });
 }
 
@@ -73,25 +78,32 @@ async function verificarGog() {
 
   const mapaAtual = new Map(promosAtuais.map((g) => [g.link, g]));
 
-  return refreshStoreGames("GOG", async (jogoSalvo) => {
-    const atual = mapaAtual.get(jogoSalvo.link);
+  return refreshStoreGames(
+    "GOG",
+    async (jogoSalvo) => {
+      const atual = mapaAtual.get(jogoSalvo.link);
 
-    if (!atual) return { expirado: true };
+      if (!atual) return { expirado: true };
 
-    // Se a loja ainda lista o jogo mas sem desconto de verdade, trata
-    // como expirado também -- senão o card fica sem preço promocional
-    // (mostrando "Ver na loja") em vez de sumir do catálogo.
-    if (!atual.discount || atual.discount <= 0) return { expirado: true };
+      // Se a loja ainda lista o jogo mas sem desconto de verdade, trata
+      // como expirado também -- senão o card fica sem preço promocional
+      // (mostrando "Ver na loja") em vez de sumir do catálogo.
+      if (!atual.discount || atual.discount <= 0) return { expirado: true };
 
-    return {
-      expirado: false,
-      dados: {
-        normalPriceBRL: atual.normalPriceBRL,
-        salePriceBRL: atual.salePriceBRL,
-        discount: atual.discount,
-      },
-    };
-  });
+      return {
+        expirado: false,
+        dados: {
+          normalPriceBRL: atual.normalPriceBRL,
+          salePriceBRL: atual.salePriceBRL,
+          discount: atual.discount,
+        },
+      };
+    },
+    // GOG não bate em API por jogo aqui (só compara com o mapa que já
+    // veio pronto de getGogDeals) -- não tem motivo pra atraso entre
+    // lotes nem pra limitar concorrência, é tudo em memória.
+    { concorrencia: 100, delayEntreLotesMs: 0 }
+  );
 }
 
 async function verificarEpic() {
@@ -106,23 +118,28 @@ async function verificarEpic() {
 
   const mapaAtual = new Map(promosAtuais.map((g) => [g.link, g]));
 
-  return refreshStoreGames("Epic", async (jogoSalvo) => {
-    const atual = mapaAtual.get(jogoSalvo.link);
+  return refreshStoreGames(
+    "Epic",
+    async (jogoSalvo) => {
+      const atual = mapaAtual.get(jogoSalvo.link);
 
-    if (!atual) return { expirado: true };
+      if (!atual) return { expirado: true };
 
-    // Mesma regra da GOG: sem desconto real = expirado, some do catálogo.
-    if (!atual.discount || atual.discount <= 0) return { expirado: true };
+      // Mesma regra da GOG: sem desconto real = expirado, some do catálogo.
+      if (!atual.discount || atual.discount <= 0) return { expirado: true };
 
-    return {
-      expirado: false,
-      dados: {
-        normalPriceBRL: atual.normalPriceBRL,
-        salePriceBRL: atual.salePriceBRL,
-        discount: atual.discount,
-      },
-    };
-  });
+      return {
+        expirado: false,
+        dados: {
+          normalPriceBRL: atual.normalPriceBRL,
+          salePriceBRL: atual.salePriceBRL,
+          discount: atual.discount,
+        },
+      };
+    },
+    // Mesmo caso da GOG: só compara em memória, sem chamada por jogo.
+    { concorrencia: 100, delayEntreLotesMs: 0 }
+  );
 }
 
 export default async function handler(req, res) {
