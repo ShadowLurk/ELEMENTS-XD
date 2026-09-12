@@ -50,8 +50,12 @@ async function checkSteamGame(jogoSalvo) {
 
 async function verificarSteam() {
   return refreshStoreGames("Steam", checkSteamGame, {
-    concorrencia: 6,
-    delayEntreLotesMs: 400,
+    concorrencia: 8,
+    delayEntreLotesMs: 250,
+    // Reconfere só uma fatia do catálogo Steam por execução (cursor
+    // gira pro resto no próximo cron), senão com muitos jogos a função
+    // estoura o tempo máximo da Vercel e o cron cai com 504.
+    paginacao: { chave: "verify:steam", tamanho: 60 },
   });
 }
 
@@ -117,11 +121,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    console.log("🔍 [verify] Reconferindo TODO o catálogo Steam + GOG + Epic...");
+    console.log("🔍 [verify] Reconferindo catálogo Steam + GOG + Epic...");
 
-    const resultadoSteam = await verificarSteam();
-    const resultadoGog = await verificarGog();
-    const resultadoEpic = await verificarEpic();
+    // Antes rodava Steam -> GOG -> Epic em sequência, somando o tempo dos
+    // três dentro do mesmo maxDuration. Agora roda em paralelo, então o
+    // tempo total passa a ser o do mais lento, não a soma dos três.
+    const [resultadoSteam, resultadoGog, resultadoEpic] = await Promise.all([
+      verificarSteam(),
+      verificarGog(),
+      verificarEpic(),
+    ]);
 
     return res.status(200).json({
       ok: true,
