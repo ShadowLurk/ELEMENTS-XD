@@ -32,11 +32,13 @@ async function checkSteamGame(jogoSalvo) {
     return { removerAgora: true };
   }
 
-  const expirado =
+  const semDesconto =
     price.initial_formatted.replace(/\D/g, "") ===
-    price.final_formatted.replace(/\D/g, "");
+      price.final_formatted.replace(/\D/g, "") ||
+    !price.discount_percent ||
+    price.discount_percent <= 0;
 
-  if (expirado) return { expirado: true };
+  if (semDesconto) return { expirado: true };
 
   return {
     expirado: false,
@@ -76,6 +78,11 @@ async function verificarGog() {
 
     if (!atual) return { expirado: true };
 
+    // Se a loja ainda lista o jogo mas sem desconto de verdade, trata
+    // como expirado também -- senão o card fica sem preço promocional
+    // (mostrando "Ver na loja") em vez de sumir do catálogo.
+    if (!atual.discount || atual.discount <= 0) return { expirado: true };
+
     return {
       expirado: false,
       dados: {
@@ -103,6 +110,9 @@ async function verificarEpic() {
     const atual = mapaAtual.get(jogoSalvo.link);
 
     if (!atual) return { expirado: true };
+
+    // Mesma regra da GOG: sem desconto real = expirado, some do catálogo.
+    if (!atual.discount || atual.discount <= 0) return { expirado: true };
 
     return {
       expirado: false,
