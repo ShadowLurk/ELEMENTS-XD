@@ -1,11 +1,12 @@
 import { getSteamBRPrice } from "../../lib/steam.js";
 import { getGogDeals } from "../../lib/gog.js";
+import { checkNuuvemPriceByLink } from "../../lib/nuuvem.js";
 import { getEpicDeals } from "../epic.js";
 import { refreshStoreGames } from "../../lib/gamesCatalog.js";
 import { safeCompare } from "../../lib/security.js";
 
 // =============================
-// 🔍 VERIFICAÇÃO (STEAM + GOG + EPIC)
+// 🔍 VERIFICAÇÃO (STEAM + GOG + EPIC + NUUVEM)
 // =============================
 
 export const config = { maxDuration: 60 };
@@ -142,22 +143,44 @@ async function verificarEpic() {
   );
 }
 
+async function verificarNuuvem() {
+  // Igual a Steam: item a item, direto na página de cada jogo salvo (ver
+  // lib/nuuvem.js). checkNuuvemPriceByLink já devolve null quando não dá
+  // pra confirmar com segurança (erro de rede, bloqueio, página
+  // estranha) -- nesse caso refreshStoreGames pula o jogo sem mexer,
+  // tenta de novo na próxima execução, em vez de arriscar remover uma
+  // oferta que pode muito bem ainda estar válida.
+  //
+  // Com catálogo grande, reconfere só uma fatia por execução (os mais
+  // atrasados primeiro) pra não estourar o tempo.
+  return refreshStoreGames(
+    "Nuuvem",
+    (jogoSalvo) => checkNuuvemPriceByLink(jogoSalvo.link),
+    {
+      concorrencia: 10,
+      delayEntreLotesMs: 200,
+      paginacao: { tamanho: 150 },
+    }
+  );
+}
+
 export default async function handler(req, res) {
   if (!isAuthorized(req)) {
     return res.status(401).json({ error: "Não autorizado" });
   }
 
   try {
-    console.log("🔍 [verify] Reconferindo catálogo Steam + GOG + Epic...");
+    console.log("🔍 [verify] Reconferindo catálogo Steam + GOG + Epic + Nuuvem...");
 
-    // Antes rodava Steam -> GOG -> Epic em sequência, somando o tempo dos
-    // três dentro do mesmo maxDuration. Agora roda em paralelo, então o
-    // tempo total passa a ser o do mais lento, não a soma dos três.
-    const [resultadoSteam, resultadoGog, resultadoEpic] = await Promise.all([
-      verificarSteam(),
-      verificarGog(),
-      verificarEpic(),
-    ]);
+    // Roda tudo em paralelo -- tempo total passa a ser o do mais lento,
+    // não a soma de todas.
+    const [resultadoSteam, resultadoGog, resultadoEpic, resultadoNuuvem] =
+      await Promise.all([
+        verificarSteam(),
+        verificarGog(),
+        verificarEpic(),
+        verificarNuuvem(),
+      ]);
 
     return res.status(200).json({
       ok: true,
@@ -165,6 +188,7 @@ export default async function handler(req, res) {
       steam: resultadoSteam,
       gog: resultadoGog,
       epic: resultadoEpic,
+      nuuvem: resultadoNuuvem,
     });
   } catch (err) {
     console.error("Erro no verify:", err);

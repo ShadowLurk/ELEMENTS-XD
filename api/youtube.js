@@ -1,5 +1,5 @@
 /* =====================================
-   API DE STATS DO YOUTUBE (MinyCreeper)
+   API DE STATS DO YOUTUBE (ManoAimer)
    ===================================== */
 import { getCachedYoutubeStats } from "../lib/youtube.js";
 

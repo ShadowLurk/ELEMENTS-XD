@@ -50,7 +50,7 @@ const MAX_VISIBLE = 5;
 const LIMITE_POR_LOJA = 60;
 
 const LOJAS_PECAS = ["Amazon"];
-const LOJAS_JOGOS = ["Steam", "Epic", "GOG"];
+const LOJAS_JOGOS = ["Steam", "Epic", "GOG", "Nuuvem"];
 
 
 /* =====================================
@@ -411,7 +411,8 @@ function getStoreIcon(store) {
     steam: "img/steam.png",
     epic: "img/epic.png",
     gog: "img/gog.png",
-    amazon: "img/amazon.png"
+    amazon: "img/amazon.png",
+    nuuvem: "img/nuuvem.png"
   };
   return mapa[nome] || "";
 }

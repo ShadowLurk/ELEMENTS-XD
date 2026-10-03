@@ -1,5 +1,6 @@
 import { getSteamDealsIncremental } from "../../lib/steam.js";
 import { getGogDealsIncremental } from "../../lib/gog.js";
+import { getNuuvemDealsIncremental } from "../../lib/nuuvem.js";
 import { getEpicDeals } from "../epic.js";
 import {
   addNewStoreGames,
@@ -21,6 +22,7 @@ const LOTE_INICIAL_EPIC = 10;
 
 const LOTE_INCREMENTAL_STEAM = 100;
 const LOTE_INCREMENTAL_GOG = 100;
+const LOTE_INCREMENTAL_NUUVEM = 60;
 
 function isAuthorized(req) {
   const secret = process.env.CRON_SECRET;
@@ -57,6 +59,24 @@ async function sincronizarGog(alvo) {
 
   const resultado = await addNewStoreGames("GOG", results);
   await setCursor("gog", nextCursor);
+
+  return {
+    ...resultado,
+    alvo,
+    cursorUsado: cursorAtual,
+    proximoCursor: nextCursor,
+  };
+}
+
+async function sincronizarNuuvem(alvo) {
+  const idsJaSalvos = await getStoredIds("Nuuvem");
+  const cursorAtual = await getCursor("nuuvem");
+
+  const { results, nextCursor } =
+    await getNuuvemDealsIncremental(alvo, cursorAtual, idsJaSalvos);
+
+  const resultado = await addNewStoreGames("Nuuvem", results);
+  await setCursor("nuuvem", nextCursor);
 
   return {
     ...resultado,
@@ -107,18 +127,23 @@ export default async function handler(req, res) {
       });
     }
 
+    // Rodízio de 3 vias entre GOG, Steam e Nuuvem -- cada execução do
+    // cron cuida de uma loja por vez, girando a cada chamada.
+    const ORDEM_RODIZIO = ["GOG", "Steam", "Nuuvem"];
+
     const turno = await getCursor("sync-turn");
-    const proximoTurno = turno === 0 ? 1 : 0;
+    const turnoAtual = turno % ORDEM_RODIZIO.length;
+    const proximoTurno = (turnoAtual + 1) % ORDEM_RODIZIO.length;
+
+    const loja = ORDEM_RODIZIO[turnoAtual];
 
     let resultado;
-    let loja;
-
-    if (turno === 0) {
-      loja = "GOG";
+    if (loja === "GOG") {
       resultado = await sincronizarGog(LOTE_INCREMENTAL_GOG);
-    } else {
-      loja = "Steam";
+    } else if (loja === "Steam") {
       resultado = await sincronizarSteam(LOTE_INCREMENTAL_STEAM);
+    } else {
+      resultado = await sincronizarNuuvem(LOTE_INCREMENTAL_NUUVEM);
     }
 
     await setCursor("sync-turn", proximoTurno);
@@ -131,7 +156,7 @@ export default async function handler(req, res) {
       timestamp: new Date().toISOString(),
       lojaDaVez: loja,
       resultado,
-      proximaLoja: turno === 0 ? "Steam" : "GOG",
+      proximaLoja: ORDEM_RODIZIO[proximoTurno],
     });
   } catch (err) {
     console.error("Erro no sync de jogos:", err);
